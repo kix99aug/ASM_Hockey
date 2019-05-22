@@ -23,7 +23,7 @@ INCLUDE Macros.inc
 	finish1 BYTE  "                                                        EXIT",0
 .code
 main PROC
-jmp STA
+
 begin:                                      ;印出pixel hocky
 call ClrScr
     call Crlf
@@ -74,10 +74,12 @@ call ClrScr
 	call Crlf
 	call Crlf
 	call Crlf
-	ret
+	
 	
 STA:                                   ;選取start時的介面
-	call begin                         ;清空所有畫面後再印製一次pixel hocky
+	mov dl,0
+	mov dh,20
+	call Gotoxy
 	mov edx,OFFSET start               ;印出選取start的假象
 	call WriteString
 	call Crlf
@@ -101,7 +103,9 @@ STA:                                   ;選取start時的介面
 	
 	jmp L3
 SET:                                   ;選取setting的介面
-	call begin                         
+	mov dl,0
+	mov dh,20
+	call Gotoxy
 	mov edx,OFFSET start1
 	call WriteString
 	call Crlf
@@ -125,7 +129,9 @@ SET:                                   ;選取setting的介面
 	
 	jmp L1
 FIN:
-	call begin
+	mov dl,0
+	mov dh,20
+	call Gotoxy
 	mov edx,OFFSET start1
 	call WriteString
 	call Crlf
