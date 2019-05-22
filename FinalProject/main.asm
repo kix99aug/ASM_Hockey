@@ -25,9 +25,9 @@ INCLUDE Macros.inc
 	operation1 BYTE  "                                                      OPERATION",0
 	empty BYTE "                                                                                                                          ",0
 	color BYTE       "                                               > Color ",0
-	color1 BYTE      "                                               Color",0
-	speed BYTE       "                                               > Speed",0
-	speed1 BYTE      "                                               Speed",0
+	color1 BYTE      "                                                 Color ",0
+	speed BYTE       "                                               > Speed ",0
+	speed1 BYTE      "                                                 Speed ",0
 	ColorBox BYTE "■ ",0
 	P1 BYTE          "                                         Player1: Q W E(Skill) F(Up) C(Down)",0
 	P2 BYTE          "                                         Player2: I O P(Skill) 5(Up) 1(Down)",0
@@ -240,36 +240,138 @@ GAME_PART:
 SET_PART:
 	
 	call ClrScr
-	mov dl,0
-	mov dh,5
-	call Gotoxy
-	mov edx,OFFSET setting1
-	call WriteString
-	call Crlf
-	call Crlf
-	mov edx,OFFSET color
-	call WriteString
-	mov edx,OFFSET colorbox
-	call WriteString
-	call WriteString
-	call WriteString
-	call WriteString
-	Call Crlf
-	Call Crlf
-	Call Crlf
-	Call Crlf
-	Call Crlf
-	mov edx,OFFSET back
-	call WriteString
+	jmp SET_COLOR
 
-	jmp L6
-	L6:
-	mov eax,50
-    call Delay
-	call ReadKey
-	cmp dx,+27
-	je begin
-	jmp L6
+	SET_COLOR:
+		mov dl,0
+		mov dh,5
+		call Gotoxy
+		mov edx,OFFSET empty
+		call WriteString
+		call WriteString
+		call WriteString
+		mov dl,0
+		mov dh,5
+		call Gotoxy
+		mov edx,OFFSET setting1
+		call WriteString
+		mov dl,0
+		mov dh,9
+		call Gotoxy
+		mov edx,OFFSET color
+		call WriteString
+		mov edx,OFFSET colorbox
+		mov eax,1d
+	    call SetTextColor
+		call WriteString
+		mov eax,2d
+	    call SetTextColor
+		call WriteString
+		mov eax,3d
+	    call SetTextColor
+		call WriteString
+		mov eax,4d
+	    call SetTextColor
+		call WriteString
+		mov eax,15d
+	    call SetTextColor
+		call Crlf
+		call Crlf
+		mov edx,OFFSET speed1
+		call WriteString
+		mov edx,OFFSET colorbox
+		call WriteString
+		call WriteString
+		call WriteString
+		call WriteString
+		Call Crlf
+		Call Crlf
+		Call Crlf
+		Call Crlf
+		Call Crlf
+		mov dl,0
+		mov dh,25
+		call Gotoxy
+		mov edx,OFFSET back
+		call WriteString
+		jmp L6
+		L6:
+		mov eax,50
+		call Delay
+		call ReadKey
+		cmp dx,+27
+		je begin
+		cmp dx,+38
+		je SET_SPEED
+		cmp dx,+40
+		je SET_SPEED
+		jmp L6
+
+	SET_SPEED:
+		mov dl,0
+		mov dh,5
+		call Gotoxy
+		mov edx,OFFSET empty
+		call WriteString
+		call WriteString
+		call WriteString
+		mov dl,0
+		mov dh,5
+		call Gotoxy
+		mov edx,OFFSET setting1
+		call WriteString
+		mov dl,0
+		mov dh,9
+		call Gotoxy
+		mov edx,OFFSET color1
+		call WriteString
+		mov edx,OFFSET colorbox
+		mov eax,1d
+	    call SetTextColor
+		call WriteString
+		mov eax,2d
+	    call SetTextColor
+		call WriteString
+		mov eax,3d
+	    call SetTextColor
+		call WriteString
+		mov eax,4d
+	    call SetTextColor
+		call WriteString
+		mov eax,15d
+	    call SetTextColor
+		call Crlf
+		call Crlf
+		mov edx,OFFSET speed
+		call WriteString
+		mov edx,OFFSET colorbox
+		call WriteString
+		call WriteString
+		call WriteString
+		call WriteString
+		Call Crlf
+		Call Crlf
+		Call Crlf
+		Call Crlf
+		Call Crlf
+		mov dl,0
+		mov dh,25
+		call Gotoxy
+		mov edx,OFFSET back
+		call WriteString
+		jmp L7
+		L7:
+		mov eax,50
+		call Delay
+		call ReadKey
+		cmp dx,+27
+		je begin
+		cmp dx,+38
+		je SET_COLOR
+		cmp dx,+40
+		je SET_COLOR
+		jmp L7
+
 
 
 OPERATION_PART:
@@ -293,6 +395,9 @@ OPERATION_PART:
 	Call Crlf
 	Call Crlf
 	Call Crlf
+	mov dl,0
+	mov dh,25
+	call Gotoxy
 	mov edx,OFFSET back
 	call WriteString
 	jmp L5
