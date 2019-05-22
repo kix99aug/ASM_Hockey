@@ -23,8 +23,9 @@ INCLUDE Macros.inc
 	finish1 BYTE  "                                                        EXIT",0
 .code
 main PROC
-
-begin:
+jmp STA
+begin:                                      ;印出pixel hocky
+call ClrScr
     call Crlf
 	mov edx,OFFSET prompt1
 	call WriteString
@@ -73,10 +74,11 @@ begin:
 	call Crlf
 	call Crlf
 	call Crlf
+	ret
 	
-STA:
-
-	mov edx,OFFSET start
+STA:                                   ;選取start時的介面
+	call begin                         ;清空所有畫面後再印製一次pixel hocky
+	mov edx,OFFSET start               ;印出選取start的假象
 	call WriteString
 	call Crlf
 	mov edx,OFFSET setting1
@@ -85,21 +87,21 @@ STA:
 	mov edx,OFFSET finish1
 	call WriteString
 	call Crlf
-	jmp L3
+	jmp L3                             ;輸入鍵盤上、下或enter
 	L3:
 	mov eax,50
     call Delay
-	call ReadKey
+	call ReadKey                       ;讀取鍵盤輸入
 	cmp dx,+40
-	je SET
+	je SET                             ;偵測到下
 	cmp dx,+38
-	je FIN
-	cmp dx,+13
-	je NEXT
-	call ClrScr
+	je FIN                             ;偵測到上
+	cmp dx,+13                 
+	je GAME_PART                       ;偵測到enter
+	
 	jmp L3
-SET:
-
+SET:                                   ;選取setting的介面
+	call begin                         
 	mov edx,OFFSET start1
 	call WriteString
 	call Crlf
@@ -110,19 +112,20 @@ SET:
 	call WriteString
 	call Crlf
 	jmp L1
-	L1:
+	L1:                                 
 	mov eax,50
     call Delay
 	call ReadKey
 	cmp dx,+40
-	je FIN
+	je FIN                            ;偵測到下
 	cmp dx,+38
-	je STA
+	je STA                            ;偵測到上
 	cmp dx,+13
-	je NEXT
-	call ClrScr
+	je SET_PART                       ;偵測到enter
+	
 	jmp L1
 FIN:
+	call begin
 	mov edx,OFFSET start1
 	call WriteString
 	call Crlf
@@ -142,11 +145,17 @@ FIN:
 	cmp dx,+38
 	je SET
 	cmp dx,+13
-	je NEXT
-	call ClrScr
+	je FINISH_PART
+
 	jmp L2
+GAME_PART:
+
+SET_PART:
+
+FINISH_PART:
 
 NEXT:
+
 	exit
 main ENDP
 END main
