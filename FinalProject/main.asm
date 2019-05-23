@@ -4,12 +4,12 @@ INCLUDE Macros.inc
 	winwid EQU 120
 	winhei EQU 30
 	screen BYTE 100 DUP(100 DUP (?))
-	titlestr1 BYTE		"______ _______    __ _____ _     ",0
-	titlestr2 BYTE		"| ___ \_   _\ \  / /|  ___| |    ",0
-	titlestr3 BYTE		"| |_/ / | |  \ \/ / | |__ | |    ",0
-	titlestr4 BYTE		"|  __/  | |  / /\ \ |  __|| |    ",0
-	titlestr5 BYTE		"| |    _| |_/ /  \ \| |___| |____",0
-	titlestr6 BYTE		"\_|    \___/\/    \/\____/\_____/",0
+	titlestr1 BYTE		"______________  __ _____ _     ",0
+	titlestr2 BYTE		"| ___ \_   _\ \/ /|  ___| |    ",0
+	titlestr3 BYTE		"| |_/ / | |  \  / | |__ | |    ",0
+	titlestr4 BYTE		"|  __/  | |  /  \ |  __|| |    ",0
+	titlestr5 BYTE		"| |    _| |_/ /\ \| |___| |____",0
+	titlestr6 BYTE		"\_|    \___/\/  \/\____/\_____/",0
 	titlestr7 BYTE		" _   _  ___   ____  _   __ _______   __",0
 	titlestr8 BYTE		"| | | |/ _ \ / __ \| | / /|  ___\ \ / /",0
 	titlestr9 BYTE		"| |_| | | | | /  \/| |/ / | |__  \ V / ",0
