@@ -36,8 +36,7 @@ INCLUDE Macros.inc
 	back BYTE        "Press ESC to return...",0
 	P1_color_choose BYTE "¡¿",0
 	P2_color_choose BYTE "¡¶",0
-	P1_speed_choose BYTE "¡¿",0
-	P2_speed_choose BYTE "¡¶",0
+	speed_choose BYTE "¡¿",0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -262,7 +261,7 @@ SET_PART:
 		mov dl,56
 		mov dh,12
 		call Gotoxy
-		mov edx,OFFSET P1_speed_choose
+		mov edx,OFFSET speed_choose
 		call WriteString
 		mov dl,48
 		mov dh,13
@@ -274,11 +273,7 @@ SET_PART:
 		call WriteString
 		call WriteString
 		call WriteString
-		mov dl,56
-		mov dh,14
-		call Gotoxy
-		mov edx,OFFSET P2_speed_choose
-		call WriteString
+		
 		mov dl,48
 		mov dh,25
 		call Gotoxy
@@ -328,11 +323,6 @@ SET_PART:
 		call WriteString
 		mov eax,15d
 	    call SetTextColor
-		mov dl,56
-		mov dh,12
-		call Gotoxy
-		mov edx,OFFSET P1_speed_choose
-		call WriteString
 		mov dl,48
 		mov dh,13
 		call Gotoxy
@@ -345,11 +335,6 @@ SET_PART:
 		call WriteString
 		call WriteString
 		call WriteString
-		call WriteString
-		mov dl,56
-		mov dh,14
-		call Gotoxy
-		mov edx,OFFSET P2_speed_choose
 		call WriteString
 		mov dl,48
 		mov dh,25
