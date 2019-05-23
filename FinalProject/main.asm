@@ -37,6 +37,8 @@ INCLUDE Macros.inc
 	P1_color_choose BYTE "¡¿",0
 	P2_color_choose BYTE "¡¶",0
 	speed_choose BYTE "¡¿",0
+	P1_color_point_local BYTE 56d ,0
+	P2_color_point_local BYTE 56d ,0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -217,8 +219,6 @@ GAME_PART:
 SET_PART:
 	
 	call ClrScr
-	jmp SET_COLOR
-
 	SET_COLOR:
 		mov dl,53
 		mov dh,5
@@ -253,7 +253,7 @@ SET_PART:
 		call WriteString
 		mov eax,15d
 	    call SetTextColor
-		mov dl,56
+		mov dl,P2_color_point_local
 		mov dh,10
 		call Gotoxy
 		mov edx,OFFSET P2_color_choose
@@ -290,7 +290,32 @@ SET_PART:
 		je SET_SPEED
 		cmp dx,+40
 		je SET_SPEED
+		cmp dx,+39
+		je p2_color_point_right
 		jmp L6
+		p2_color_point_right:
+			mov dl,0
+			mov dh,10
+			call Gotoxy
+			mov edx,OFFSET empty
+			call WriteString
+			cmp P2_color_point_local,65d
+			jne P2_add_color
+			mov P2_color_point_local,56d
+			mov dl,P2_color_point_local
+			mov dh,10
+			call Gotoxy
+			mov edx,OFFSET P2_color_choose
+			call WriteString
+			jmp L6
+			P2_add_color:
+				add P2_color_point_local,3d
+				mov dl,P2_color_point_local
+				mov dh,10
+				call Gotoxy
+				mov edx,OFFSET P2_color_choose
+				call WriteString
+				jmp L6
 
 	SET_SPEED:
 		
