@@ -225,7 +225,7 @@ SET_PART:
 		call Gotoxy
 		mov edx,OFFSET setting1
 		call WriteString
-		mov dl,56
+		mov dl,P1_color_point_local
 		mov dh,8
 		call Gotoxy
 		mov edx,OFFSET P1_color_choose
@@ -290,17 +290,23 @@ SET_PART:
 		je SET_SPEED
 		cmp dx,+40
 		je SET_SPEED
+		cmp dx,+68
+		je P1_color_point_right
+		cmp dx,+65
+		je P1_color_point_left
 		cmp dx,+39
-		je p2_color_point_right
+		je P2_color_point_right
+		cmp dx,+37
+		je P2_color_point_left
 		jmp L6
-		p2_color_point_right:
+		P2_color_point_right:
 			mov dl,0
 			mov dh,10
 			call Gotoxy
 			mov edx,OFFSET empty
 			call WriteString
 			cmp P2_color_point_local,65d
-			jne P2_add_color
+			jne P2_movR_color
 			mov P2_color_point_local,56d
 			mov dl,P2_color_point_local
 			mov dh,10
@@ -308,12 +314,81 @@ SET_PART:
 			mov edx,OFFSET P2_color_choose
 			call WriteString
 			jmp L6
-			P2_add_color:
+			P2_movR_color:
 				add P2_color_point_local,3d
 				mov dl,P2_color_point_local
 				mov dh,10
 				call Gotoxy
 				mov edx,OFFSET P2_color_choose
+				call WriteString
+				jmp L6
+		P2_color_point_left:
+			mov dl,0
+			mov dh,10
+			call Gotoxy
+			mov edx,OFFSET empty
+			call WriteString
+			cmp P2_color_point_local,56d
+			jne P2_movL_color
+			mov P2_color_point_local,65d
+			mov dl,P2_color_point_local
+			mov dh,10
+			call Gotoxy
+			mov edx,OFFSET P2_color_choose
+			call WriteString
+			jmp L6
+			P2_movL_color:
+				sub P2_color_point_local,3d
+				mov dl,P2_color_point_local
+				mov dh,10
+				call Gotoxy
+				mov edx,OFFSET P2_color_choose
+				call WriteString
+				jmp L6
+		P1_color_point_right:
+			mov dl,0
+			mov dh,8
+			call Gotoxy
+			mov edx,OFFSET empty
+			call WriteString
+			cmp P1_color_point_local,65d
+			jne P1_movR_color
+			mov P1_color_point_local,56d
+			mov dl,P1_color_point_local
+			mov dh,8
+			call Gotoxy
+			mov edx,OFFSET P1_color_choose
+			call WriteString
+			jmp L6
+			P1_movR_color:
+				add P1_color_point_local,3d
+				mov dl,P1_color_point_local
+				mov dh,8
+				call Gotoxy
+				mov edx,OFFSET P1_color_choose
+				call WriteString
+				jmp L6
+		P1_color_point_left:
+			mov dl,0
+			mov dh,8
+			call Gotoxy
+			mov edx,OFFSET empty
+			call WriteString
+			cmp P1_color_point_local,56d
+			jne P1_movL_color
+			mov P1_color_point_local,65d
+			mov dl,P1_color_point_local
+			mov dh,8
+			call Gotoxy
+			mov edx,OFFSET P1_color_choose
+			call WriteString
+			jmp L6
+			P1_movL_color:
+				sub P1_color_point_local,3d
+				mov dl,P1_color_point_local
+				mov dh,8
+				call Gotoxy
+				mov edx,OFFSET P1_color_choose
 				call WriteString
 				jmp L6
 
