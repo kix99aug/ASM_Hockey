@@ -1,9 +1,9 @@
 INCLUDE Irvine32.inc
 INCLUDE Macros.inc
 .data
-	winwid EQU 120
-	winhei EQU 30
-	screen BYTE 100 DUP(100 DUP (?))
+	winwid EQU 250
+	winhei EQU 60
+	screen BYTE winhei DUP(winwid DUP ("|"))
 	titlestr1 BYTE		"______________  __ _____ _     ",0
 	titlestr2 BYTE		"| ___ \_   _\ \/ /|  ___| |    ",0
 	titlestr3 BYTE		"| |_/ / | |  \  / | |__ | |    ",0
@@ -65,14 +65,34 @@ NotGreaterThan5:
 PrintTitle ENDP
 
 PrintAll PROC
-
+mov ecx,winhei
+Outer:
+	dec ecx
+	push ecx
+	mov eax,ecx
+	mov ecx,winwid
+	Inner:
+		dec ecx
+		mov ebx,ecx
+		add	ebx,eax
+		movzx eax,screen[ebx]
+		pop ebx
+		mov dh,bl
+		mov dl,cl
+		push ebx
+		call Gotoxy
+		call WriteChar
+	loop Inner
+	pop ecx
+loop Outer
+ret
 PrintAll ENDP
 
 menu PROC
 
 begin:                                      ;印出pixel hocky
 	call Clrscr
-	call PrintTitle
+	call PrintAll
 	jmp STA	
 	
 STA:                                   ;選取start時的介面
@@ -397,8 +417,7 @@ OPERATION_PART:
 	mov eax,50
     call Delay
 	call ReadKey
-	cmp dx,+27
-	je begin
+	jnz begin
 	jmp L5
 
 
