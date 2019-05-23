@@ -1,20 +1,22 @@
 INCLUDE Irvine32.inc
 INCLUDE Macros.inc
 .data
-;push test
-	prompt1 BYTE		"______ _______   __ _____ _     ",0
-	prompt2 BYTE		"| ___ \_   _\ \ / /|  ___| |    ",0
-	prompt3 BYTE		"| |_/ / | |  \ V / | |__ | |    ",0
-	prompt4 BYTE		"|  __/  | |  /   \ |  __|| |    ",0
-	prompt5 BYTE		"| |    _| |_/ /^\ \| |___| |____",0
-	prompt6 BYTE		"\_|    \___/\/   \/\____/\_____/",0
-	prompt7 BYTE		" _   _ _____ _____  _   __ _______   __",0
-	prompt8 BYTE		"| | | |  _  /  __ \| | / /|  ___\ \ / /",0
-	prompt9 BYTE		"| |_| | | | | /  \/| |/ / | |__  \ V / ",0
-	prompt10 BYTE	"|  _  | | | | |    |    \ |  __|  \ /  ",0
-	prompt11 BYTE	"| | | \ \_/ / \__/\| |\  \| |___  | |  ",0
-	prompt12 BYTE	"\_| |_/\___/ \____/\_| \_/\____/  \_/  ",0
-	prompts DWORD OFFSET prompt1, OFFSET prompt2, OFFSET prompt3, OFFSET prompt4, OFFSET prompt5, OFFSET prompt6, OFFSET prompt7, OFFSET prompt8, OFFSET prompt9, OFFSET prompt10, OFFSET prompt11, OFFSET prompt12
+	winwid EQU 120
+	winhei EQU 30
+	screen BYTE 100 DUP(100 DUP (?))
+	titlestr1 BYTE		"______ _______    __ _____ _     ",0
+	titlestr2 BYTE		"| ___ \_   _\ \  / /|  ___| |    ",0
+	titlestr3 BYTE		"| |_/ / | |  \ \/ / | |__ | |    ",0
+	titlestr4 BYTE		"|  __/  | |  / /\ \ |  __|| |    ",0
+	titlestr5 BYTE		"| |    _| |_/ /  \ \| |___| |____",0
+	titlestr6 BYTE		"\_|    \___/\/    \/\____/\_____/",0
+	titlestr7 BYTE		" _   _  ___   ____  _   __ _______   __",0
+	titlestr8 BYTE		"| | | |/ _ \ / __ \| | / /|  ___\ \ / /",0
+	titlestr9 BYTE		"| |_| | | | | /  \/| |/ / | |__  \ V / ",0
+	titlestr10 BYTE	"|  _  | | | | |    |    \ |  __|  \ /  ",0
+	titlestr11 BYTE	"| | | | \_/ | \__/\| |\  \| |___  | |  ",0
+	titlestr12 BYTE	"\_| |_|\___/ \____/\_| \_/\____/  \_/  ",0
+	titlestrs DWORD OFFSET titlestr1, OFFSET titlestr2, OFFSET titlestr3, OFFSET titlestr4, OFFSET titlestr5, OFFSET titlestr6, OFFSET titlestr7, OFFSET titlestr8, OFFSET titlestr9, OFFSET titlestr10, OFFSET titlestr11, OFFSET titlestr12
 	start BYTE       "                                                      > START",0
 	setting BYTE     "                                                      > SETTING",0
 	finish BYTE      "                                                      > EXIT",0
@@ -36,6 +38,8 @@ INCLUDE Macros.inc
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
+	mov eax,6
+	call SetTextColor 
 PrintTitlePerLine:
 	mov dl,43
 	mov dh,cl
@@ -47,13 +51,19 @@ NotGreaterThan5:
 	call Gotoxy
 	mov eax,4
 	mul ecx
-	mov edx,prompts[eax]
+	mov edx,titlestrs[eax]
 	call WriteString
 	inc ecx
 	cmp ecx,12
 	jl PrintTitlePerLine
+	mov eax,15
+	call SetTextColor
 	ret
 PrintTitle ENDP
+
+PrintAll PROC
+
+PrintAll ENDP
 
 menu PROC
 
