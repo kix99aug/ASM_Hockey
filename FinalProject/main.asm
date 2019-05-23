@@ -39,6 +39,8 @@ INCLUDE Macros.inc
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
+	mov eax,6
+	call SetTextColor 
 PrintTitlePerLine:
 	mov dl,43
 	mov dh,cl
@@ -50,13 +52,19 @@ NotGreaterThan5:
 	call Gotoxy
 	mov eax,4
 	mul ecx
-	mov edx,prompts[eax]
+	mov edx,titlestrs[eax]
 	call WriteString
 	inc ecx
 	cmp ecx,12
 	jl PrintTitlePerLine
+	mov eax,15
+	call SetTextColor
 	ret
 PrintTitle ENDP
+
+PrintAll PROC
+
+PrintAll ENDP
 
 menu PROC
 
