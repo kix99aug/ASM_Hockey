@@ -17,28 +17,6 @@ INCLUDE Macros.inc
 	titlestr11 BYTE	"| | | | \_/ | \__/\| |\  \| |___  | |  ",0
 	titlestr12 BYTE	"\_| |_|\___/ \____/\_| \_/\____/  \_/  ",0
 	titlestrs DWORD OFFSET titlestr1, OFFSET titlestr2, OFFSET titlestr3, OFFSET titlestr4, OFFSET titlestr5, OFFSET titlestr6, OFFSET titlestr7, OFFSET titlestr8, OFFSET titlestr9, OFFSET titlestr10, OFFSET titlestr11, OFFSET titlestr12
-	start BYTE       "                                                      > START",0
-	setting BYTE     "                                                      > SETTING",0
-	finish BYTE      "                                                      > EXIT",0
-	operation BYTE   "                                                      > OPERATION",0
-	start1 BYTE      "                                                      START",0
-	setting1 BYTE    "                                                      SETTING",0
-	finish1 BYTE     "                                                      EXIT",0
-	operation1 BYTE  "                                                      OPERATION",0
-;push test
-	prompt1 BYTE		"______ _______   __ _____ _     ",0
-	prompt2 BYTE		"| ___ \_   _\ \ / /|  ___| |    ",0
-	prompt3 BYTE		"| |_/ / | |  \ V / | |__ | |    ",0
-	prompt4 BYTE		"|  __/  | |  /   \ |  __|| |    ",0
-	prompt5 BYTE		"| |    _| |_/ /^\ \| |___| |____",0
-	prompt6 BYTE		"\_|    \___/\/   \/\____/\_____/",0
-	prompt7 BYTE		" _   _ _____ _____  _   __ _______   __",0
-	prompt8 BYTE		"| | | |  _  /  __ \| | / /|  ___\ \ / /",0
-	prompt9 BYTE		"| |_| | | | | /  \/| |/ / | |__  \ V / ",0
-	prompt10 BYTE	"|  _  | | | | |    |    \ |  __|  \ /  ",0
-	prompt11 BYTE	"| | | \ \_/ / \__/\| |\  \| |___  | |  ",0
-	prompt12 BYTE	"\_| |_/\___/ \____/\_| \_/\____/  \_/  ",0
-	prompts DWORD OFFSET prompt1, OFFSET prompt2, OFFSET prompt3, OFFSET prompt4, OFFSET prompt5, OFFSET prompt6, OFFSET prompt7, OFFSET prompt8, OFFSET prompt9, OFFSET prompt10, OFFSET prompt11, OFFSET prompt12
 	start BYTE       "> START           ",0
 	setting BYTE     "> SETTING         ",0
 	finish BYTE      "> EXIT            ",0
