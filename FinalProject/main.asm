@@ -1,6 +1,7 @@
 INCLUDE Irvine32.inc
 INCLUDE Macros.inc
 .data
+;push test
 	prompt1 BYTE "                        ■■■■■     ■■■■■■    ■■    ■■    ■■■■■    ■■",0
 	prompt2 BYTE "                        ■■    ■■       ■■         ■■  ■■     ■■          ■■",0
 	prompt3 BYTE "                        ■■    ■■       ■■           ■■■       ■■          ■■",0
