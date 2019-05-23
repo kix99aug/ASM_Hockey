@@ -2,20 +2,21 @@ INCLUDE Irvine32.inc
 INCLUDE Macros.inc
 .data
 ;push test
-	prompt1 BYTE "                        â– â– â– â– â–      â– â– â– â– â– â–     â– â–     â– â–     â– â– â– â– â–     â– â– ",0
-	prompt2 BYTE "                        â– â–     â– â–        â– â–          â– â–   â– â–      â– â–           â– â– ",0
-	prompt3 BYTE "                        â– â–     â– â–        â– â–            â– â– â–        â– â–           â– â– ",0
-	prompt4 BYTE "                        â– â– â– â– â–          â– â–              â–          â– â– â– â–       â– â– ",0
-	prompt5 BYTE "                        â– â–                â– â–            â– â– â–        â– â–           â– â– ",0
-	prompt6 BYTE "                        â– â–                â– â–          â– â–   â– â–      â– â–           â– â– ",0
-	prompt7 BYTE "                        â– â–            â– â– â– â– â– â–     â– â–     â– â–     â– â– â– â– â–     â– â– â– â– â– ",0
-	prompt8 BYTE "             â– â–     â– â–         â– â– â–          â– â– â– â– â–       â– â–     â– â–    â– â– â– â– â–    â– â–     â– â– ",0
-	prompt9 BYTE "             â– â–     â– â–      â– â–     â– â–      â– â–     â– â–      â– â–    â– â–     â– â–           â– â–   â– â– ",0
-	prompt10 BYTE "             â– â–     â– â–     â– â–       â– â–    â– â–               â– â–   â– â–      â– â–             â– â– â– ",0
-	prompt11 BYTE "             â– â– â– â– â– â–     â– â–       â– â–    â– â–               â– â– â– â–        â– â– â– â–          â– â– ",0
-	prompt12 BYTE "             â– â–     â– â–     â– â–       â– â–    â– â–               â– â–   â– â–      â– â–              â– â– ",0
-	prompt13 BYTE "             â– â–     â– â–      â– â–     â– â–      â– â–     â– â–      â– â–    â– â–     â– â–              â– â– ",0
-	prompt14 BYTE "             â– â–     â– â–         â– â– â–          â– â– â– â– â–       â– â–     â– â–    â– â– â– â– â–        â– â– ",0
+	prompt1 BYTE		"¡½¡½¡½¡½¡½     ¡½¡½¡½¡½¡½¡½    ¡½¡½    ¡½¡½    ¡½¡½¡½¡½¡½    ¡½¡½",0
+	prompt2 BYTE		"¡½¡½    ¡½¡½       ¡½¡½         ¡½¡½  ¡½¡½     ¡½¡½          ¡½¡½",0
+	prompt3 BYTE		"¡½¡½    ¡½¡½       ¡½¡½           ¡½¡½¡½       ¡½¡½          ¡½¡½",0
+	prompt4 BYTE		"¡½¡½¡½¡½¡½         ¡½¡½             ¡½         ¡½¡½¡½¡½      ¡½¡½",0
+	prompt5 BYTE		"¡½¡½               ¡½¡½           ¡½¡½¡½       ¡½¡½          ¡½¡½",0
+	prompt6 BYTE		"¡½¡½               ¡½¡½         ¡½¡½  ¡½¡½     ¡½¡½          ¡½¡½",0
+	prompt7 BYTE		"¡½¡½           ¡½¡½¡½¡½¡½¡½    ¡½¡½    ¡½¡½    ¡½¡½¡½¡½¡½    ¡½¡½¡½¡½¡½",0
+	prompt8 BYTE		"¡½¡½    ¡½¡½        ¡½¡½¡½         ¡½¡½¡½¡½¡½      ¡½¡½    ¡½¡½   ¡½¡½¡½¡½¡½   ¡½¡½    ¡½¡½",0
+	prompt9 BYTE		"¡½¡½    ¡½¡½     ¡½¡½    ¡½¡½     ¡½¡½    ¡½¡½     ¡½¡½   ¡½¡½    ¡½¡½          ¡½¡½  ¡½¡½",0
+	prompt10 BYTE	"¡½¡½    ¡½¡½    ¡½¡½      ¡½¡½   ¡½¡½              ¡½¡½  ¡½¡½     ¡½¡½            ¡½¡½¡½",0
+	prompt11 BYTE	"¡½¡½¡½¡½¡½¡½    ¡½¡½      ¡½¡½   ¡½¡½              ¡½¡½¡½¡½       ¡½¡½¡½¡½         ¡½¡½",0
+	prompt12 BYTE	"¡½¡½    ¡½¡½    ¡½¡½      ¡½¡½   ¡½¡½              ¡½¡½  ¡½¡½     ¡½¡½             ¡½¡½",0
+	prompt13 BYTE	"¡½¡½    ¡½¡½     ¡½¡½    ¡½¡½     ¡½¡½    ¡½¡½     ¡½¡½   ¡½¡½    ¡½¡½             ¡½¡½",0
+	prompt14 BYTE	"¡½¡½    ¡½¡½        ¡½¡½¡½         ¡½¡½¡½¡½¡½      ¡½¡½    ¡½¡½   ¡½¡½¡½¡½¡½       ¡½¡½",0
+	prompts DWORD OFFSET prompt1, OFFSET prompt2, OFFSET prompt3, OFFSET prompt4, OFFSET prompt5, OFFSET prompt6, OFFSET prompt7, OFFSET prompt8, OFFSET prompt9, OFFSET prompt10, OFFSET prompt11, OFFSET prompt12, OFFSET prompt13, OFFSET prompt14
 	start BYTE       "                                                      > START",0
 	setting BYTE     "                                                      > SETTING",0
 	finish BYTE      "                                                      > EXIT",0
@@ -29,66 +30,41 @@ INCLUDE Macros.inc
 	color1 BYTE      "                                                 Color ",0
 	speed BYTE       "                                               > Speed ",0
 	speed1 BYTE      "                                                 Speed ",0
-	ColorBox BYTE "â–  ",0
+	ColorBox BYTE "¡½ ",0
 	P1 BYTE          "                                         Player1: Q W E(Skill) F(Up) C(Down)",0
 	P2 BYTE          "                                         Player2: I O P(Skill) 5(Up) 1(Down)",0
 	back BYTE        "                                                Press ESC to return...",0
+	P1_c_choose BYTE "																											 ",0
 .code
-main PROC
+PrintTitle PROC
+	mov ecx,0
+PrintTitlePerLine:
+	mov dl,24
+	mov dh,cl
+	cmp ecx,6
+	jng NotGreaterThan6
+	mov dl,14
+	add dh,1
+NotGreaterThan6:
+	add dh,3
+	call Gotoxy
+	mov eax,4
+	mul ecx
+	mov edx,prompts[eax]
+	call WriteString
+	inc ecx
+	cmp ecx,14
+	jl PrintTitlePerLine
+	ret
+PrintTitle ENDP
 
-begin:                                      ;å°å‡ºpixel hocky
-call ClrScr
-    call Crlf
-	mov edx,OFFSET prompt1
-	call WriteString
-	call Crlf
-	mov edx,OFFSET prompt2
-	call WriteString
-	call Crlf
-	mov edx,OFFSET prompt3
-	call WriteString
-	call Crlf
-	mov edx,OFFSET prompt4
-	call WriteString
-	call Crlf
-	mov edx,OFFSET prompt5
-	call WriteString
-	call Crlf
-	mov edx,OFFSET prompt6
-	call WriteString
-	call Crlf
-	mov edx,OFFSET prompt7
-	call WriteString
-	call Crlf
-	call Crlf
-	mov edx,OFFSET prompt8
-	call WriteString
-	call Crlf
-	mov edx,OFFSET prompt9
-	call WriteString
-	call Crlf
-	mov edx,OFFSET prompt10
-	call WriteString
-	call Crlf
-	mov edx,OFFSET prompt11
-	call WriteString
-	call Crlf
-	mov edx,OFFSET prompt12
-	call WriteString
-	call Crlf
-	mov edx,OFFSET prompt13
-	call WriteString
-	call Crlf
-	mov edx,OFFSET prompt14
-	call WriteString
-	call Crlf
-	call Crlf
-	call Crlf
-	call Crlf
-	call Crlf
-jmp STA	
+menu PROC
+
+begin:                                      ;¦L¥Xpixel hocky
+	call PrintTitle
+	jmp STA	
 	
-STA:                                   ;é¸å–startæ™‚çš„ä»‹é¢
+STA:                                   ;¿ï¨ústart®Éªº¤¶­±
 	mov dl,0
 	mov dh,20
 	call Gotoxy
@@ -100,7 +76,7 @@ STA:                                   ;é¸å–startæ™‚çš„ä»‹é¢
 	mov dl,0
 	mov dh,20
 	call Gotoxy
-	mov edx,OFFSET start               ;å°å‡ºé¸å–startçš„å‡è±¡
+	mov edx,OFFSET start               ;¦L¥X¿ï¨ústartªº°²¶H
 	call WriteString
 	call Crlf
 	mov edx,OFFSET setting1
@@ -112,20 +88,20 @@ STA:                                   ;é¸å–startæ™‚çš„ä»‹é¢
 	mov edx,OFFSET operation1
 	call WriteString
 	call Crlf
-	jmp L3                             ;è¼¸å…¥éµç›¤ä¸Šã€ä¸‹æˆ–enter
+	jmp L3                             ;¿é¤JÁä½L¤W¡B¤U©Îenter
 	L3:
 	mov eax,50
     call Delay
-	call ReadKey                       ;è®€å–éµç›¤è¼¸å…¥
+	call ReadKey                       ;Åª¨úÁä½L¿é¤J
 	cmp dx,+40
-	je SET                             ;åµæ¸¬åˆ°ä¸‹
+	je SET                             ;°»´ú¨ì¤U
 	cmp dx,+38
-	je OPERA                             ;åµæ¸¬åˆ°ä¸Š
+	je OPERA                             ;°»´ú¨ì¤W
 	cmp dx,+13                 
-	je GAME_PART                       ;åµæ¸¬åˆ°enter
+	je GAME_PART                       ;°»´ú¨ìenter
 	
 	jmp L3
-SET:                                   ;é¸å–settingçš„ä»‹é¢
+SET:                                   ;¿ï¨úsettingªº¤¶­±
 	mov dl,0
 	mov dh,20
 	call Gotoxy
@@ -155,11 +131,11 @@ SET:                                   ;é¸å–settingçš„ä»‹é¢
     call Delay
 	call ReadKey
 	cmp dx,+40
-	je FIN                            ;åµæ¸¬åˆ°ä¸‹
+	je FIN                            ;°»´ú¨ì¤U
 	cmp dx,+38
-	je STA                            ;åµæ¸¬åˆ°ä¸Š
+	je STA                            ;°»´ú¨ì¤W
 	cmp dx,+13
-	je SET_PART                       ;åµæ¸¬åˆ°enter
+	je SET_PART                       ;°»´ú¨ìenter
 	
 	jmp L1
 FIN:
@@ -211,7 +187,7 @@ OPERA:
 	mov dl,0
 	mov dh,20
 	call Gotoxy
-	mov edx,OFFSET start1               ;å°å‡ºé¸å–startçš„å‡è±¡
+	mov edx,OFFSET start1               ;¦L¥X¿ï¨ústartªº°²¶H
 	call WriteString
 	call Crlf
 	mov edx,OFFSET setting1
@@ -223,17 +199,17 @@ OPERA:
 	mov edx,OFFSET operation
 	call WriteString
 	call Crlf
-	jmp L4                             ;è¼¸å…¥éµç›¤ä¸Šã€ä¸‹æˆ–enter
+	jmp L4                             ;¿é¤JÁä½L¤W¡B¤U©Îenter
 	L4:
 	mov eax,50
     call Delay
-	call ReadKey                       ;è®€å–éµç›¤è¼¸å…¥
+	call ReadKey                       ;Åª¨úÁä½L¿é¤J
 	cmp dx,+40
-	je STA                             ;åµæ¸¬åˆ°ä¸‹
+	je STA                             ;°»´ú¨ì¤U
 	cmp dx,+38
-	je FIN                             ;åµæ¸¬åˆ°ä¸Š
+	je FIN                             ;°»´ú¨ì¤W
 	cmp dx,+13                 
-	je OPERATION_PART                       ;åµæ¸¬åˆ°enter
+	je OPERATION_PART                       ;°»´ú¨ìenter
 	
 	jmp L4
 GAME_PART:
@@ -413,5 +389,11 @@ OPERATION_PART:
 
 FINISH_PART:
 	exit
+
+menu ENDP
+
+
+main PROC
+call menu
 main ENDP
 END main
