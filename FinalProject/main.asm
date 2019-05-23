@@ -40,6 +40,8 @@ INCLUDE Macros.inc
 	P1_color_point_local BYTE 56d ,0
 	P2_color_point_local BYTE 56d ,0
 	Speed_point_local BYTE 56d,0
+	P1_SetColor_Click BYTE "Press Q to set.",0
+	P2_SetColor_Click BYTE "Press 0 to set.",0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -231,6 +233,11 @@ SET_PART:
 		call Gotoxy
 		mov edx,OFFSET P1_color_choose
 		call WriteString
+		mov dl,68
+		mov dh,8
+		call Gotoxy
+		mov edx,OFFSET P1_SetColor_Click
+		call WriteString
 		mov dl,48
 		mov dh,9
 		call Gotoxy
@@ -254,6 +261,7 @@ SET_PART:
 		call WriteString
 		mov eax,15d
 	    call SetTextColor
+		
 		mov dl,P2_color_point_local
 		mov dh,10
 		call Gotoxy
@@ -263,6 +271,11 @@ SET_PART:
 		mov dh,12
 		call Gotoxy
 		mov edx,OFFSET speed_choose
+		call WriteString
+		mov dl,68
+		mov dh,10
+		call Gotoxy
+		mov edx,OFFSET P2_SetColor_Click
 		call WriteString
 		mov dl,48
 		mov dh,13
@@ -282,6 +295,7 @@ SET_PART:
 		call WriteString
 		mov eax,15d
 	    call SetTextColor
+		
 		mov dl,48
 		mov dh,25
 		call Gotoxy
@@ -313,6 +327,11 @@ SET_PART:
 			call Gotoxy
 			mov edx,OFFSET empty
 			call WriteString
+			mov dl,68
+			mov dh,10
+			call Gotoxy
+			mov edx,OFFSET P2_SetColor_Click
+			call WriteString
 			cmp P2_color_point_local,65d
 			jne P2_movR_color
 			mov P2_color_point_local,56d
@@ -335,6 +354,11 @@ SET_PART:
 			mov dh,10
 			call Gotoxy
 			mov edx,OFFSET empty
+			call WriteString
+			mov dl,68
+			mov dh,10
+			call Gotoxy
+			mov edx,OFFSET P2_SetColor_Click
 			call WriteString
 			cmp P2_color_point_local,56d
 			jne P2_movL_color
@@ -359,6 +383,11 @@ SET_PART:
 			call Gotoxy
 			mov edx,OFFSET empty
 			call WriteString
+			mov dl,68
+			mov dh,8
+			call Gotoxy
+			mov edx,OFFSET P1_SetColor_Click
+			call WriteString
 			cmp P1_color_point_local,65d
 			jne P1_movR_color
 			mov P1_color_point_local,56d
@@ -381,6 +410,11 @@ SET_PART:
 			mov dh,8
 			call Gotoxy
 			mov edx,OFFSET empty
+			call WriteString
+			mov dl,68
+			mov dh,8
+			call Gotoxy
+			mov edx,OFFSET P1_SetColor_Click
 			call WriteString
 			cmp P1_color_point_local,56d
 			jne P1_movL_color
