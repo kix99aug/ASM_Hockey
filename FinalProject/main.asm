@@ -37,12 +37,11 @@ INCLUDE Macros.inc
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
 PrintTitlePerLine:
-	mov dl,24
+	mov dl,43
 	mov dh,cl
 	cmp ecx,5
 	jng NotGreaterThan5
-	mov dl,14
-	add dh,1
+	mov dl,39
 NotGreaterThan5:
 	add dh,3
 	call Gotoxy
