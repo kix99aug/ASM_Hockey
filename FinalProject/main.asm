@@ -36,8 +36,12 @@ INCLUDE Macros.inc
 	back BYTE        "Press ESC to return...",0
 	P1_color_choose BYTE "¡¿",0
 	P2_color_choose BYTE "¡¶",0
-	P1_speed_choose BYTE "¡¿",0
-	P2_speed_choose BYTE "¡¶",0
+	speed_choose BYTE "¡¿",0
+	P1_color_point_local BYTE 56d ,0
+	P2_color_point_local BYTE 56d ,0
+	Speed_point_local BYTE 56d,0
+	P1_SetColor_Click BYTE "Press Q to set.",0
+	P2_SetColor_Click BYTE "Press 0 to set.",0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -238,18 +242,21 @@ GAME_PART:
 SET_PART:
 	
 	call ClrScr
-	jmp SET_COLOR
-
 	SET_COLOR:
 		mov dl,53
 		mov dh,5
 		call Gotoxy
 		mov edx,OFFSET setting1
 		call WriteString
-		mov dl,56
+		mov dl,P1_color_point_local
 		mov dh,8
 		call Gotoxy
 		mov edx,OFFSET P1_color_choose
+		call WriteString
+		mov dl,68
+		mov dh,8
+		call Gotoxy
+		mov edx,OFFSET P1_SetColor_Click
 		call WriteString
 		mov dl,48
 		mov dh,9
@@ -274,15 +281,21 @@ SET_PART:
 		call WriteString
 		mov eax,15d
 	    call SetTextColor
-		mov dl,56
+		
+		mov dl,P2_color_point_local
 		mov dh,10
 		call Gotoxy
 		mov edx,OFFSET P2_color_choose
 		call WriteString
-		mov dl,56
+		mov dl,Speed_point_local
 		mov dh,12
 		call Gotoxy
-		mov edx,OFFSET P1_speed_choose
+		mov edx,OFFSET speed_choose
+		call WriteString
+		mov dl,68
+		mov dh,10
+		call Gotoxy
+		mov edx,OFFSET P2_SetColor_Click
 		call WriteString
 		mov dl,48
 		mov dh,13
@@ -291,14 +304,18 @@ SET_PART:
 		call WriteString
 		mov edx,OFFSET colorbox
 		call WriteString
+		mov eax,7d
+	    call SetTextColor
 		call WriteString
+		mov eax,8d
+	    call SetTextColor
 		call WriteString
+		mov eax,6d
+	    call SetTextColor
 		call WriteString
-		mov dl,56
-		mov dh,14
-		call Gotoxy
-		mov edx,OFFSET P2_speed_choose
-		call WriteString
+		mov eax,15d
+	    call SetTextColor
+		
 		mov dl,48
 		mov dh,25
 		call Gotoxy
@@ -315,7 +332,127 @@ SET_PART:
 		je SET_SPEED
 		cmp dx,+40
 		je SET_SPEED
+		cmp dx,+68
+		je P1_color_point_right
+		cmp dx,+65
+		je P1_color_point_left
+		cmp dx,+39
+		je P2_color_point_right
+		cmp dx,+37
+		je P2_color_point_left
 		jmp L6
+		P2_color_point_right:
+			mov dl,0
+			mov dh,10
+			call Gotoxy
+			mov edx,OFFSET empty
+			call WriteString
+			mov dl,68
+			mov dh,10
+			call Gotoxy
+			mov edx,OFFSET P2_SetColor_Click
+			call WriteString
+			cmp P2_color_point_local,65d
+			jne P2_movR_color
+			mov P2_color_point_local,56d
+			mov dl,P2_color_point_local
+			mov dh,10
+			call Gotoxy
+			mov edx,OFFSET P2_color_choose
+			call WriteString
+			jmp L6
+			P2_movR_color:
+				add P2_color_point_local,3d
+				mov dl,P2_color_point_local
+				mov dh,10
+				call Gotoxy
+				mov edx,OFFSET P2_color_choose
+				call WriteString
+				jmp L6
+		P2_color_point_left:
+			mov dl,0
+			mov dh,10
+			call Gotoxy
+			mov edx,OFFSET empty
+			call WriteString
+			mov dl,68
+			mov dh,10
+			call Gotoxy
+			mov edx,OFFSET P2_SetColor_Click
+			call WriteString
+			cmp P2_color_point_local,56d
+			jne P2_movL_color
+			mov P2_color_point_local,65d
+			mov dl,P2_color_point_local
+			mov dh,10
+			call Gotoxy
+			mov edx,OFFSET P2_color_choose
+			call WriteString
+			jmp L6
+			P2_movL_color:
+				sub P2_color_point_local,3d
+				mov dl,P2_color_point_local
+				mov dh,10
+				call Gotoxy
+				mov edx,OFFSET P2_color_choose
+				call WriteString
+				jmp L6
+		P1_color_point_right:
+			mov dl,0
+			mov dh,8
+			call Gotoxy
+			mov edx,OFFSET empty
+			call WriteString
+			mov dl,68
+			mov dh,8
+			call Gotoxy
+			mov edx,OFFSET P1_SetColor_Click
+			call WriteString
+			cmp P1_color_point_local,65d
+			jne P1_movR_color
+			mov P1_color_point_local,56d
+			mov dl,P1_color_point_local
+			mov dh,8
+			call Gotoxy
+			mov edx,OFFSET P1_color_choose
+			call WriteString
+			jmp L6
+			P1_movR_color:
+				add P1_color_point_local,3d
+				mov dl,P1_color_point_local
+				mov dh,8
+				call Gotoxy
+				mov edx,OFFSET P1_color_choose
+				call WriteString
+				jmp L6
+		P1_color_point_left:
+			mov dl,0
+			mov dh,8
+			call Gotoxy
+			mov edx,OFFSET empty
+			call WriteString
+			mov dl,68
+			mov dh,8
+			call Gotoxy
+			mov edx,OFFSET P1_SetColor_Click
+			call WriteString
+			cmp P1_color_point_local,56d
+			jne P1_movL_color
+			mov P1_color_point_local,65d
+			mov dl,P1_color_point_local
+			mov dh,8
+			call Gotoxy
+			mov edx,OFFSET P1_color_choose
+			call WriteString
+			jmp L6
+			P1_movL_color:
+				sub P1_color_point_local,3d
+				mov dl,P1_color_point_local
+				mov dh,8
+				call Gotoxy
+				mov edx,OFFSET P1_color_choose
+				call WriteString
+				jmp L6
 
 	SET_SPEED:
 		
@@ -348,11 +485,6 @@ SET_PART:
 		call WriteString
 		mov eax,15d
 	    call SetTextColor
-		mov dl,56
-		mov dh,12
-		call Gotoxy
-		mov edx,OFFSET P1_speed_choose
-		call WriteString
 		mov dl,48
 		mov dh,13
 		call Gotoxy
@@ -363,14 +495,17 @@ SET_PART:
 		call Gotoxy
 		mov edx,OFFSET colorbox
 		call WriteString
+		mov eax,7d
+	    call SetTextColor
 		call WriteString
+		mov eax,8d
+	    call SetTextColor
 		call WriteString
+		mov eax,6d
+	    call SetTextColor
 		call WriteString
-		mov dl,56
-		mov dh,14
-		call Gotoxy
-		mov edx,OFFSET P2_speed_choose
-		call WriteString
+		mov eax,15d
+	    call SetTextColor
 		mov dl,48
 		mov dh,25
 		call Gotoxy
@@ -387,7 +522,57 @@ SET_PART:
 		je SET_COLOR
 		cmp dx,+40
 		je SET_COLOR
+		cmp dx,37
+		je Speed_point_left
+		cmp dx,39
+		je Speed_point_right
 		jmp L7
+		Speed_point_right:
+			mov dl,0
+			mov dh,12
+			call Gotoxy
+			mov edx,OFFSET empty
+			call WriteString
+			cmp Speed_point_local,65d
+			jne Speed_movR
+			mov Speed_point_local,56d
+			mov dl,Speed_point_local
+			mov dh,12
+			call Gotoxy
+			mov edx,OFFSET speed_choose
+			call WriteString
+			jmp L7
+			Speed_movR:
+				add Speed_point_local,3d
+				mov dl,Speed_point_local
+				mov dh,12
+				call Gotoxy
+				mov edx,OFFSET speed_choose
+				call WriteString
+				jmp L7
+		Speed_point_left:
+			mov dl,0
+			mov dh,12
+			call Gotoxy
+			mov edx,OFFSET empty
+			call WriteString
+			cmp Speed_point_local,56d
+			jne Speed_movL
+			mov Speed_point_local,65d
+			mov dl,Speed_point_local
+			mov dh,12
+			call Gotoxy
+			mov edx,OFFSET speed_choose
+			call WriteString
+			jmp L7
+			Speed_movL:
+				sub Speed_point_local,3d
+				mov dl,Speed_point_local
+				mov dh,12
+				call Gotoxy
+				mov edx,OFFSET speed_choose
+				call WriteString
+				jmp L7
 
 
 
