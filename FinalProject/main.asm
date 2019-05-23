@@ -39,6 +39,7 @@ INCLUDE Macros.inc
 	speed_choose BYTE "¡¿",0
 	P1_color_point_local BYTE 56d ,0
 	P2_color_point_local BYTE 56d ,0
+	Speed_point_local BYTE 56d,0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -258,7 +259,7 @@ SET_PART:
 		call Gotoxy
 		mov edx,OFFSET P2_color_choose
 		call WriteString
-		mov dl,56
+		mov dl,Speed_point_local
 		mov dh,12
 		call Gotoxy
 		mov edx,OFFSET speed_choose
@@ -270,10 +271,17 @@ SET_PART:
 		call WriteString
 		mov edx,OFFSET colorbox
 		call WriteString
+		mov eax,7d
+	    call SetTextColor
 		call WriteString
+		mov eax,8d
+	    call SetTextColor
 		call WriteString
+		mov eax,6d
+	    call SetTextColor
 		call WriteString
-		
+		mov eax,15d
+	    call SetTextColor
 		mov dl,48
 		mov dh,25
 		call Gotoxy
@@ -433,9 +441,17 @@ SET_PART:
 		call Gotoxy
 		mov edx,OFFSET colorbox
 		call WriteString
+		mov eax,7d
+	    call SetTextColor
 		call WriteString
+		mov eax,8d
+	    call SetTextColor
 		call WriteString
+		mov eax,6d
+	    call SetTextColor
 		call WriteString
+		mov eax,15d
+	    call SetTextColor
 		mov dl,48
 		mov dh,25
 		call Gotoxy
@@ -452,7 +468,57 @@ SET_PART:
 		je SET_COLOR
 		cmp dx,+40
 		je SET_COLOR
+		cmp dx,37
+		je Speed_point_left
+		cmp dx,39
+		je Speed_point_right
 		jmp L7
+		Speed_point_right:
+			mov dl,0
+			mov dh,12
+			call Gotoxy
+			mov edx,OFFSET empty
+			call WriteString
+			cmp Speed_point_local,65d
+			jne Speed_movR
+			mov Speed_point_local,56d
+			mov dl,Speed_point_local
+			mov dh,12
+			call Gotoxy
+			mov edx,OFFSET speed_choose
+			call WriteString
+			jmp L7
+			Speed_movR:
+				add Speed_point_local,3d
+				mov dl,Speed_point_local
+				mov dh,12
+				call Gotoxy
+				mov edx,OFFSET speed_choose
+				call WriteString
+				jmp L7
+		Speed_point_left:
+			mov dl,0
+			mov dh,12
+			call Gotoxy
+			mov edx,OFFSET empty
+			call WriteString
+			cmp Speed_point_local,56d
+			jne Speed_movL
+			mov Speed_point_local,65d
+			mov dl,Speed_point_local
+			mov dh,12
+			call Gotoxy
+			mov edx,OFFSET speed_choose
+			call WriteString
+			jmp L7
+			Speed_movL:
+				sub Speed_point_local,3d
+				mov dl,Speed_point_local
+				mov dh,12
+				call Gotoxy
+				mov edx,OFFSET speed_choose
+				call WriteString
+				jmp L7
 
 
 
