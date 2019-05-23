@@ -1,41 +1,40 @@
 INCLUDE Irvine32.inc
 INCLUDE Macros.inc
 .data
-;push test
-	prompt1 BYTE		"______ _______   __ _____ _     ",0
-	prompt2 BYTE		"| ___ \_   _\ \ / /|  ___| |    ",0
-	prompt3 BYTE		"| |_/ / | |  \ V / | |__ | |    ",0
-	prompt4 BYTE		"|  __/  | |  /   \ |  __|| |    ",0
-	prompt5 BYTE		"| |    _| |_/ /^\ \| |___| |____",0
-	prompt6 BYTE		"\_|    \___/\/   \/\____/\_____/",0
-	prompt7 BYTE		" _   _ _____ _____  _   __ _______   __",0
-	prompt8 BYTE		"| | | |  _  /  __ \| | / /|  ___\ \ / /",0
-	prompt9 BYTE		"| |_| | | | | /  \/| |/ / | |__  \ V / ",0
-	prompt10 BYTE	"|  _  | | | | |    |    \ |  __|  \ /  ",0
-	prompt11 BYTE	"| | | \ \_/ / \__/\| |\  \| |___  | |  ",0
-	prompt12 BYTE	"\_| |_/\___/ \____/\_| \_/\____/  \_/  ",0
-	prompts DWORD OFFSET prompt1, OFFSET prompt2, OFFSET prompt3, OFFSET prompt4, OFFSET prompt5, OFFSET prompt6, OFFSET prompt7, OFFSET prompt8, OFFSET prompt9, OFFSET prompt10, OFFSET prompt11, OFFSET prompt12
-	start BYTE       "> START           ",0
-	setting BYTE     "> SETTING         ",0
-	finish BYTE      "> EXIT            ",0
-	operation BYTE   "> OPERATION       ",0
-	start1 BYTE      "START             ",0
-	setting1 BYTE    "SETTING           ",0
-	finish1 BYTE     "EXIT              ",0
-	operation1 BYTE  "OPERATION         ",0
+	winwid EQU 120
+	winhei EQU 30
+	screen BYTE 100 DUP(100 DUP (?))
+	titlestr1 BYTE		"______ _______    __ _____ _     ",0
+	titlestr2 BYTE		"| ___ \_   _\ \  / /|  ___| |    ",0
+	titlestr3 BYTE		"| |_/ / | |  \ \/ / | |__ | |    ",0
+	titlestr4 BYTE		"|  __/  | |  / /\ \ |  __|| |    ",0
+	titlestr5 BYTE		"| |    _| |_/ /  \ \| |___| |____",0
+	titlestr6 BYTE		"\_|    \___/\/    \/\____/\_____/",0
+	titlestr7 BYTE		" _   _  ___   ____  _   __ _______   __",0
+	titlestr8 BYTE		"| | | |/ _ \ / __ \| | / /|  ___\ \ / /",0
+	titlestr9 BYTE		"| |_| | | | | /  \/| |/ / | |__  \ V / ",0
+	titlestr10 BYTE	"|  _  | | | | |    |    \ |  __|  \ /  ",0
+	titlestr11 BYTE	"| | | | \_/ | \__/\| |\  \| |___  | |  ",0
+	titlestr12 BYTE	"\_| |_|\___/ \____/\_| \_/\____/  \_/  ",0
+	titlestrs DWORD OFFSET titlestr1, OFFSET titlestr2, OFFSET titlestr3, OFFSET titlestr4, OFFSET titlestr5, OFFSET titlestr6, OFFSET titlestr7, OFFSET titlestr8, OFFSET titlestr9, OFFSET titlestr10, OFFSET titlestr11, OFFSET titlestr12
+	start BYTE       "                                                      > START",0
+	setting BYTE     "                                                      > SETTING",0
+	finish BYTE      "                                                      > EXIT",0
+	operation BYTE   "                                                      > OPERATION",0
+	start1 BYTE      "                                                      START",0
+	setting1 BYTE    "                                                      SETTING",0
+	finish1 BYTE     "                                                      EXIT",0
+	operation1 BYTE  "                                                      OPERATION",0
 	empty BYTE "                                                                                                                          ",0
-	color BYTE       "> Color   ",0
-	color1 BYTE      "Color   ",0
-	speed BYTE       "> Speed   ",0
-	speed1 BYTE      "Speed   ",0
+	color BYTE       "                                               > Color ",0
+	color1 BYTE      "                                                 Color ",0
+	speed BYTE       "                                               > Speed ",0
+	speed1 BYTE      "                                                 Speed ",0
 	ColorBox BYTE "■ ",0
 	P1 BYTE          "                                         Player1: Q W E(Skill) F(Up) C(Down)",0
 	P2 BYTE          "                                         Player2: I O P(Skill) 5(Up) 1(Down)",0
-	back BYTE        "Press ESC to return...",0
-	P1_color_choose BYTE "▼",0
-	P2_color_choose BYTE "▲",0
-	P1_speed_choose BYTE "▼",0
-	P2_speed_choose BYTE "▲",0
+	back BYTE        "                                                Press ESC to return...",0
+	P1_c_choose BYTE "																											 ",0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -74,26 +73,29 @@ begin:                                      ;印出pixel hocky
 	jmp STA	
 	
 STA:                                   ;選取start時的介面
-	mov dl,53
+	mov dl,0
+	mov dh,20
+	call Gotoxy
+	mov edx,OFFSET empty
+	call WriteString
+	call WriteString
+	call WriteString
+	call WriteString
+	mov dl,0
 	mov dh,20
 	call Gotoxy
 	mov edx,OFFSET start               ;印出選取start的假象
 	call WriteString
-	mov dl,53
-	mov dh,21
-	call Gotoxy
+	call Crlf
 	mov edx,OFFSET setting1
 	call WriteString
-	mov dl,53
-	mov dh,22
-	call Gotoxy
+	call Crlf
 	mov edx,OFFSET finish1
 	call WriteString
-	mov dl,53
-	mov dh,23
-	call Gotoxy
+	call Crlf
 	mov edx,OFFSET operation1
 	call WriteString
+	call Crlf
 	jmp L3                             ;輸入鍵盤上、下或enter
 	L3:
 	mov eax,50
@@ -108,26 +110,29 @@ STA:                                   ;選取start時的介面
 	
 	jmp L3
 SET:                                   ;選取setting的介面
-	mov dl,53
+	mov dl,0
+	mov dh,20
+	call Gotoxy
+	mov edx,OFFSET empty
+	call WriteString
+	call WriteString
+	call WriteString
+	call WriteString
+	mov dl,0
 	mov dh,20
 	call Gotoxy
 	mov edx,OFFSET start1
 	call WriteString
-	mov dl,53
-	mov dh,21
-	call Gotoxy
+	call Crlf
 	mov edx,OFFSET setting
 	call WriteString
-	mov dl,53
-	mov dh,22
-	call Gotoxy
+	call Crlf
 	mov edx,OFFSET finish1
 	call WriteString
-	mov dl,53
-	mov dh,23
-	call Gotoxy
+	call Crlf
 	mov edx,OFFSET operation1
 	call WriteString
+	call Crlf
 	jmp L1
 	L1:                                 
 	mov eax,50
@@ -142,27 +147,29 @@ SET:                                   ;選取setting的介面
 	
 	jmp L1
 FIN:
-	mov dl,53
+	mov dl,0
+	mov dh,20
+	call Gotoxy
+	mov edx,OFFSET empty
+	call WriteString
+	call WriteString
+	call WriteString
+	call WriteString
+	mov dl,0
 	mov dh,20
 	call Gotoxy
 	mov edx,OFFSET start1
 	call WriteString
-	mov dl,53
-	mov dh,21
-	call Gotoxy
+	call Crlf
 	mov edx,OFFSET setting1
 	call WriteString
-	mov dl,53
-	mov dh,22
-	call Gotoxy
+	call Crlf
 	mov edx,OFFSET finish
 	call WriteString
-	mov dl,53
-	mov dh,23
-	call Gotoxy
+	call Crlf
 	mov edx,OFFSET operation1
 	call WriteString
-	
+	call Crlf
 	jmp L2
 	L2:
 	mov eax,50
@@ -177,27 +184,29 @@ FIN:
 
 	jmp L2
 OPERA:
-	mov dl,53
+	mov dl,0
+	mov dh,20
+	call Gotoxy
+	mov edx,OFFSET empty
+	call WriteString
+	call WriteString
+	call WriteString
+	call WriteString
+	mov dl,0
 	mov dh,20
 	call Gotoxy
 	mov edx,OFFSET start1               ;印出選取start的假象
 	call WriteString
-	mov dl,53
-	mov dh,21
-	call Gotoxy
+	call Crlf
 	mov edx,OFFSET setting1
 	call WriteString
-	mov dl,53
-	mov dh,22
-	call Gotoxy
+	call Crlf
 	mov edx,OFFSET finish1
 	call WriteString
-	mov dl,53
-	mov dh,23
-	call Gotoxy
+	call Crlf
 	mov edx,OFFSET operation
 	call WriteString
-	
+	call Crlf
 	jmp L4                             ;輸入鍵盤上、下或enter
 	L4:
 	mov eax,50
@@ -219,24 +228,23 @@ SET_PART:
 	jmp SET_COLOR
 
 	SET_COLOR:
-		mov dl,53
+		mov dl,0
+		mov dh,5
+		call Gotoxy
+		mov edx,OFFSET empty
+		call WriteString
+		call WriteString
+		call WriteString
+		mov dl,0
 		mov dh,5
 		call Gotoxy
 		mov edx,OFFSET setting1
 		call WriteString
-		mov dl,56
-		mov dh,8
-		call Gotoxy
-		mov edx,OFFSET P1_color_choose
-		call WriteString
-		mov dl,48
+		mov dl,0
 		mov dh,9
 		call Gotoxy
 		mov edx,OFFSET color
 		call WriteString
-		mov dl,56
-		mov dh,9
-		call Gotoxy
 		mov edx,OFFSET colorbox
 		mov eax,1d
 	    call SetTextColor
@@ -252,19 +260,8 @@ SET_PART:
 		call WriteString
 		mov eax,15d
 	    call SetTextColor
-		mov dl,56
-		mov dh,10
-		call Gotoxy
-		mov edx,OFFSET P2_color_choose
-		call WriteString
-		mov dl,56
-		mov dh,12
-		call Gotoxy
-		mov edx,OFFSET P1_speed_choose
-		call WriteString
-		mov dl,48
-		mov dh,13
-		call Gotoxy
+		call Crlf
+		call Crlf
 		mov edx,OFFSET speed1
 		call WriteString
 		mov edx,OFFSET colorbox
@@ -272,12 +269,12 @@ SET_PART:
 		call WriteString
 		call WriteString
 		call WriteString
-		mov dl,56
-		mov dh,14
-		call Gotoxy
-		mov edx,OFFSET P2_speed_choose
-		call WriteString
-		mov dl,48
+		Call Crlf
+		Call Crlf
+		Call Crlf
+		Call Crlf
+		Call Crlf
+		mov dl,0
 		mov dh,25
 		call Gotoxy
 		mov edx,OFFSET back
@@ -296,21 +293,23 @@ SET_PART:
 		jmp L6
 
 	SET_SPEED:
-		
-		mov dl,53
+		mov dl,0
+		mov dh,5
+		call Gotoxy
+		mov edx,OFFSET empty
+		call WriteString
+		call WriteString
+		call WriteString
+		mov dl,0
 		mov dh,5
 		call Gotoxy
 		mov edx,OFFSET setting1
 		call WriteString
-		
-		mov dl,48
+		mov dl,0
 		mov dh,9
 		call Gotoxy
 		mov edx,OFFSET color1
 		call WriteString
-		mov dl,56
-		mov dh,9
-		call Gotoxy
 		mov edx,OFFSET colorbox
 		mov eax,1d
 	    call SetTextColor
@@ -326,30 +325,21 @@ SET_PART:
 		call WriteString
 		mov eax,15d
 	    call SetTextColor
-		mov dl,56
-		mov dh,12
-		call Gotoxy
-		mov edx,OFFSET P1_speed_choose
-		call WriteString
-		mov dl,48
-		mov dh,13
-		call Gotoxy
+		call Crlf
+		call Crlf
 		mov edx,OFFSET speed
 		call WriteString
-		mov dl,56
-		mov dh,13
-		call Gotoxy
 		mov edx,OFFSET colorbox
 		call WriteString
 		call WriteString
 		call WriteString
 		call WriteString
-		mov dl,56
-		mov dh,14
-		call Gotoxy
-		mov edx,OFFSET P2_speed_choose
-		call WriteString
-		mov dl,48
+		Call Crlf
+		Call Crlf
+		Call Crlf
+		Call Crlf
+		Call Crlf
+		mov dl,0
 		mov dh,25
 		call Gotoxy
 		mov edx,OFFSET back
@@ -371,21 +361,26 @@ SET_PART:
 
 OPERATION_PART:
 	call ClrScr
-	mov dl,53
+	mov dl,0
 	mov dh,5
 	call Gotoxy
 	mov edx,OFFSET operation1
 	call WriteString
-	mov dl,0
-	mov dh,8
-	call Gotoxy
+	call Crlf
+	call Crlf
+	Call Crlf
 	mov edx,OFFSET P1
 	call WriteString
 	Call Crlf
 	Call Crlf
 	mov edx,OFFSET P2
 	call WriteString
-	mov dl,48
+	Call Crlf
+	Call Crlf
+	Call Crlf
+	Call Crlf
+	Call Crlf
+	mov dl,0
 	mov dh,25
 	call Gotoxy
 	mov edx,OFFSET back
