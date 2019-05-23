@@ -2,21 +2,19 @@ INCLUDE Irvine32.inc
 INCLUDE Macros.inc
 .data
 ;push test
-	prompt1 BYTE		"¡½¡½¡½¡½¡½     ¡½¡½¡½¡½¡½¡½    ¡½¡½    ¡½¡½    ¡½¡½¡½¡½¡½    ¡½¡½",0
-	prompt2 BYTE		"¡½¡½    ¡½¡½       ¡½¡½         ¡½¡½  ¡½¡½     ¡½¡½          ¡½¡½",0
-	prompt3 BYTE		"¡½¡½    ¡½¡½       ¡½¡½           ¡½¡½¡½       ¡½¡½          ¡½¡½",0
-	prompt4 BYTE		"¡½¡½¡½¡½¡½         ¡½¡½             ¡½         ¡½¡½¡½¡½      ¡½¡½",0
-	prompt5 BYTE		"¡½¡½               ¡½¡½           ¡½¡½¡½       ¡½¡½          ¡½¡½",0
-	prompt6 BYTE		"¡½¡½               ¡½¡½         ¡½¡½  ¡½¡½     ¡½¡½          ¡½¡½",0
-	prompt7 BYTE		"¡½¡½           ¡½¡½¡½¡½¡½¡½    ¡½¡½    ¡½¡½    ¡½¡½¡½¡½¡½    ¡½¡½¡½¡½¡½",0
-	prompt8 BYTE		"¡½¡½    ¡½¡½        ¡½¡½¡½         ¡½¡½¡½¡½¡½      ¡½¡½    ¡½¡½   ¡½¡½¡½¡½¡½   ¡½¡½    ¡½¡½",0
-	prompt9 BYTE		"¡½¡½    ¡½¡½     ¡½¡½    ¡½¡½     ¡½¡½    ¡½¡½     ¡½¡½   ¡½¡½    ¡½¡½          ¡½¡½  ¡½¡½",0
-	prompt10 BYTE	"¡½¡½    ¡½¡½    ¡½¡½      ¡½¡½   ¡½¡½              ¡½¡½  ¡½¡½     ¡½¡½            ¡½¡½¡½",0
-	prompt11 BYTE	"¡½¡½¡½¡½¡½¡½    ¡½¡½      ¡½¡½   ¡½¡½              ¡½¡½¡½¡½       ¡½¡½¡½¡½         ¡½¡½",0
-	prompt12 BYTE	"¡½¡½    ¡½¡½    ¡½¡½      ¡½¡½   ¡½¡½              ¡½¡½  ¡½¡½     ¡½¡½             ¡½¡½",0
-	prompt13 BYTE	"¡½¡½    ¡½¡½     ¡½¡½    ¡½¡½     ¡½¡½    ¡½¡½     ¡½¡½   ¡½¡½    ¡½¡½             ¡½¡½",0
-	prompt14 BYTE	"¡½¡½    ¡½¡½        ¡½¡½¡½         ¡½¡½¡½¡½¡½      ¡½¡½    ¡½¡½   ¡½¡½¡½¡½¡½       ¡½¡½",0
-	prompts DWORD OFFSET prompt1, OFFSET prompt2, OFFSET prompt3, OFFSET prompt4, OFFSET prompt5, OFFSET prompt6, OFFSET prompt7, OFFSET prompt8, OFFSET prompt9, OFFSET prompt10, OFFSET prompt11, OFFSET prompt12, OFFSET prompt13, OFFSET prompt14
+	prompt1 BYTE		"______ _______   __ _____ _     ",0
+	prompt2 BYTE		"| ___ \_   _\ \ / /|  ___| |    ",0
+	prompt3 BYTE		"| |_/ / | |  \ V / | |__ | |    ",0
+	prompt4 BYTE		"|  __/  | |  /   \ |  __|| |    ",0
+	prompt5 BYTE		"| |    _| |_/ /^\ \| |___| |____",0
+	prompt6 BYTE		"\_|    \___/\/   \/\____/\_____/",0
+	prompt7 BYTE		" _   _ _____ _____  _   __ _______   __",0
+	prompt8 BYTE		"| | | |  _  /  __ \| | / /|  ___\ \ / /",0
+	prompt9 BYTE		"| |_| | | | | /  \/| |/ / | |__  \ V / ",0
+	prompt10 BYTE	"|  _  | | | | |    |    \ |  __|  \ /  ",0
+	prompt11 BYTE	"| | | \ \_/ / \__/\| |\  \| |___  | |  ",0
+	prompt12 BYTE	"\_| |_/\___/ \____/\_| \_/\____/  \_/  ",0
+	prompts DWORD OFFSET prompt1, OFFSET prompt2, OFFSET prompt3, OFFSET prompt4, OFFSET prompt5, OFFSET prompt6, OFFSET prompt7, OFFSET prompt8, OFFSET prompt9, OFFSET prompt10, OFFSET prompt11, OFFSET prompt12
 	start BYTE       "                                                      > START",0
 	setting BYTE     "                                                      > SETTING",0
 	finish BYTE      "                                                      > EXIT",0
@@ -36,16 +34,16 @@ INCLUDE Macros.inc
 	back BYTE        "                                                Press ESC to return...",0
 	P1_c_choose BYTE "																											 ",0
 .code
-PrintTitle PROC
+PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
 PrintTitlePerLine:
 	mov dl,24
 	mov dh,cl
-	cmp ecx,6
-	jng NotGreaterThan6
+	cmp ecx,5
+	jng NotGreaterThan5
 	mov dl,14
 	add dh,1
-NotGreaterThan6:
+NotGreaterThan5:
 	add dh,3
 	call Gotoxy
 	mov eax,4
@@ -53,7 +51,7 @@ NotGreaterThan6:
 	mov edx,prompts[eax]
 	call WriteString
 	inc ecx
-	cmp ecx,14
+	cmp ecx,12
 	jl PrintTitlePerLine
 	ret
 PrintTitle ENDP
@@ -61,6 +59,7 @@ PrintTitle ENDP
 menu PROC
 
 begin:                                      ;¦L¥Xpixel hocky
+	call Clrscr
 	call PrintTitle
 	jmp STA	
 	
