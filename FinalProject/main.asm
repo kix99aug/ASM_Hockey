@@ -3,7 +3,7 @@ INCLUDE Macros.inc
 .data
 	winwid EQU 120
 	winhei EQU 30
-	screen BYTE 100 DUP(100 DUP (?))
+	screen DWORD winhei DUP( winwid DUP (?))
 	titlestr1 BYTE		"______________  __ _____ _     ",0
 	titlestr2 BYTE		"| ___ \_   _\ \/ /|  ___| |    ",0
 	titlestr3 BYTE		"| |_/ / | |  \  / | |__ | |    ",0
@@ -71,8 +71,66 @@ NotGreaterThan5:
 PrintTitle ENDP
 
 PrintAll PROC
-
+mov ecx,winhei
+Outer:
+	dec ecx
+	push ecx
+	mov eax,ecx
+	mov ecx,winwid
+	Inner:
+		dec ecx
+		mov ebx,ecx
+		add	ebx,eax
+		mov eax,screen[ebx]
+		pop ebx
+		mov dh,bl
+		mov dl,cl
+		push ebx
+		call Gotoxy
+		call WriteChar
+	loop Inner
+	pop ecx
+loop Outer
+ret
 PrintAll ENDP
+
+GamePart PROC
+mov ecx,0
+Outer:
+	push ecx
+	cmp ecx,0
+	je blockline
+	cmp ecx,winhei
+	je blockline
+	mov ecx,0
+	blockheadandtail:
+		cmp ecx,0
+		je makeblock
+		cmp ecx,winwid-2
+		je makeblock
+		jmp noblock
+		makeblock:
+		mov screen[ecx],2588
+		noblock:
+		mov screen[ecx],' '
+		inc ecx
+		cmp ecx,winwid
+	jne blockheadandtail
+	blockline:
+	mov ecx,0
+	blocklinein:
+		mov screen[ecx],2588
+		inc ecx
+		cmp ecx,winwid
+	jne blocklinein
+	pop ecx
+	inc ecx
+	cmp ecx,winhei
+jne Outer
+call PrintAll
+call WaitMsg
+ret
+GamePart ENDP
 
 menu PROC
 
@@ -123,7 +181,7 @@ STA:                                   ;選取start時的介面
 	cmp dx,+38
 	je OPERA                             ;偵測到上
 	cmp dx,+13                 
-	je GAME_PART                       ;偵測到enter
+	jmp GAME_PART                      ;偵測到enter
 	
 	jmp L3
 SET:                                   ;選取setting的介面
@@ -231,6 +289,8 @@ OPERA:
 	
 	jmp L4
 GAME_PART:
+call ClrScr
+call GamePart
 
 SET_PART:
 	
@@ -316,7 +376,7 @@ SET_PART:
 		call WriteString
 		jmp L6
 		L6:
-		mov eax,50
+		mov eax,10
 		call Delay
 		call ReadKey
 		cmp dx,+27
@@ -652,7 +712,7 @@ OPERATION_PART:
 	jmp L5
 	L5:
 	mov eax,50
-    call Delay
+  call Delay
 	call ReadKey
 	cmp dx,+27
 	je begin
