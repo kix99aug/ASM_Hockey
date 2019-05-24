@@ -42,8 +42,9 @@ INCLUDE Macros.inc
 	Speed_point_local BYTE 56d,0
 	P1_SetColor_Click BYTE "Press Q to set.",0
 	P2_SetColor_Click BYTE "Press 0 to set.",0
-	P1_color DWORD 1,0
-	P2_color DWORD 1,0
+	P1_color DWORD 1d,0
+	P2_color DWORD 1d,0
+	Speed_color DWORD 15d,0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -79,17 +80,6 @@ menu PROC
 begin:                                      ;印出pixel hocky
 	call Clrscr
 	call PrintTitle
-	mov dl,56
-	mov dh,30
-	call Gotoxy
-	mov eax,P1_color
-	call Writeint
-	mov dl,56
-	mov dh,31
-	call Gotoxy
-	mov eax,P2_color
-	call Writeint
-
 	jmp STA	
 	
 STA:                                   ;選取start時的介面
@@ -287,6 +277,8 @@ SET_PART:
 		mov edx,OFFSET P2_color_choose
 		call WriteString
 		mov eax,15d
+		call SetTextColor
+		mov eax,Speed_color
 		call SetTextColor
 		mov dl,Speed_point_local
 		mov dh,12
@@ -617,6 +609,7 @@ SET_PART:
 		je Speed_point_right
 		jmp L7
 		Speed_point_right:
+			
 			mov dl,0
 			mov dh,12
 			call Gotoxy
@@ -625,6 +618,9 @@ SET_PART:
 			cmp Speed_point_local,65d
 			jne Speed_movR
 			mov Speed_point_local,56d
+			mov Speed_color,15d
+			mov eax,Speed_color
+			call SetTextColor
 			mov dl,Speed_point_local
 			mov dh,12
 			call Gotoxy
@@ -633,11 +629,25 @@ SET_PART:
 			jmp L7
 			Speed_movR:
 				add Speed_point_local,3d
+				.IF Speed_point_local == 56
+					mov Speed_color,15
+				.ELSEIF Speed_point_local == 59
+					mov Speed_color,7
+				.ELSEIF Speed_point_local == 62
+					mov Speed_color,8
+				.ELSEIF Speed_point_local == 65
+					mov Speed_color,6
+				.ENDIF
+				mov eax,Speed_color
+				call SetTextColor
+				
 				mov dl,Speed_point_local
 				mov dh,12
 				call Gotoxy
 				mov edx,OFFSET speed_choose
 				call WriteString
+				mov eax,15d
+				call SetTextColor
 				jmp L7
 		Speed_point_left:
 			mov dl,0
@@ -648,6 +658,9 @@ SET_PART:
 			cmp Speed_point_local,56d
 			jne Speed_movL
 			mov Speed_point_local,65d
+			mov Speed_color,15d
+			mov eax,Speed_color
+			call SetTextColor
 			mov dl,Speed_point_local
 			mov dh,12
 			call Gotoxy
@@ -655,12 +668,26 @@ SET_PART:
 			call WriteString
 			jmp L7
 			Speed_movL:
+				
 				sub Speed_point_local,3d
+				.IF Speed_point_local == 56
+					mov Speed_color,15
+				.ELSEIF Speed_point_local == 59
+					mov Speed_color,7
+				.ELSEIF Speed_point_local == 62
+					mov Speed_color,8
+				.ELSEIF Speed_point_local == 65
+					mov Speed_color,6
+				.ENDIF
 				mov dl,Speed_point_local
 				mov dh,12
 				call Gotoxy
+				mov eax,Speed_color
+				call SetTextColor
 				mov edx,OFFSET speed_choose
 				call WriteString
+				mov eax,15d
+				call SetTextColor
 				jmp L7
 
 
