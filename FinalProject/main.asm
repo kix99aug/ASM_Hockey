@@ -96,7 +96,7 @@ menu PROC
 
 begin:                                      ;印出pixel hocky
 	call Clrscr
-	call PrintAll
+	call PrintTitle
 	jmp STA	
 	
 STA:                                   ;選取start時的介面
