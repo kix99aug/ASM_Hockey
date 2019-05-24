@@ -1,9 +1,9 @@
 INCLUDE Irvine32.inc
 INCLUDE Macros.inc
 .data
-	winwid EQU 250
-	winhei EQU 60
-	screen BYTE winhei DUP(winwid DUP ("|"))
+	winwid EQU 120
+	winhei EQU 30
+	screen BYTE 100 DUP(100 DUP (?))
 	titlestr1 BYTE		"______________  __ _____ _     ",0
 	titlestr2 BYTE		"| ___ \_   _\ \/ /|  ___| |    ",0
 	titlestr3 BYTE		"| |_/ / | |  \  / | |__ | |    ",0
@@ -17,14 +17,14 @@ INCLUDE Macros.inc
 	titlestr11 BYTE	"| | | | \_/ | \__/\| |\  \| |___  | |  ",0
 	titlestr12 BYTE	"\_| |_|\___/ \____/\_| \_/\____/  \_/  ",0
 	titlestrs DWORD OFFSET titlestr1, OFFSET titlestr2, OFFSET titlestr3, OFFSET titlestr4, OFFSET titlestr5, OFFSET titlestr6, OFFSET titlestr7, OFFSET titlestr8, OFFSET titlestr9, OFFSET titlestr10, OFFSET titlestr11, OFFSET titlestr12
-	start BYTE       "> START           ",0
-	setting BYTE     "> SETTING         ",0
-	finish BYTE      "> EXIT            ",0
-	operation BYTE   "> OPERATION       ",0
-	start1 BYTE      "START             ",0
-	setting1 BYTE    "SETTING           ",0
-	finish1 BYTE     "EXIT              ",0
-	operation1 BYTE  "OPERATION         ",0
+	start BYTE       "> START         ",0
+	setting BYTE     "> SETTING       ",0
+	finish BYTE      "> EXIT          ",0
+	operation BYTE   "> OPERATION     ",0
+	start1 BYTE      "START           ",0
+	setting1 BYTE    "SETTING         ",0
+	finish1 BYTE     "EXIT            ",0
+	operation1 BYTE  "OPERATION       ",0
 	empty BYTE "                                                                                                                          ",0
 	color BYTE       "> Color   ",0
 	color1 BYTE      "Color   ",0
@@ -42,6 +42,8 @@ INCLUDE Macros.inc
 	Speed_point_local BYTE 56d,0
 	P1_SetColor_Click BYTE "Press Q to set.",0
 	P2_SetColor_Click BYTE "Press 0 to set.",0
+	P1_color DWORD 1
+	P2_color DWORD 1
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -69,27 +71,7 @@ NotGreaterThan5:
 PrintTitle ENDP
 
 PrintAll PROC
-mov ecx,winhei
-Outer:
-	dec ecx
-	push ecx
-	mov eax,ecx
-	mov ecx,winwid
-	Inner:
-		dec ecx
-		mov ebx,ecx
-		add	ebx,eax
-		movzx eax,screen[ebx]
-		pop ebx
-		mov dh,bl
-		mov dl,cl
-		push ebx
-		call Gotoxy
-		call WriteChar
-	loop Inner
-	pop ecx
-loop Outer
-ret
+
 PrintAll ENDP
 
 menu PROC
@@ -97,6 +79,17 @@ menu PROC
 begin:                                      ;印出pixel hocky
 	call Clrscr
 	call PrintTitle
+	mov dl,56
+	mov dh,30
+	call Gotoxy
+	mov eax,P1_color
+	call Writeint
+	mov dl,56
+	mov dh,31
+	call Gotoxy
+	mov eax,P2_color
+	call Writeint
+
 	jmp STA	
 	
 STA:                                   ;選取start時的介面
@@ -253,11 +246,11 @@ SET_PART:
 		call Gotoxy
 		mov edx,OFFSET P1_color_choose
 		call WriteString
-		mov dl,68
-		mov dh,8
-		call Gotoxy
-		mov edx,OFFSET P1_SetColor_Click
-		call WriteString
+		;mov dl,68
+		;mov dh,8
+		;call Gotoxy
+		;mov edx,OFFSET P1_SetColor_Click
+		;call WriteString
 		mov dl,48
 		mov dh,9
 		call Gotoxy
@@ -292,11 +285,11 @@ SET_PART:
 		call Gotoxy
 		mov edx,OFFSET speed_choose
 		call WriteString
-		mov dl,68
-		mov dh,10
-		call Gotoxy
-		mov edx,OFFSET P2_SetColor_Click
-		call WriteString
+		;mov dl,68
+		;mov dh,10
+		;call Gotoxy
+		;mov edx,OFFSET P2_SetColor_Click
+		;call WriteString
 		mov dl,48
 		mov dh,13
 		call Gotoxy
@@ -347,11 +340,11 @@ SET_PART:
 			call Gotoxy
 			mov edx,OFFSET empty
 			call WriteString
-			mov dl,68
-			mov dh,10
-			call Gotoxy
-			mov edx,OFFSET P2_SetColor_Click
-			call WriteString
+			;mov dl,68
+			;mov dh,10
+			;call Gotoxy
+			;mov edx,OFFSET P2_SetColor_Click
+			;call WriteString
 			cmp P2_color_point_local,65d
 			jne P2_movR_color
 			mov P2_color_point_local,56d
@@ -360,9 +353,23 @@ SET_PART:
 			call Gotoxy
 			mov edx,OFFSET P2_color_choose
 			call WriteString
+
+			mov P2_color,1
+
 			jmp L6
 			P2_movR_color:
 				add P2_color_point_local,3d
+				
+				.IF P2_color_point_local == 56
+					mov P2_color,1
+				.ELSEIF P2_color_point_local == 59
+					mov P2_color,2
+				.ELSEIF P2_color_point_local == 62
+					mov P2_color,3
+				.ELSEIF P2_color_point_local == 65
+					mov P2_color,4
+				.ENDIF
+
 				mov dl,P2_color_point_local
 				mov dh,10
 				call Gotoxy
@@ -375,11 +382,11 @@ SET_PART:
 			call Gotoxy
 			mov edx,OFFSET empty
 			call WriteString
-			mov dl,68
-			mov dh,10
-			call Gotoxy
-			mov edx,OFFSET P2_SetColor_Click
-			call WriteString
+			;mov dl,68
+			;mov dh,10
+			;call Gotoxy
+			;mov edx,OFFSET P2_SetColor_Click
+			;call WriteString
 			cmp P2_color_point_local,56d
 			jne P2_movL_color
 			mov P2_color_point_local,65d
@@ -388,14 +395,29 @@ SET_PART:
 			call Gotoxy
 			mov edx,OFFSET P2_color_choose
 			call WriteString
+
+			mov P2_color,4
+
 			jmp L6
 			P2_movL_color:
 				sub P2_color_point_local,3d
+				
+				.IF P2_color_point_local == 56
+					mov P2_color,1
+				.ELSEIF P2_color_point_local == 59
+					mov P2_color,2
+				.ELSEIF P2_color_point_local == 62
+					mov P2_color,3
+				.ELSEIF P2_color_point_local == 65
+					mov P2_color,4
+				.ENDIF
+
 				mov dl,P2_color_point_local
 				mov dh,10
 				call Gotoxy
 				mov edx,OFFSET P2_color_choose
 				call WriteString
+
 				jmp L6
 		P1_color_point_right:
 			mov dl,0
@@ -403,11 +425,11 @@ SET_PART:
 			call Gotoxy
 			mov edx,OFFSET empty
 			call WriteString
-			mov dl,68
-			mov dh,8
-			call Gotoxy
-			mov edx,OFFSET P1_SetColor_Click
-			call WriteString
+			;mov dl,68
+			;mov dh,8
+			;call Gotoxy
+			;mov edx,OFFSET P1_SetColor_Click
+			;call WriteString
 			cmp P1_color_point_local,65d
 			jne P1_movR_color
 			mov P1_color_point_local,56d
@@ -416,14 +438,29 @@ SET_PART:
 			call Gotoxy
 			mov edx,OFFSET P1_color_choose
 			call WriteString
+
+			mov P1_color,1
+
 			jmp L6
 			P1_movR_color:
 				add P1_color_point_local,3d
+				
+				.IF P1_color_point_local == 56
+					mov P1_color,1
+				.ELSEIF P1_color_point_local == 59
+					mov P1_color,2
+				.ELSEIF P1_color_point_local == 62
+					mov P1_color,3
+				.ELSEIF P1_color_point_local == 65
+					mov P1_color,4
+				.ENDIF
+
 				mov dl,P1_color_point_local
 				mov dh,8
 				call Gotoxy
 				mov edx,OFFSET P1_color_choose
 				call WriteString
+
 				jmp L6
 		P1_color_point_left:
 			mov dl,0
@@ -431,11 +468,11 @@ SET_PART:
 			call Gotoxy
 			mov edx,OFFSET empty
 			call WriteString
-			mov dl,68
-			mov dh,8
-			call Gotoxy
-			mov edx,OFFSET P1_SetColor_Click
-			call WriteString
+			;mov dl,68
+			;mov dh,8
+			;call Gotoxy
+			;mov edx,OFFSET P1_SetColor_Click
+			;call WriteString
 			cmp P1_color_point_local,56d
 			jne P1_movL_color
 			mov P1_color_point_local,65d
@@ -444,14 +481,29 @@ SET_PART:
 			call Gotoxy
 			mov edx,OFFSET P1_color_choose
 			call WriteString
+			
+			mov P1_color,4
+
 			jmp L6
 			P1_movL_color:
 				sub P1_color_point_local,3d
+				
+				.IF P1_color_point_local == 56
+					mov P1_color,1
+				.ELSEIF P1_color_point_local == 59
+					mov P1_color,2
+				.ELSEIF P1_color_point_local == 62
+					mov P1_color,3
+				.ELSEIF P1_color_point_local == 65
+					mov P1_color,4
+				.ENDIF
+
 				mov dl,P1_color_point_local
 				mov dh,8
 				call Gotoxy
 				mov edx,OFFSET P1_color_choose
 				call WriteString
+
 				jmp L6
 
 	SET_SPEED:
@@ -602,7 +654,8 @@ OPERATION_PART:
 	mov eax,50
     call Delay
 	call ReadKey
-	jnz begin
+	cmp dx,+27
+	je begin
 	jmp L5
 
 
