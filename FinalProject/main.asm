@@ -42,8 +42,8 @@ INCLUDE Macros.inc
 	Speed_point_local BYTE 56d,0
 	P1_SetColor_Click BYTE "Press Q to set.",0
 	P2_SetColor_Click BYTE "Press 0 to set.",0
-	P1_color DWORD 1
-	P2_color DWORD 1
+	P1_color DWORD 1,0
+	P2_color DWORD 1,0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -244,8 +244,12 @@ SET_PART:
 		mov dl,P1_color_point_local
 		mov dh,8
 		call Gotoxy
+		mov eax,P1_color
+		call SetTextColor
 		mov edx,OFFSET P1_color_choose
 		call WriteString
+		mov eax,15d
+		call SetTextColor
 		;mov dl,68
 		;mov dh,8
 		;call Gotoxy
@@ -278,8 +282,12 @@ SET_PART:
 		mov dl,P2_color_point_local
 		mov dh,10
 		call Gotoxy
+		mov eax,P2_color
+			call SetTextColor
 		mov edx,OFFSET P2_color_choose
 		call WriteString
+		mov eax,15d
+		call SetTextColor
 		mov dl,Speed_point_local
 		mov dh,12
 		call Gotoxy
@@ -348,13 +356,18 @@ SET_PART:
 			cmp P2_color_point_local,65d
 			jne P2_movR_color
 			mov P2_color_point_local,56d
+			mov P2_color,1
 			mov dl,P2_color_point_local
 			mov dh,10
 			call Gotoxy
+			mov eax,P2_color
+			call SetTextColor
 			mov edx,OFFSET P2_color_choose
 			call WriteString
+			mov eax,15d
+			call SetTextColor
 
-			mov P2_color,1
+			
 
 			jmp L6
 			P2_movR_color:
@@ -369,12 +382,15 @@ SET_PART:
 				.ELSEIF P2_color_point_local == 65
 					mov P2_color,4
 				.ENDIF
-
+				mov eax,P2_color
+				call SetTextColor
 				mov dl,P2_color_point_local
 				mov dh,10
 				call Gotoxy
 				mov edx,OFFSET P2_color_choose
 				call WriteString
+				mov eax,15d
+				call SetTextColor
 				jmp L6
 		P2_color_point_left:
 			mov dl,0
@@ -390,13 +406,18 @@ SET_PART:
 			cmp P2_color_point_local,56d
 			jne P2_movL_color
 			mov P2_color_point_local,65d
+			mov P2_color,4
 			mov dl,P2_color_point_local
 			mov dh,10
 			call Gotoxy
+			mov eax,P2_color
+			call SetTextColor
 			mov edx,OFFSET P2_color_choose
 			call WriteString
+			mov eax,15d
+			call SetTextColor
 
-			mov P2_color,4
+			
 
 			jmp L6
 			P2_movL_color:
@@ -411,13 +432,16 @@ SET_PART:
 				.ELSEIF P2_color_point_local == 65
 					mov P2_color,4
 				.ENDIF
+				mov eax,P2_color
+				call SetTextColor
 
 				mov dl,P2_color_point_local
 				mov dh,10
 				call Gotoxy
 				mov edx,OFFSET P2_color_choose
 				call WriteString
-
+				mov eax,15d
+				call SetTextColor
 				jmp L6
 		P1_color_point_right:
 			mov dl,0
@@ -433,13 +457,17 @@ SET_PART:
 			cmp P1_color_point_local,65d
 			jne P1_movR_color
 			mov P1_color_point_local,56d
+			mov P1_color,1
 			mov dl,P1_color_point_local
 			mov dh,8
 			call Gotoxy
+			mov eax,P1_color
+			call SetTextColor
 			mov edx,OFFSET P1_color_choose
 			call WriteString
-
-			mov P1_color,1
+			mov eax,15d
+			call SetTextColor
+			
 
 			jmp L6
 			P1_movR_color:
@@ -458,9 +486,12 @@ SET_PART:
 				mov dl,P1_color_point_local
 				mov dh,8
 				call Gotoxy
+				mov eax,P1_color
+				call SetTextColor
 				mov edx,OFFSET P1_color_choose
 				call WriteString
-
+				mov eax,15d
+				call SetTextColor
 				jmp L6
 		P1_color_point_left:
 			mov dl,0
@@ -476,13 +507,17 @@ SET_PART:
 			cmp P1_color_point_local,56d
 			jne P1_movL_color
 			mov P1_color_point_local,65d
+			mov P1_color,4
 			mov dl,P1_color_point_local
 			mov dh,8
 			call Gotoxy
+			mov eax,P1_color
+				call SetTextColor
 			mov edx,OFFSET P1_color_choose
 			call WriteString
+			mov eax,15d
+				call SetTextColor
 			
-			mov P1_color,4
 
 			jmp L6
 			P1_movL_color:
@@ -497,13 +532,15 @@ SET_PART:
 				.ELSEIF P1_color_point_local == 65
 					mov P1_color,4
 				.ENDIF
-
+				mov eax,P1_color
+				call SetTextColor
 				mov dl,P1_color_point_local
 				mov dh,8
 				call Gotoxy
 				mov edx,OFFSET P1_color_choose
 				call WriteString
-
+				mov eax,15d
+				call SetTextColor
 				jmp L6
 
 	SET_SPEED:
