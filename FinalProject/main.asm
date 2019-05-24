@@ -1,5 +1,6 @@
 INCLUDE Irvine32.inc
 INCLUDE Macros.inc
+INCLUDELIB Winmm.lib
 .data
 	winwid EQU 120
 	winhei EQU 30
@@ -45,6 +46,11 @@ INCLUDE Macros.inc
 	P1_color DWORD 1d,0
 	P2_color DWORD 1d,0
 	Speed_color DWORD 15d,0
+	deviceConnect BYTE "DeviceConnect",0
+	SND_ALIAS    DWORD 00010000h
+	SND_RESOURCE DWORD 00040005h
+	SND_FILENAME DWORD 00020000h
+	file BYTE "KK.wav",0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -70,7 +76,10 @@ NotGreaterThan5:
 	call SetTextColor
 	ret
 PrintTitle ENDP
-
+PlaySound PROC
+	INVOKE PlaySound, OFFSET deviceConnect, NULL, SND_ALIAS
+    INVOKE PlaySound, OFFSET file, NULL, SND_FILENAME
+PlaySound ENDP
 PrintAll PROC
 
 PrintAll ENDP
@@ -285,6 +294,8 @@ SET_PART:
 		call Gotoxy
 		mov edx,OFFSET speed_choose
 		call WriteString
+		mov eax,15d
+		call SetTextColor
 		;mov dl,68
 		;mov dh,10
 		;call Gotoxy
