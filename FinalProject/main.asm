@@ -1,6 +1,10 @@
 INCLUDE Irvine32.inc
 INCLUDE Macros.inc
 INCLUDELIB Winmm.lib
+PlaySound PROTO,
+        pszSound:PTR BYTE, 
+        hmod:DWORD, 
+        fdwSound:DWORD
 .data
 	winwid EQU 120
 	winhei EQU 30
@@ -50,7 +54,7 @@ INCLUDELIB Winmm.lib
 	SND_ALIAS    DWORD 00010000h
 	SND_RESOURCE DWORD 00040005h
 	SND_FILENAME DWORD 00020000h
-	file BYTE "KK.wav",0
+	file BYTE "喀拉音效.wav",0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -77,10 +81,11 @@ NotGreaterThan5:
 	ret
 PrintTitle ENDP
 
-;PlaySound PROC
-;	INVOKE PlaySound, OFFSET deviceConnect, NULL, SND_ALIAS
-;   INVOKE PlaySound, OFFSET file, NULL, SND_FILENAME
-;PlaySound ENDP
+Sound PROC
+	INVOKE PlaySound, OFFSET deviceConnect, NULL, SND_ALIAS
+	INVOKE PlaySound, OFFSET file, NULL, SND_FILENAME
+	ret
+Sound ENDP
 
 PrintAll PROC
 
@@ -89,6 +94,7 @@ PrintAll ENDP
 menu PROC
 
 begin:                                      ;印出pixel hocky
+	
 	call Clrscr
 	call PrintTitle
 	jmp STA	
@@ -114,6 +120,7 @@ STA:                                   ;選取start時的介面
 	call Gotoxy
 	mov edx,OFFSET operation1
 	call WriteString
+	;call Sound
 	jmp L3                             ;輸入鍵盤上、下或enter
 	L3:
 	mov eax,50
@@ -148,6 +155,7 @@ SET:                                   ;選取setting的介面
 	call Gotoxy
 	mov edx,OFFSET operation1
 	call WriteString
+	call Sound
 	jmp L1
 L1:                                 
 	mov eax,50
@@ -181,6 +189,7 @@ FIN:
 	call Gotoxy
 	mov edx,OFFSET operation1
 	call WriteString
+	call Sound
 	jmp L2
 L2:
 	mov eax,50
@@ -214,6 +223,7 @@ OPERA:
 	call Gotoxy
 	mov edx,OFFSET operation
 	call WriteString
+	call Sound
 	jmp L4                             ;輸入鍵盤上、下或enter
 L4:
 	mov eax,50
