@@ -351,6 +351,7 @@ SET_COLOR:
 	call Gotoxy
 	mov edx,OFFSET back
 	call WriteString
+	call Sound
 	jmp L6
 L6:
 	mov eax,50
@@ -618,6 +619,7 @@ SET_SPEED:
 	call Gotoxy
 	mov edx,OFFSET back
 	call WriteString
+	call Sound
 	jmp L7
 L7:
 	mov eax,50
