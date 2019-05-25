@@ -304,6 +304,7 @@ call ClrScr
 call GamePart
 jmp begin
 SET_PART:
+	call Sound
 	call ClrScr
 SET_COLOR:
 	mov dl,53
@@ -394,6 +395,7 @@ SET_COLOR:
 	call Gotoxy
 	mov edx,OFFSET back
 	call WriteString
+	call Sound
 	jmp L6
 L6:
 	mov eax,50
@@ -437,7 +439,8 @@ P2_color_point_right:
 	mov edx,OFFSET P2_color_choose
 	call WriteString
 	mov eax,15d
-	call SetTextColor			
+	call SetTextColor	
+	call Sound
 	jmp L6
 P2_movR_color:
 	add P2_color_point_local,3d			
@@ -459,6 +462,7 @@ P2_movR_color:
 	call WriteString
 	mov eax,15d
 	call SetTextColor
+	call Sound
 	jmp L6
 P2_color_point_left:
 	mov dl,0
@@ -484,6 +488,7 @@ P2_color_point_left:
 	call WriteString
 	mov eax,15d
 	call SetTextColor
+	call Sound
 	jmp L6
 P2_movL_color:
 	sub P2_color_point_local,3d	
@@ -505,6 +510,7 @@ P2_movL_color:
 	call WriteString
 	mov eax,15d
 	call SetTextColor
+	call Sound
 	jmp L6
 P1_color_point_right:
 	mov dl,0
@@ -530,6 +536,7 @@ P1_color_point_right:
 	call WriteString
 	mov eax,15d
 	call SetTextColor
+	call Sound
 	jmp L6
 P1_movR_color:
 	add P1_color_point_local,3d		
@@ -551,6 +558,7 @@ P1_movR_color:
 	call WriteString
 	mov eax,15d
 	call SetTextColor
+	call Sound
 	jmp L6
 P1_color_point_left:
 	mov dl,0
@@ -576,6 +584,7 @@ P1_color_point_left:
 	call WriteString
 	mov eax,15d
 	call SetTextColor
+	call Sound
 	jmp L6
 P1_movL_color:
 	sub P1_color_point_local,3d	
@@ -597,6 +606,7 @@ P1_movL_color:
 	call WriteString
 	mov eax,15d
 	call SetTextColor
+	call Sound
 	jmp L6
 SET_SPEED:		
 	mov dl,53
@@ -653,6 +663,7 @@ SET_SPEED:
 	call Gotoxy
 	mov edx,OFFSET back
 	call WriteString
+	call Sound
 	jmp L7
 L7:
 	mov eax,50
@@ -686,6 +697,7 @@ Speed_point_right:
 	call Gotoxy
 	mov edx,OFFSET speed_choose
 	call WriteString
+	call Sound
 	jmp L7
 Speed_movR:
 	add Speed_point_local,3d
@@ -707,6 +719,7 @@ Speed_movR:
 	call WriteString
 	mov eax,15d
 	call SetTextColor
+	call Sound
 	jmp L7
 Speed_point_left:
 	mov dl,0
@@ -725,6 +738,7 @@ Speed_point_left:
 	call Gotoxy
 	mov edx,OFFSET speed_choose
 	call WriteString
+	call Sound
 	jmp L7
 Speed_movL:				
 	sub Speed_point_local,3d
@@ -746,8 +760,10 @@ Speed_movL:
 	call WriteString
 	mov eax,15d
 	call SetTextColor
+	call Sound
 	jmp L7
 OPERATION_PART:
+	call Sound
 	call ClrScr
 	mov dl,53
 	mov dh,5
@@ -777,6 +793,7 @@ L5:
 	je begin
 	jmp L5
 FINISH_PART:
+	call Sound
 	exit
 menu ENDP
 
