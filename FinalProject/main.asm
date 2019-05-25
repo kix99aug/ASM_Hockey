@@ -76,10 +76,12 @@ NotGreaterThan5:
 	call SetTextColor
 	ret
 PrintTitle ENDP
-PlaySound PROC
-	INVOKE PlaySound, OFFSET deviceConnect, NULL, SND_ALIAS
-    INVOKE PlaySound, OFFSET file, NULL, SND_FILENAME
-PlaySound ENDP
+
+;PlaySound PROC
+;	INVOKE PlaySound, OFFSET deviceConnect, NULL, SND_ALIAS
+;   INVOKE PlaySound, OFFSET file, NULL, SND_FILENAME
+;PlaySound ENDP
+
 PrintAll PROC
 
 PrintAll ENDP
@@ -669,7 +671,7 @@ SET_PART:
 			cmp Speed_point_local,56d
 			jne Speed_movL
 			mov Speed_point_local,65d
-			mov Speed_color,15d
+			mov Speed_color,6d
 			mov eax,Speed_color
 			call SetTextColor
 			mov dl,Speed_point_local
