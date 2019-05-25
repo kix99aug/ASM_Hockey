@@ -19,4 +19,15 @@
       <Filter>來源檔案</Filter>
     </MASM>
   </ItemGroup>
+  <ItemGroup>
+    <Media Include="KK.wav">
+      <Filter>資源檔</Filter>
+    </Media>
+    <Media Include="喀拉.mp3">
+      <Filter>資源檔</Filter>
+    </Media>
+    <Media Include="喀拉音效.wav">
+      <Filter>資源檔</Filter>
+    </Media>
+  </ItemGroup>
 </Project>
