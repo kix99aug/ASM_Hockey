@@ -99,6 +99,24 @@ PlaySound PROTO,
 	Speed_color DWORD 15d,0
 	SND_FILENAME DWORD 00020000h
 	file BYTE "³Ø©Ô­µ®Ä.wav",0
+	player1 BYTE ".______    __           ___   ____    ____  _______ .______      ",0
+	player2 BYTE "|   _  \  |  |         /   \  \   \  /   / |   ____||   _  \    ",0
+	player3 BYTE "|  |_)  | |  |        /  ^  \  \   \/   /  |  |__   |  |_)  |   ",0
+	player4 BYTE "|   ___/  |  |       /  /_\  \  \_    _/   |   __|  |      /    ",0
+	player5 BYTE "|  |      |  `----. /  _____  \   |  |     |  |____ |  |\  \----.",0
+	player6 BYTE "| _|      |_______|/__/     \__\  |__|     |_______|| _| `._____|",0
+	Pone1 BYTE "  ______   .__   __.  _______ ",0
+	Pone2 BYTE " /  __  \  |  \ |  | |   ____|",0
+	Pone3 BYTE "|  |  |  | |   \|  | |  |__   ",0
+	Pone4 BYTE "|  |  |  | |  . `  | |   __|  ",0
+	Pone5 BYTE "|  `--'  | |  |\   | |  |____ ",0
+	Pone6 BYTE " \______/  |__| \__| |_______|",0
+	win1 BYTE "____    __    ____  __  .__   __.      _______.",0
+	win2 BYTE "\   \  /  \  /   / |  | |  \ |  |     /       |",0
+	win3 BYTE " \   \/    \/   /  |  | |   \|  |    |   (----`",0
+	win4 BYTE "  \            /   |  | |  . `  |     \   \    ",0
+	win5 BYTE "   \    /\    /    |  | |  |\   | .----)   |   ",0
+	win6 BYTE "    \__/  \__/     |__| |__| \__| |_______/    ",0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -129,6 +147,84 @@ Sound PROC
 	INVOKE PlaySound, OFFSET file, NULL, SND_FILENAME
 	ret
 Sound ENDP
+
+PrintAll PROC
+mov ecx,0
+Outer:
+	mov eax,winwid+1
+	mul ecx
+	mov dl,0
+	mov dh,cl
+	call Gotoxy
+	add eax ,OFFSET oldscreen
+	mov edx,eax
+	call WriteString
+	inc ecx
+	cmp ecx,winhei
+jne Outer
+ret
+PrintAll ENDP
+
+PrintP1Wins PROC
+	
+	mov edx,OFFSET player1
+	call WriteString
+	call Crlf
+	mov edx,OFFSET player2
+	call WriteString
+	call Crlf
+	mov edx,OFFSET player3
+	call WriteString
+	call Crlf
+	mov edx,OFFSET player4
+	call WriteString
+	call Crlf
+	mov edx,OFFSET player5
+	call WriteString
+	call Crlf
+	mov edx,OFFSET player6
+	call WriteString
+	call Crlf
+	call Crlf
+	mov edx,OFFSET Pone1
+	call WriteString
+	call Crlf
+	mov edx,OFFSET Pone2
+	call WriteString
+	call Crlf
+	mov edx,OFFSET Pone3
+	call WriteString
+	call Crlf
+	mov edx,OFFSET Pone4
+	call WriteString
+	call Crlf
+	mov edx,OFFSET Pone5
+	call WriteString
+	call Crlf
+	mov edx,OFFSET Pone6
+	call WriteString
+	call Crlf
+	call Crlf
+	mov edx,OFFSET win1
+	call WriteString
+	call Crlf
+	mov edx,OFFSET win2
+	call WriteString
+	call Crlf
+	mov edx,OFFSET win3
+	call WriteString
+	call Crlf
+	mov edx,OFFSET win4
+	call WriteString
+	call Crlf
+	mov edx,OFFSET win5
+	call WriteString
+	call Crlf
+	mov edx,OFFSET win6
+	call WriteString
+	call Crlf
+	ret
+PrintP1Wins ENDP
 
 PrintLineOfBox PROC
 mov ebx,ecx
@@ -495,9 +591,18 @@ L4:
 	je OPERATION_PART                       ;°»´ú¨ìenter
 jmp L4
 GAME_PART:
-call ClrScr
-call GamePart
-jmp begin
+	call ClrScr
+	;call GamePart
+	call ClrScr
+	call PrintP1Wins
+	jmp test1
+test1:
+	mov eax,50
+	call Delay
+	call ReadKey
+	cmp dx,+27
+	je begin
+	jmp test1;
 SET_PART:
 	call Sound
 	call ClrScr
