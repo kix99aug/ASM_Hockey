@@ -6,8 +6,9 @@ PlaySound PROTO,
         hmod:DWORD, 
         fdwSound:DWORD
 .data
-	winwid EQU 125
+	winwid EQU 120
 	winhei EQU 30
+	bar BYTE 60 DUP ("■"),0
 	oldscreen BYTE winhei DUP( winwid DUP ("A"),0)
 	newscreen BYTE winhei DUP( winwid DUP ("■"))
 	titlestr1 BYTE		"______________  __ _____ _     ",0
@@ -37,6 +38,7 @@ PlaySound PROTO,
 	speed BYTE       "> Speed   ",0
 	speed1 BYTE      "Speed   ",0
 	ColorBox BYTE "■ ",0
+	OneBox BYTE "■",0
 	P1 BYTE          "                                         Player1: Q W E(Skill) F(Up) C(Down)",0
 	P2 BYTE          "                                         Player2: I O P(Skill) 5(Up) 1(Down)",0
 	back BYTE        "Press ESC to return...",0
@@ -51,9 +53,6 @@ PlaySound PROTO,
 	P1_color DWORD 1d,0
 	P2_color DWORD 1d,0
 	Speed_color DWORD 15d,0
-	deviceConnect BYTE "DeviceConnect",0
-	SND_ALIAS    DWORD 00010000h
-	SND_RESOURCE DWORD 00040005h
 	SND_FILENAME DWORD 00020000h
 	file BYTE "喀拉音效.wav",0
 .code
@@ -83,7 +82,6 @@ NotGreaterThan5:
 PrintTitle ENDP
 
 Sound PROC
-	INVOKE PlaySound, OFFSET deviceConnect, NULL, SND_ALIAS
 	INVOKE PlaySound, OFFSET file, NULL, SND_FILENAME
 	ret
 Sound ENDP
@@ -105,8 +103,52 @@ jne Outer
 ret
 PrintAll ENDP
 
+PrintLineOfBox PROC
+mov ebx,ecx
+mov ecx,0
+Outer:
+	mov dl,cl
+	mov dh,bl
+	call Gotoxy
+	mov edx,OFFSET OneBox
+	call WriteString
+	add ecx,2
+	cmp ecx,winwid
+jne Outer
+mov ecx,ebx
+ret
+PrintLineOfBox ENDP
+
+PrintBorder PROC
+mov ecx,0
+Outer:
+	.IF ecx == 0
+	call PrintLineOfBox
+	.ELSEIF ecx == winhei-1
+	call PrintLineOfBox
+	.ELSE
+	mov dl,0
+	mov dh,cl
+	call Gotoxy
+	mov edx,OFFSET OneBox
+	call WriteString
+	mov dl,winwid-2
+	mov dh,cl
+	call Gotoxy
+	mov edx,OFFSET OneBox
+	call WriteString
+	.ENDIF
+	inc ecx
+	cmp ecx,winhei
+jne Outer
+mov dl,0
+mov dh,0
+call Gotoxy
+ret
+PrintBorder ENDP
+
 GamePart PROC
-call PrintAll
+call PrintBorder
 mov eax,10000
 call Delay
 ret
@@ -141,7 +183,7 @@ STA:                                   ;選取start時的介面
 	call Gotoxy
 	mov edx,OFFSET operation1
 	call WriteString
-	;call Sound
+	call Sound
 	jmp L3                             ;輸入鍵盤上、下或enter
 	L3:
 	mov eax,50
