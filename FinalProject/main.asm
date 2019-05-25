@@ -1,9 +1,10 @@
 INCLUDE Irvine32.inc
 INCLUDE Macros.inc
 .data
-	winwid EQU 120
+	winwid EQU 125
 	winhei EQU 30
-	screen DWORD winhei DUP( winwid DUP (?))
+	oldscreen BYTE winhei DUP( winwid DUP ("A"),0)
+	newscreen BYTE winhei DUP( winwid DUP ("■"))
 	titlestr1 BYTE		"______________  __ _____ _     ",0
 	titlestr2 BYTE		"| ___ \_   _\ \/ /|  ___| |    ",0
 	titlestr3 BYTE		"| |_/ / | |  \  / | |__ | |    ",0
@@ -71,64 +72,26 @@ NotGreaterThan5:
 PrintTitle ENDP
 
 PrintAll PROC
-mov ecx,winhei
+mov ecx,0
 Outer:
-	dec ecx
-	push ecx
-	mov eax,ecx
-	mov ecx,winwid
-	Inner:
-		dec ecx
-		mov ebx,ecx
-		add	ebx,eax
-		mov eax,screen[ebx]
-		pop ebx
-		mov dh,bl
-		mov dl,cl
-		push ebx
-		call Gotoxy
-		call WriteChar
-	loop Inner
-	pop ecx
-loop Outer
+	mov eax,winwid+1
+	mul ecx
+	mov dl,0
+	mov dh,cl
+	call Gotoxy
+	add eax ,OFFSET oldscreen
+	mov edx,eax
+	call WriteString
+	inc ecx
+	cmp ecx,winhei
+jne Outer
 ret
 PrintAll ENDP
 
 GamePart PROC
-mov ecx,0
-Outer:
-	push ecx
-	cmp ecx,0
-	je blockline
-	cmp ecx,winhei
-	je blockline
-	mov ecx,0
-	blockheadandtail:
-		cmp ecx,0
-		je makeblock
-		cmp ecx,winwid-2
-		je makeblock
-		jmp noblock
-		makeblock:
-		mov screen[ecx],2588
-		noblock:
-		mov screen[ecx],' '
-		inc ecx
-		cmp ecx,winwid
-	jne blockheadandtail
-	blockline:
-	mov ecx,0
-	blocklinein:
-		mov screen[ecx],2588
-		inc ecx
-		cmp ecx,winwid
-	jne blocklinein
-	pop ecx
-	inc ecx
-	cmp ecx,winhei
-jne Outer
 call PrintAll
-call WaitMsg
+mov eax,10000
+call Delay
 ret
 GamePart ENDP
 
@@ -181,7 +144,7 @@ STA:                                   ;選取start時的介面
 	cmp dx,+38
 	je OPERA                             ;偵測到上
 	cmp dx,+13                 
-	jmp GAME_PART                      ;偵測到enter
+	je GAME_PART                      ;偵測到enter
 	
 	jmp L3
 SET:                                   ;選取setting的介面
@@ -291,7 +254,7 @@ OPERA:
 GAME_PART:
 call ClrScr
 call GamePart
-
+jmp begin
 SET_PART:
 	
 	call ClrScr
