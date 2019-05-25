@@ -149,7 +149,7 @@ SET:                                   ;選取setting的介面
 	mov edx,OFFSET operation1
 	call WriteString
 	jmp L1
-	L1:                                 
+L1:                                 
 	mov eax,50
     call Delay
 	call ReadKey
@@ -159,8 +159,7 @@ SET:                                   ;選取setting的介面
 	je STA                            ;偵測到上
 	cmp dx,+13
 	je SET_PART                       ;偵測到enter
-	
-	jmp L1
+jmp L1
 FIN:
 	mov dl,53
 	mov dh,20
@@ -182,9 +181,8 @@ FIN:
 	call Gotoxy
 	mov edx,OFFSET operation1
 	call WriteString
-	
 	jmp L2
-	L2:
+L2:
 	mov eax,50
     call Delay
 	call ReadKey
@@ -194,8 +192,7 @@ FIN:
 	je SET
 	cmp dx,+13
 	je FINISH_PART
-
-	jmp L2
+jmp L2
 OPERA:
 	mov dl,53
 	mov dh,20
@@ -217,9 +214,8 @@ OPERA:
 	call Gotoxy
 	mov edx,OFFSET operation
 	call WriteString
-	
 	jmp L4                             ;輸入鍵盤上、下或enter
-	L4:
+L4:
 	mov eax,50
     call Delay
 	call ReadKey                       ;讀取鍵盤輸入
@@ -229,482 +225,453 @@ OPERA:
 	je FIN                             ;偵測到上
 	cmp dx,+13                 
 	je OPERATION_PART                       ;偵測到enter
-	
-	jmp L4
+jmp L4
 GAME_PART:
 
 SET_PART:
-	
 	call ClrScr
-	SET_COLOR:
-		mov dl,53
-		mov dh,5
-		call Gotoxy
-		mov edx,OFFSET setting1
-		call WriteString
-		mov dl,P1_color_point_local
-		mov dh,8
-		call Gotoxy
-		mov eax,P1_color
-		call SetTextColor
-		mov edx,OFFSET P1_color_choose
-		call WriteString
-		mov eax,15d
-		call SetTextColor
-		;mov dl,68
-		;mov dh,8
-		;call Gotoxy
-		;mov edx,OFFSET P1_SetColor_Click
-		;call WriteString
-		mov dl,48
-		mov dh,9
-		call Gotoxy
-		mov edx,OFFSET color
-		call WriteString
-		mov dl,56
-		mov dh,9
-		call Gotoxy
-		mov edx,OFFSET colorbox
-		mov eax,1d
-	    call SetTextColor
-		call WriteString
-		mov eax,2d
-	    call SetTextColor
-		call WriteString
-		mov eax,3d
-	    call SetTextColor
-		call WriteString
-		mov eax,4d
-	    call SetTextColor
-		call WriteString
-		mov eax,15d
-	    call SetTextColor
-		
-		mov dl,P2_color_point_local
-		mov dh,10
-		call Gotoxy
-		mov eax,P2_color
-			call SetTextColor
-		mov edx,OFFSET P2_color_choose
-		call WriteString
-		mov eax,15d
-		call SetTextColor
-		mov eax,Speed_color
-		call SetTextColor
-		mov dl,Speed_point_local
-		mov dh,12
-		call Gotoxy
-		mov edx,OFFSET speed_choose
-		call WriteString
-		mov eax,15d
-		call SetTextColor
-		;mov dl,68
-		;mov dh,10
-		;call Gotoxy
-		;mov edx,OFFSET P2_SetColor_Click
-		;call WriteString
-		mov dl,48
-		mov dh,13
-		call Gotoxy
-		mov edx,OFFSET speed1
-		call WriteString
-		mov edx,OFFSET colorbox
-		call WriteString
-		mov eax,7d
-	    call SetTextColor
-		call WriteString
-		mov eax,8d
-	    call SetTextColor
-		call WriteString
-		mov eax,6d
-	    call SetTextColor
-		call WriteString
-		mov eax,15d
-	    call SetTextColor
-		
-		mov dl,48
-		mov dh,25
-		call Gotoxy
-		mov edx,OFFSET back
-		call WriteString
-		jmp L6
-		L6:
-		mov eax,50
-		call Delay
-		call ReadKey
-		cmp dx,+27
-		je begin
-		cmp dx,+38
-		je SET_SPEED
-		cmp dx,+40
-		je SET_SPEED
-		cmp dx,+68
-		je P1_color_point_right
-		cmp dx,+65
-		je P1_color_point_left
-		cmp dx,+39
-		je P2_color_point_right
-		cmp dx,+37
-		je P2_color_point_left
-		jmp L6
-		P2_color_point_right:
-			mov dl,0
-			mov dh,10
-			call Gotoxy
-			mov edx,OFFSET empty
-			call WriteString
-			;mov dl,68
-			;mov dh,10
-			;call Gotoxy
-			;mov edx,OFFSET P2_SetColor_Click
-			;call WriteString
-			cmp P2_color_point_local,65d
-			jne P2_movR_color
-			mov P2_color_point_local,56d
-			mov P2_color,1
-			mov dl,P2_color_point_local
-			mov dh,10
-			call Gotoxy
-			mov eax,P2_color
-			call SetTextColor
-			mov edx,OFFSET P2_color_choose
-			call WriteString
-			mov eax,15d
-			call SetTextColor
-
-			
-
-			jmp L6
-			P2_movR_color:
-				add P2_color_point_local,3d
-				
-				.IF P2_color_point_local == 56
-					mov P2_color,1
-				.ELSEIF P2_color_point_local == 59
-					mov P2_color,2
-				.ELSEIF P2_color_point_local == 62
-					mov P2_color,3
-				.ELSEIF P2_color_point_local == 65
-					mov P2_color,4
-				.ENDIF
-				mov eax,P2_color
-				call SetTextColor
-				mov dl,P2_color_point_local
-				mov dh,10
-				call Gotoxy
-				mov edx,OFFSET P2_color_choose
-				call WriteString
-				mov eax,15d
-				call SetTextColor
-				jmp L6
-		P2_color_point_left:
-			mov dl,0
-			mov dh,10
-			call Gotoxy
-			mov edx,OFFSET empty
-			call WriteString
-			;mov dl,68
-			;mov dh,10
-			;call Gotoxy
-			;mov edx,OFFSET P2_SetColor_Click
-			;call WriteString
-			cmp P2_color_point_local,56d
-			jne P2_movL_color
-			mov P2_color_point_local,65d
-			mov P2_color,4
-			mov dl,P2_color_point_local
-			mov dh,10
-			call Gotoxy
-			mov eax,P2_color
-			call SetTextColor
-			mov edx,OFFSET P2_color_choose
-			call WriteString
-			mov eax,15d
-			call SetTextColor
-
-			
-
-			jmp L6
-			P2_movL_color:
-				sub P2_color_point_local,3d
-				
-				.IF P2_color_point_local == 56
-					mov P2_color,1
-				.ELSEIF P2_color_point_local == 59
-					mov P2_color,2
-				.ELSEIF P2_color_point_local == 62
-					mov P2_color,3
-				.ELSEIF P2_color_point_local == 65
-					mov P2_color,4
-				.ENDIF
-				mov eax,P2_color
-				call SetTextColor
-
-				mov dl,P2_color_point_local
-				mov dh,10
-				call Gotoxy
-				mov edx,OFFSET P2_color_choose
-				call WriteString
-				mov eax,15d
-				call SetTextColor
-				jmp L6
-		P1_color_point_right:
-			mov dl,0
-			mov dh,8
-			call Gotoxy
-			mov edx,OFFSET empty
-			call WriteString
-			;mov dl,68
-			;mov dh,8
-			;call Gotoxy
-			;mov edx,OFFSET P1_SetColor_Click
-			;call WriteString
-			cmp P1_color_point_local,65d
-			jne P1_movR_color
-			mov P1_color_point_local,56d
-			mov P1_color,1
-			mov dl,P1_color_point_local
-			mov dh,8
-			call Gotoxy
-			mov eax,P1_color
-			call SetTextColor
-			mov edx,OFFSET P1_color_choose
-			call WriteString
-			mov eax,15d
-			call SetTextColor
-			
-
-			jmp L6
-			P1_movR_color:
-				add P1_color_point_local,3d
-				
-				.IF P1_color_point_local == 56
-					mov P1_color,1
-				.ELSEIF P1_color_point_local == 59
-					mov P1_color,2
-				.ELSEIF P1_color_point_local == 62
-					mov P1_color,3
-				.ELSEIF P1_color_point_local == 65
-					mov P1_color,4
-				.ENDIF
-
-				mov dl,P1_color_point_local
-				mov dh,8
-				call Gotoxy
-				mov eax,P1_color
-				call SetTextColor
-				mov edx,OFFSET P1_color_choose
-				call WriteString
-				mov eax,15d
-				call SetTextColor
-				jmp L6
-		P1_color_point_left:
-			mov dl,0
-			mov dh,8
-			call Gotoxy
-			mov edx,OFFSET empty
-			call WriteString
-			;mov dl,68
-			;mov dh,8
-			;call Gotoxy
-			;mov edx,OFFSET P1_SetColor_Click
-			;call WriteString
-			cmp P1_color_point_local,56d
-			jne P1_movL_color
-			mov P1_color_point_local,65d
-			mov P1_color,4
-			mov dl,P1_color_point_local
-			mov dh,8
-			call Gotoxy
-			mov eax,P1_color
-				call SetTextColor
-			mov edx,OFFSET P1_color_choose
-			call WriteString
-			mov eax,15d
-				call SetTextColor
-			
-
-			jmp L6
-			P1_movL_color:
-				sub P1_color_point_local,3d
-				
-				.IF P1_color_point_local == 56
-					mov P1_color,1
-				.ELSEIF P1_color_point_local == 59
-					mov P1_color,2
-				.ELSEIF P1_color_point_local == 62
-					mov P1_color,3
-				.ELSEIF P1_color_point_local == 65
-					mov P1_color,4
-				.ENDIF
-				mov eax,P1_color
-				call SetTextColor
-				mov dl,P1_color_point_local
-				mov dh,8
-				call Gotoxy
-				mov edx,OFFSET P1_color_choose
-				call WriteString
-				mov eax,15d
-				call SetTextColor
-				jmp L6
-
-	SET_SPEED:
-		
-		mov dl,53
-		mov dh,5
-		call Gotoxy
-		mov edx,OFFSET setting1
-		call WriteString
-		
-		mov dl,48
-		mov dh,9
-		call Gotoxy
-		mov edx,OFFSET color1
-		call WriteString
-		mov dl,56
-		mov dh,9
-		call Gotoxy
-		mov edx,OFFSET colorbox
-		mov eax,1d
-	    call SetTextColor
-		call WriteString
-		mov eax,2d
-	    call SetTextColor
-		call WriteString
-		mov eax,3d
-	    call SetTextColor
-		call WriteString
-		mov eax,4d
-	    call SetTextColor
-		call WriteString
-		mov eax,15d
-	    call SetTextColor
-		mov dl,48
-		mov dh,13
-		call Gotoxy
-		mov edx,OFFSET speed
-		call WriteString
-		mov dl,56
-		mov dh,13
-		call Gotoxy
-		mov edx,OFFSET colorbox
-		call WriteString
-		mov eax,7d
-	    call SetTextColor
-		call WriteString
-		mov eax,8d
-	    call SetTextColor
-		call WriteString
-		mov eax,6d
-	    call SetTextColor
-		call WriteString
-		mov eax,15d
-	    call SetTextColor
-		mov dl,48
-		mov dh,25
-		call Gotoxy
-		mov edx,OFFSET back
-		call WriteString
-		jmp L7
-		L7:
-		mov eax,50
-		call Delay
-		call ReadKey
-		cmp dx,+27
-		je begin
-		cmp dx,+38
-		je SET_COLOR
-		cmp dx,+40
-		je SET_COLOR
-		cmp dx,37
-		je Speed_point_left
-		cmp dx,39
-		je Speed_point_right
-		jmp L7
-		Speed_point_right:
-			
-			mov dl,0
-			mov dh,12
-			call Gotoxy
-			mov edx,OFFSET empty
-			call WriteString
-			cmp Speed_point_local,65d
-			jne Speed_movR
-			mov Speed_point_local,56d
-			mov Speed_color,15d
-			mov eax,Speed_color
-			call SetTextColor
-			mov dl,Speed_point_local
-			mov dh,12
-			call Gotoxy
-			mov edx,OFFSET speed_choose
-			call WriteString
-			jmp L7
-			Speed_movR:
-				add Speed_point_local,3d
-				.IF Speed_point_local == 56
-					mov Speed_color,15
-				.ELSEIF Speed_point_local == 59
-					mov Speed_color,7
-				.ELSEIF Speed_point_local == 62
-					mov Speed_color,8
-				.ELSEIF Speed_point_local == 65
-					mov Speed_color,6
-				.ENDIF
-				mov eax,Speed_color
-				call SetTextColor
-				
-				mov dl,Speed_point_local
-				mov dh,12
-				call Gotoxy
-				mov edx,OFFSET speed_choose
-				call WriteString
-				mov eax,15d
-				call SetTextColor
-				jmp L7
-		Speed_point_left:
-			mov dl,0
-			mov dh,12
-			call Gotoxy
-			mov edx,OFFSET empty
-			call WriteString
-			cmp Speed_point_local,56d
-			jne Speed_movL
-			mov Speed_point_local,65d
-			mov Speed_color,6d
-			mov eax,Speed_color
-			call SetTextColor
-			mov dl,Speed_point_local
-			mov dh,12
-			call Gotoxy
-			mov edx,OFFSET speed_choose
-			call WriteString
-			jmp L7
-			Speed_movL:
-				
-				sub Speed_point_local,3d
-				.IF Speed_point_local == 56
-					mov Speed_color,15
-				.ELSEIF Speed_point_local == 59
-					mov Speed_color,7
-				.ELSEIF Speed_point_local == 62
-					mov Speed_color,8
-				.ELSEIF Speed_point_local == 65
-					mov Speed_color,6
-				.ENDIF
-				mov dl,Speed_point_local
-				mov dh,12
-				call Gotoxy
-				mov eax,Speed_color
-				call SetTextColor
-				mov edx,OFFSET speed_choose
-				call WriteString
-				mov eax,15d
-				call SetTextColor
-				jmp L7
-
-
-
+SET_COLOR:
+	mov dl,53
+	mov dh,5
+	call Gotoxy
+	mov edx,OFFSET setting1
+	call WriteString
+	mov dl,P1_color_point_local
+	mov dh,8
+	call Gotoxy
+	mov eax,P1_color
+	call SetTextColor
+	mov edx,OFFSET P1_color_choose
+	call WriteString
+	mov eax,15d
+	call SetTextColor
+	;mov dl,68
+	;mov dh,8
+	;call Gotoxy
+	;mov edx,OFFSET P1_SetColor_Click
+	;call WriteString
+	mov dl,48
+	mov dh,9
+	call Gotoxy
+	mov edx,OFFSET color
+	call WriteString
+	mov dl,56
+	mov dh,9
+	call Gotoxy
+	mov edx,OFFSET colorbox
+	mov eax,1d
+	call SetTextColor
+	call WriteString
+	mov eax,2d
+	call SetTextColor
+	call WriteString
+	mov eax,3d
+	call SetTextColor
+	call WriteString
+	mov eax,4d
+	call SetTextColor
+	call WriteString
+	mov eax,15d
+	call SetTextColor
+	mov dl,P2_color_point_local
+	mov dh,10
+	call Gotoxy
+	mov eax,P2_color
+	call SetTextColor
+	mov edx,OFFSET P2_color_choose
+	call WriteString
+	mov eax,15d
+	call SetTextColor
+	mov eax,Speed_color
+	call SetTextColor
+	mov dl,Speed_point_local
+	mov dh,12
+	call Gotoxy
+	mov edx,OFFSET speed_choose
+	call WriteString
+	mov eax,15d
+	call SetTextColor
+	;mov dl,68
+	;mov dh,10
+	;call Gotoxy
+	;mov edx,OFFSET P2_SetColor_Click
+	;call WriteString
+	mov dl,48
+	mov dh,13
+	call Gotoxy
+	mov edx,OFFSET speed1
+	call WriteString
+	mov edx,OFFSET colorbox
+	call WriteString
+	mov eax,7d
+	call SetTextColor
+	call WriteString
+	mov eax,8d
+	call SetTextColor
+	call WriteString
+	mov eax,6d
+	call SetTextColor
+	call WriteString
+	mov eax,15d
+	call SetTextColor
+	mov dl,48
+	mov dh,25
+	call Gotoxy
+	mov edx,OFFSET back
+	call WriteString
+	jmp L6
+L6:
+	mov eax,50
+	call Delay
+	call ReadKey
+	cmp dx,+27
+	je begin
+	cmp dx,+38
+	je SET_SPEED
+	cmp dx,+40
+	je SET_SPEED
+	cmp dx,+68
+	je P1_color_point_right
+	cmp dx,+65
+	je P1_color_point_left
+	cmp dx,+39
+	je P2_color_point_right
+	cmp dx,+37
+	je P2_color_point_left
+jmp L6
+P2_color_point_right:
+	mov dl,0
+	mov dh,10
+	call Gotoxy
+	mov edx,OFFSET empty
+	call WriteString
+	;mov dl,68
+	;mov dh,10
+	;call Gotoxy
+	;mov edx,OFFSET P2_SetColor_Click
+	;call WriteString
+	cmp P2_color_point_local,65d
+	jne P2_movR_color
+	mov P2_color_point_local,56d
+	mov P2_color,1
+	mov dl,P2_color_point_local
+	mov dh,10
+	call Gotoxy
+	mov eax,P2_color
+	call SetTextColor
+	mov edx,OFFSET P2_color_choose
+	call WriteString
+	mov eax,15d
+	call SetTextColor			
+	jmp L6
+P2_movR_color:
+	add P2_color_point_local,3d			
+	.IF P2_color_point_local == 56
+	mov P2_color,1
+	.ELSEIF P2_color_point_local == 59
+	mov P2_color,2
+	.ELSEIF P2_color_point_local == 62
+	mov P2_color,3
+	.ELSEIF P2_color_point_local == 65
+	mov P2_color,4
+	.ENDIF
+	mov eax,P2_color
+	call SetTextColor
+	mov dl,P2_color_point_local
+	mov dh,10
+	call Gotoxy
+	mov edx,OFFSET P2_color_choose
+	call WriteString
+	mov eax,15d
+	call SetTextColor
+	jmp L6
+P2_color_point_left:
+	mov dl,0
+	mov dh,10
+	call Gotoxy
+	mov edx,OFFSET empty
+	call WriteString
+	;mov dl,68
+	;mov dh,10
+	;call Gotoxy
+	;mov edx,OFFSET P2_SetColor_Click
+	;call WriteString
+	cmp P2_color_point_local,56d
+	jne P2_movL_color
+	mov P2_color_point_local,65d
+	mov P2_color,4
+	mov dl,P2_color_point_local
+	mov dh,10
+	call Gotoxy
+	mov eax,P2_color
+	call SetTextColor
+	mov edx,OFFSET P2_color_choose
+	call WriteString
+	mov eax,15d
+	call SetTextColor
+	jmp L6
+P2_movL_color:
+	sub P2_color_point_local,3d	
+	.IF P2_color_point_local == 56
+	mov P2_color,1
+	.ELSEIF P2_color_point_local == 59
+	mov P2_color,2
+	.ELSEIF P2_color_point_local == 62
+	mov P2_color,3
+	.ELSEIF P2_color_point_local == 65
+	mov P2_color,4
+	.ENDIF
+	mov eax,P2_color
+	call SetTextColor
+	mov dl,P2_color_point_local
+	mov dh,10
+	call Gotoxy
+	mov edx,OFFSET P2_color_choose
+	call WriteString
+	mov eax,15d
+	call SetTextColor
+	jmp L6
+P1_color_point_right:
+	mov dl,0
+	mov dh,8
+	call Gotoxy
+	mov edx,OFFSET empty
+	call WriteString
+	;mov dl,68
+	;mov dh,8
+	;call Gotoxy
+	;mov edx,OFFSET P1_SetColor_Click
+	;call WriteString
+	cmp P1_color_point_local,65d
+	jne P1_movR_color
+	mov P1_color_point_local,56d
+	mov P1_color,1
+	mov dl,P1_color_point_local
+	mov dh,8
+	call Gotoxy
+	mov eax,P1_color
+	call SetTextColor
+	mov edx,OFFSET P1_color_choose
+	call WriteString
+	mov eax,15d
+	call SetTextColor
+	jmp L6
+P1_movR_color:
+	add P1_color_point_local,3d		
+	.IF P1_color_point_local == 56
+	mov P1_color,1
+	.ELSEIF P1_color_point_local == 59
+	mov P1_color,2
+	.ELSEIF P1_color_point_local == 62
+	mov P1_color,3
+	.ELSEIF P1_color_point_local == 65
+	mov P1_color,4
+	.ENDIF
+	mov dl,P1_color_point_local
+	mov dh,8
+	call Gotoxy
+	mov eax,P1_color
+	call SetTextColor
+	mov edx,OFFSET P1_color_choose
+	call WriteString
+	mov eax,15d
+	call SetTextColor
+	jmp L6
+P1_color_point_left:
+	mov dl,0
+	mov dh,8
+	call Gotoxy
+	mov edx,OFFSET empty
+	call WriteString
+	;mov dl,68
+	;mov dh,8
+	;call Gotoxy
+	;mov edx,OFFSET P1_SetColor_Click
+	;call WriteString
+	cmp P1_color_point_local,56d
+	jne P1_movL_color
+	mov P1_color_point_local,65d
+	mov P1_color,4
+	mov dl,P1_color_point_local
+	mov dh,8
+	call Gotoxy
+	mov eax,P1_color
+	call SetTextColor
+	mov edx,OFFSET P1_color_choose
+	call WriteString
+	mov eax,15d
+	call SetTextColor
+	jmp L6
+P1_movL_color:
+	sub P1_color_point_local,3d	
+	.IF P1_color_point_local == 56
+	mov P1_color,1
+	.ELSEIF P1_color_point_local == 59
+	mov P1_color,2
+	.ELSEIF P1_color_point_local == 62
+	mov P1_color,3
+	.ELSEIF P1_color_point_local == 65
+	mov P1_color,4
+	.ENDIF
+	mov eax,P1_color
+	call SetTextColor
+	mov dl,P1_color_point_local
+	mov dh,8
+	call Gotoxy
+	mov edx,OFFSET P1_color_choose
+	call WriteString
+	mov eax,15d
+	call SetTextColor
+	jmp L6
+SET_SPEED:		
+	mov dl,53
+	mov dh,5
+	call Gotoxy
+	mov edx,OFFSET setting1
+	call WriteString		
+	mov dl,48
+	mov dh,9
+	call Gotoxy
+	mov edx,OFFSET color1
+	call WriteString
+	mov dl,56
+	mov dh,9
+	call Gotoxy
+	mov edx,OFFSET colorbox
+	mov eax,1d
+    call SetTextColor
+	call WriteString
+	mov eax,2d
+    call SetTextColor
+	call WriteString
+	mov eax,3d
+    call SetTextColor
+	call WriteString
+	mov eax,4d
+    call SetTextColor
+	call WriteString
+	mov eax,15d
+    call SetTextColor
+	mov dl,48
+	mov dh,13
+	call Gotoxy
+	mov edx,OFFSET speed
+	call WriteString
+	mov dl,56
+	mov dh,13
+	call Gotoxy
+	mov edx,OFFSET colorbox
+	call WriteString
+	mov eax,7d
+    call SetTextColor
+	call WriteString
+	mov eax,8d
+    call SetTextColor
+	call WriteString
+	mov eax,6d
+    call SetTextColor
+	call WriteString
+	mov eax,15d
+    call SetTextColor
+	mov dl,48
+	mov dh,25
+	call Gotoxy
+	mov edx,OFFSET back
+	call WriteString
+	jmp L7
+L7:
+	mov eax,50
+	call Delay
+	call ReadKey
+	cmp dx,+27
+	je begin
+	cmp dx,+38
+	je SET_COLOR
+	cmp dx,+40
+	je SET_COLOR
+	cmp dx,37
+	je Speed_point_left
+	cmp dx,39
+	je Speed_point_right
+	jmp L7
+Speed_point_right:	
+	mov dl,0
+	mov dh,12
+	call Gotoxy
+	mov edx,OFFSET empty
+	call WriteString
+	cmp Speed_point_local,65d
+	jne Speed_movR
+	mov Speed_point_local,56d
+	mov Speed_color,15d
+	mov eax,Speed_color
+	call SetTextColor
+	mov dl,Speed_point_local
+	mov dh,12
+	call Gotoxy
+	mov edx,OFFSET speed_choose
+	call WriteString
+	jmp L7
+Speed_movR:
+	add Speed_point_local,3d
+	.IF Speed_point_local == 56
+	mov Speed_color,15
+	.ELSEIF Speed_point_local == 59
+	mov Speed_color,7
+	.ELSEIF Speed_point_local == 62
+	mov Speed_color,8
+	.ELSEIF Speed_point_local == 65
+	mov Speed_color,6
+	.ENDIF
+	mov eax,Speed_color
+	call SetTextColor		
+	mov dl,Speed_point_local
+	mov dh,12
+	call Gotoxy
+	mov edx,OFFSET speed_choose
+	call WriteString
+	mov eax,15d
+	call SetTextColor
+	jmp L7
+Speed_point_left:
+	mov dl,0
+	mov dh,12
+	call Gotoxy
+	mov edx,OFFSET empty
+	call WriteString
+	cmp Speed_point_local,56d
+	jne Speed_movL
+	mov Speed_point_local,65d
+	mov Speed_color,6d
+	mov eax,Speed_color
+	call SetTextColor
+	mov dl,Speed_point_local
+	mov dh,12
+	call Gotoxy
+	mov edx,OFFSET speed_choose
+	call WriteString
+	jmp L7
+Speed_movL:				
+	sub Speed_point_local,3d
+	.IF Speed_point_local == 56
+	mov Speed_color,15
+	.ELSEIF Speed_point_local == 59
+	mov Speed_color,7
+	.ELSEIF Speed_point_local == 62
+	mov Speed_color,8
+	.ELSEIF Speed_point_local == 65
+	mov Speed_color,6
+	.ENDIF
+	mov dl,Speed_point_local
+	mov dh,12
+	call Gotoxy
+	mov eax,Speed_color
+	call SetTextColor
+	mov edx,OFFSET speed_choose
+	call WriteString
+	mov eax,15d
+	call SetTextColor
+	jmp L7
 OPERATION_PART:
 	call ClrScr
 	mov dl,53
@@ -727,20 +694,16 @@ OPERATION_PART:
 	mov edx,OFFSET back
 	call WriteString
 	jmp L5
-	L5:
+L5:
 	mov eax,50
     call Delay
 	call ReadKey
 	cmp dx,+27
 	je begin
 	jmp L5
-
-
 FINISH_PART:
 	exit
-
 menu ENDP
-
 
 main PROC
 call menu
