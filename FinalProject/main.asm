@@ -6,9 +6,10 @@ PlaySound PROTO,
         hmod:DWORD, 
         fdwSound:DWORD
 .data
-	winwid EQU 120
+	winwid EQU 125
 	winhei EQU 30
-	screen BYTE 100 DUP(100 DUP (?))
+	oldscreen BYTE winhei DUP( winwid DUP ("A"),0)
+	newscreen BYTE winhei DUP( winwid DUP ("■"))
 	titlestr1 BYTE		"______________  __ _____ _     ",0
 	titlestr2 BYTE		"| ___ \_   _\ \/ /|  ___| |    ",0
 	titlestr3 BYTE		"| |_/ / | |  \  / | |__ | |    ",0
@@ -86,8 +87,28 @@ Sound PROC
 Sound ENDP
 
 PrintAll PROC
-
+mov ecx,0
+Outer:
+	mov eax,winwid+1
+	mul ecx
+	mov dl,0
+	mov dh,cl
+	call Gotoxy
+	add eax ,OFFSET oldscreen
+	mov edx,eax
+	call WriteString
+	inc ecx
+	cmp ecx,winhei
+jne Outer
+ret
 PrintAll ENDP
+
+GamePart PROC
+call PrintAll
+mov eax,10000
+call Delay
+ret
+GamePart ENDP
 
 menu PROC
 
@@ -129,7 +150,7 @@ STA:                                   ;選取start時的介面
 	cmp dx,+38
 	je OPERA                             ;偵測到上
 	cmp dx,+13                 
-	je GAME_PART                       ;偵測到enter
+	je GAME_PART                      ;偵測到enter
 	
 	jmp L3
 SET:                                   ;選取setting的介面
@@ -235,7 +256,9 @@ L4:
 	je OPERATION_PART                       ;偵測到enter
 jmp L4
 GAME_PART:
-
+call ClrScr
+call GamePart
+jmp begin
 SET_PART:
 	call Sound
 	call ClrScr
@@ -718,7 +741,7 @@ OPERATION_PART:
 	jmp L5
 L5:
 	mov eax,50
-    call Delay
+  call Delay
 	call ReadKey
 	cmp dx,+27
 	je begin
