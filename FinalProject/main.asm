@@ -55,24 +55,24 @@ PlaySound PROTO,
 	Speed_color DWORD 15d,0
 	SND_FILENAME DWORD 00020000h
 	file BYTE "³״©װ­µ®ִ.wav",0
-	player1 BYTE "¢i¢i¢i¢i¢i¢iשß  ¢i¢iשß          ¢i¢i¢i¢i¢iשß      ¢i¢iשß   ¢i¢iשß ¢i¢i¢i¢i¢i¢i¢iשß¢i¢i¢i¢i¢i¢iשß ",0
-	player2 BYTE "¢i¢iשÝשששש¢i¢iשß¢i¢iשר          ¢i¢iשÝשששש¢i¢iשß שד¢i¢iשß ¢i¢iשÝשו¢i¢iשÝשששששששששו¢i¢iשÝשששש¢i¢iשß",0
-	player3 BYTE "¢i¢i¢i¢i¢i¢iשÝשו¢i¢iשר          ¢i¢i¢i¢i¢i¢i¢iשר   שד¢i¢i¢i¢iשÝשו ¢i¢i¢i¢i¢iשß    ¢i¢i¢i¢i¢i¢iשÝשו",0
-	player4 BYTE "¢i¢iשÝשששששששו  ¢i¢iשר          ¢i¢iשÝשששש¢i¢iשר     שד¢i¢iשÝשו   ¢i¢iשÝשששששו    ¢i¢iשÝשששש¢i¢iשß",0
-	player5 BYTE "¢i¢iשר          ¢i¢i¢i¢i¢i¢i¢iשß¢i¢iשר    ¢i¢iשר       ¢i¢iשר     ¢i¢i¢i¢i¢i¢i¢iשß¢i¢iשר    ¢i¢iשר",0
-	player6 BYTE "שדשששו          שדשששששששששששששושדשששו    שדשששו       שדשששו     שדשששששששששששששושדשששו    שדשששו",0
-	Pone1 BYTE " ¢i¢i¢i¢i¢i¢iשß   ¢i¢i¢iשß      ¢i¢iשß¢i¢i¢i¢i¢i¢i¢iשß",0
-	Pone2 BYTE "¢i¢iשÝשששששש¢i¢iשß¢i¢i¢i¢iשß    ¢i¢iשר¢i¢iשÝשששששששששו",0
-	Pone3 BYTE "¢i¢iשר      ¢i¢iשר¢i¢iשÝ¢i¢iשß  ¢i¢iשר¢i¢i¢i¢i¢iשß ",0
-	Pone4 BYTE "¢i¢iשר      ¢i¢iשר¢i¢iשרשד¢i¢iשß¢i¢iשר¢i¢iשÝשששששו",0
-	Pone5 BYTE "שד¢i¢i¢i¢i¢i¢iשÝשו¢i¢iשר  שד¢i¢i¢i¢iשר¢i¢i¢i¢i¢i¢i¢iשß",0
-	Pone6 BYTE "  שדשששששששששששו שדשששו    שדשששששששושדשששששששששששששו",0
-	win1 BYTE "¢i¢iשß        ¢i¢iשß¢i¢iשß¢i¢i¢iשß      ¢i¢iשß¢i¢i¢i¢i¢i¢i¢iשß",0
-	win2 BYTE "¢i¢iשר        ¢i¢iשר¢i¢iשר¢i¢i¢i¢iשß    ¢i¢iשר¢i¢iשÝשששששששששו",0
-	win3 BYTE "¢i¢iשר  ¢iשß  ¢i¢iשר¢i¢iשר¢i¢iשÝ¢i¢iשß  ¢i¢iשר¢i¢i¢i¢i¢i¢i¢iשß",0
-	win4 BYTE "¢i¢iשר¢i¢i¢iשß¢i¢iשר¢i¢iשר¢i¢iשרשד¢i¢iשß¢i¢iשרשדשששששששש¢i¢iשר",0
-	win5 BYTE "שד¢i¢i¢iשÝ¢i¢i¢iשÝשו¢i¢iשר¢i¢iשר  שד¢i¢i¢i¢iשר¢i¢i¢i¢i¢i¢i¢iשר",0
-	win6 BYTE "  שדשששששושדשששששו שדשששושדשששו     שדשששששששושדשששששששששששששו",0
+	player1 BYTE ".______    __           ___   ____    ____  _______ .______      ",0
+	player2 BYTE "|   _  \  |  |         /   \  \   \  /   / |   ____||   _  \    ",0
+	player3 BYTE "|  |_)  | |  |        /  ^  \  \   \/   /  |  |__   |  |_)  |   ",0
+	player4 BYTE "|   ___/  |  |       /  /_\  \  \_    _/   |   __|  |      /    ",0
+	player5 BYTE "|  |      |  `----. /  _____  \   |  |     |  |____ |  |\  \----.",0
+	player6 BYTE "| _|      |_______|/__/     \__\  |__|     |_______|| _| `._____|",0
+	Pone1 BYTE "  ______   .__   __.  _______ ",0
+	Pone2 BYTE " /  __  \  |  \ |  | |   ____|",0
+	Pone3 BYTE "|  |  |  | |   \|  | |  |__   ",0
+	Pone4 BYTE "|  |  |  | |  . `  | |   __|  ",0
+	Pone5 BYTE "|  `--'  | |  |\   | |  |____ ",0
+	Pone6 BYTE " \______/  |__| \__| |_______|",0
+	win1 BYTE "____    __    ____  __  .__   __.      _______.",0
+	win2 BYTE "\   \  /  \  /   / |  | |  \ |  |     /       |",0
+	win3 BYTE " \   \/    \/   /  |  | |   \|  |    |   (----`",0
+	win4 BYTE "  \            /   |  | |  . `  |     \   \    ",0
+	win5 BYTE "   \    /\    /    |  | |  |\   | .----)   |   ",0
+	win6 BYTE "    \__/  \__/     |__| |__| \__| |_______/    ",0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -122,9 +122,7 @@ ret
 PrintAll ENDP
 
 PrintP1Wins PROC
-	mov dl,16
-	mov dh,2
-	call Gotoxy
+	
 	mov edx,OFFSET player1
 	call WriteString
 	call Crlf
