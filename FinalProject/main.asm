@@ -104,9 +104,11 @@ PlaySound PROTO,
 	SND_MEMORY          equ    0004h   ; lpszSoundName points to a memory file 
 	SND_LOOP            equ    0008h   ; loop the sound until next sndPlaySound 
 	SND_NOSTOP          equ    0010h   ; don't stop any currently playing sound 
+
 	file BYTE "喀拉音效.wav",0
 	file2 BYTE "oklet'sgo.wav",0
 	file3 BYTE "yeah.wav",0
+	file4 BYTE "homesound.wav",0
 
 
 	player1 BYTE ".______    __           ___   ____    ____  _______ .______      ",0
@@ -153,21 +155,33 @@ NotGreaterThan5:
 	ret
 PrintTitle ENDP
 
-Sound PROC USES eax
+
+
+Soundhome PROC USES eax
 	mov eax,SND_FILENAME
 	or eax,SND_ASYNC
-	or eax,SND_LOOP
+	;or eax,SND_LOOP
+	INVOKE PlaySound, OFFSET file4, NULL, eax
+	ret
+Soundhome ENDP
+Sound PROC USES eax
+	mov eax,SND_FILENAME
+	or eax,SND_NOSTOP
+	or eax,SND_ASYNC
 	INVOKE PlaySound, OFFSET file, NULL, eax
 	ret
 Sound ENDP
-Soundstart PROC
-	INVOKE PlaySound, OFFSET file2, NULL, SND_FILENAME
+Soundstart PROC USES eax
+	mov eax,SND_FILENAME
+	or eax,SND_ASYNC
+	INVOKE PlaySound, OFFSET file2, NULL, eax
 	ret
 Soundstart ENDP
 soundyeah PROC
 	INVOKE PlaySound, OFFSET file3, NULL, SND_FILENAME
 	ret
 soundyeah ENDP
+
 
 
 PrintAll PROC
@@ -468,14 +482,15 @@ ret
 GamePart ENDP
 
 menu PROC
-
+	call soundhome
 begin:                                      ;印出pixel hocky
-	
+	;call soundhome
 	call Clrscr
 	call PrintTitle
 	jmp STA	
 	
 STA:                                   ;選取start時的介面
+
 	mov dl,53
 	mov dh,20
 	call Gotoxy
@@ -496,6 +511,8 @@ STA:                                   ;選取start時的介面
 	call Gotoxy
 	mov edx,OFFSET operation1
 	call WriteString
+	mov eax,1
+    call Delay
 	call Sound
 	jmp L3                             ;輸入鍵盤上、下或enter
 	L3:
