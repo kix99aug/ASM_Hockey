@@ -57,7 +57,7 @@ PlaySound PROTO,
 	nine2 BYTE		" (__\ ",0
 	nine3 BYTE		"  __/ ",0
 	zero DWORD OFFSET zero1,OFFSET zero2,OFFSET zero3
-	one DWORD OFFSET one1,OFFSET one2,OFFSET one3		;猜猜我是誰
+	one DWORD OFFSET one1,OFFSET one2,OFFSET one3		
 	two DWORD OFFSET two1,OFFSET two2,OFFSET two3
 	three DWORD OFFSET three1,OFFSET three2,OFFSET three3
 	four DWORD OFFSET four1,OFFSET four2,OFFSET four3
@@ -67,9 +67,9 @@ PlaySound PROTO,
 	eight DWORD OFFSET eight1,OFFSET eight2,OFFSET eight3
 	nine DWORD OFFSET nine1,OFFSET nine2,OFFSET nine3
 	titlestrs DWORD OFFSET titlestr1, OFFSET titlestr2, OFFSET titlestr3, OFFSET titlestr4, OFFSET titlestr5, OFFSET titlestr6, OFFSET titlestr7, OFFSET titlestr8, OFFSET titlestr9, OFFSET titlestr10, OFFSET titlestr11, OFFSET titlestr12
-	start BYTE       "> START         ",0			;你事蹟掰人
-	setting BYTE     "> SETTING       ",0			;大家來找碴
-	finish BYTE      "> EXIT          ",0			;其中一個byte被刪掉了
+	start BYTE       "> START         ",0			
+	setting BYTE     "> SETTING       ",0			
+	finish BYTE      "> EXIT          ",0			
 	operation BYTE   "> OPERATION     ",0
 	start1 BYTE      "START           ",0
 	setting1 BYTE    "SETTING         ",0
