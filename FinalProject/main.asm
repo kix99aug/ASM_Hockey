@@ -100,7 +100,7 @@ PlaySound PROTO,
 	SND_FILENAME DWORD 00020000h
 
 
-	file BYTE "³Ø©Ô­µ®Ä.wav",0
+	file BYTE "KK.wav",0
 	file2 BYTE "oklet'sgo.wav",0
 	file3 BYTE "yeah.wav",0
 
