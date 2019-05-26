@@ -57,7 +57,7 @@ PlaySound PROTO,
 	nine2 BYTE		" (__\ ",0
 	nine3 BYTE		"  __/ ",0
 	zero DWORD OFFSET zero1,OFFSET zero2,OFFSET zero3
-	one DWORD OFFSET one1,OFFSET one2,OFFSET one3		;猜猜我是誰
+	one DWORD OFFSET one1,OFFSET one2,OFFSET one3		
 	two DWORD OFFSET two1,OFFSET two2,OFFSET two3
 	three DWORD OFFSET three1,OFFSET three2,OFFSET three3
 	four DWORD OFFSET four1,OFFSET four2,OFFSET four3
@@ -67,9 +67,9 @@ PlaySound PROTO,
 	eight DWORD OFFSET eight1,OFFSET eight2,OFFSET eight3
 	nine DWORD OFFSET nine1,OFFSET nine2,OFFSET nine3
 	titlestrs DWORD OFFSET titlestr1, OFFSET titlestr2, OFFSET titlestr3, OFFSET titlestr4, OFFSET titlestr5, OFFSET titlestr6, OFFSET titlestr7, OFFSET titlestr8, OFFSET titlestr9, OFFSET titlestr10, OFFSET titlestr11, OFFSET titlestr12
-	start BYTE       "> START         ",0			;你事蹟掰人
-	setting BYTE     "> SETTING       ",0			;大家來找碴
-	finish BYTE      "> EXIT          ",0			;其中一個byte被刪掉了
+	start BYTE       "> START         ",0			
+	setting BYTE     "> SETTING       ",0			
+	finish BYTE      "> EXIT          ",0			
 	operation BYTE   "> OPERATION     ",0
 	start1 BYTE      "START           ",0
 	setting1 BYTE    "SETTING         ",0
@@ -97,12 +97,18 @@ PlaySound PROTO,
 	P1_color DWORD 1d,0
 	P2_color DWORD 1d,0
 	Speed_color DWORD 15d,0
-	SND_FILENAME DWORD 00020000h
-
+	SND_FILENAME				equ		20000h
+	SND_SYNC            equ    0000h   ; play synchronously (default) 
+	SND_ASYNC           equ    0001h   ; play asynchronously 
+	SND_NODEFAULT       equ    0002h   ; don't use default sound 
+	SND_MEMORY          equ    0004h   ; lpszSoundName points to a memory file 
+	SND_LOOP            equ    0008h   ; loop the sound until next sndPlaySound 
+	SND_NOSTOP          equ    0010h   ; don't stop any currently playing sound 
 
 	file BYTE "KK.wav",0
 	file2 BYTE "oklet'sgo.wav",0
 	file3 BYTE "yeah.wav",0
+	file4 BYTE "homesound.wav",0
 
 
 	player1 BYTE ".______    __           ___   ____    ____  _______ .______      ",0
@@ -150,18 +156,32 @@ NotGreaterThan5:
 PrintTitle ENDP
 
 
-Sound PROC
-	INVOKE PlaySound, OFFSET file, NULL, SND_FILENAME
+
+Soundhome PROC USES eax
+	mov eax,SND_FILENAME
+	or eax,SND_ASYNC
+	;or eax,SND_LOOP
+	INVOKE PlaySound, OFFSET file4, NULL, eax
+	ret
+Soundhome ENDP
+Sound PROC USES eax
+	mov eax,SND_FILENAME
+	or eax,SND_NOSTOP
+	or eax,SND_ASYNC
+	INVOKE PlaySound, OFFSET file, NULL, eax
 	ret
 Sound ENDP
-Soundstart PROC
-	INVOKE PlaySound, OFFSET file2, NULL, SND_FILENAME
+Soundstart PROC USES eax
+	mov eax,SND_FILENAME
+	or eax,SND_ASYNC
+	INVOKE PlaySound, OFFSET file2, NULL, eax
 	ret
 Soundstart ENDP
 soundyeah PROC
 	INVOKE PlaySound, OFFSET file3, NULL, SND_FILENAME
 	ret
 soundyeah ENDP
+
 
 
 PrintAll PROC
@@ -462,14 +482,15 @@ ret
 GamePart ENDP
 
 menu PROC
-
+	call soundhome
 begin:                                      ;印出pixel hocky
-	
+	;call soundhome
 	call Clrscr
 	call PrintTitle
 	jmp STA	
 	
 STA:                                   ;選取start時的介面
+
 	mov dl,53
 	mov dh,20
 	call Gotoxy
@@ -490,6 +511,8 @@ STA:                                   ;選取start時的介面
 	call Gotoxy
 	mov edx,OFFSET operation1
 	call WriteString
+	mov eax,1
+    call Delay
 	call Sound
 	jmp L3                             ;輸入鍵盤上、下或enter
 	L3:
