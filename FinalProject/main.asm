@@ -97,7 +97,13 @@ PlaySound PROTO,
 	P1_color DWORD 1d,0
 	P2_color DWORD 1d,0
 	Speed_color DWORD 15d,0
-	SND_FILENAME DWORD 00020000h
+	SND_FILENAME				equ		20000h
+	SND_SYNC            equ    0000h   ; play synchronously (default) 
+	SND_ASYNC           equ    0001h   ; play asynchronously 
+	SND_NODEFAULT       equ    0002h   ; don't use default sound 
+	SND_MEMORY          equ    0004h   ; lpszSoundName points to a memory file 
+	SND_LOOP            equ    0008h   ; loop the sound until next sndPlaySound 
+	SND_NOSTOP          equ    0010h   ; don't stop any currently playing sound 
 	file BYTE "³Ø©Ô­µ®Ä.wav",0
 	player1 BYTE ".______    __           ___   ____    ____  _______ .______      ",0
 	player2 BYTE "|   _  \  |  |         /   \  \   \  /   / |   ____||   _  \    ",0
@@ -143,8 +149,11 @@ NotGreaterThan5:
 	ret
 PrintTitle ENDP
 
-Sound PROC
-	INVOKE PlaySound, OFFSET file, NULL, SND_FILENAME
+Sound PROC USES eax
+	mov eax,SND_FILENAME
+	or eax,SND_ASYNC
+	or eax,SND_LOOP
+	INVOKE PlaySound, OFFSET file, NULL, eax
 	ret
 Sound ENDP
 
