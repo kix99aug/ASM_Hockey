@@ -8,21 +8,64 @@ PlaySound PROTO,
 .data
 	winwid EQU 120
 	winhei EQU 30
-	bar BYTE 60 DUP ("■"),0
+	screen BYTE winhei DUP( winwid DUP (0) ) ;0.空 1.方塊 2.圓圈 10~19.大數字0~9
+	change BYTE winhei DUP( winwid DUP (0) )
+	player1pos BYTE 12
+	player2pos BYTE 12
 	oldscreen BYTE winhei DUP( winwid DUP ("A"),0)
 	newscreen BYTE winhei DUP( winwid DUP ("■"))
-	titlestr1 BYTE		"______________  __ _____ _     ",0
-	titlestr2 BYTE		"| ___ \_   _\ \/ /|  ___| |    ",0
-	titlestr3 BYTE		"| |_/ / | |  \  / | |__ | |    ",0
-	titlestr4 BYTE		"|  __/  | |  /  \ |  __|| |    ",0
-	titlestr5 BYTE		"| |    _| |_/ /\ \| |___| |____",0
-	titlestr6 BYTE		"\_|    \___/\/  \/\____/\_____/",0
-	titlestr7 BYTE		" _   _  ___   ____  _   __ _______   __",0
-	titlestr8 BYTE		"| | | |/ _ \ / __ \| | / /|  ___\ \ / /",0
-	titlestr9 BYTE		"| |_| | | | | /  \/| |/ / | |__  \ V / ",0
-	titlestr10 BYTE	"|  _  | | | | |    |    \ |  __|  \ /  ",0
-	titlestr11 BYTE	"| | | | \_/ | \__/\| |\  \| |___  | |  ",0
-	titlestr12 BYTE	"\_| |_|\___/ \____/\_| \_/\____/  \_/  ",0
+	titlestr1 BYTE		"_______    __  ___   ___  _______  __",0
+	titlestr2 BYTE		"|   _  \  |  | \  \ /  / |   ____||  |",0
+	titlestr3 BYTE		"|  |_)  | |  |  \  V  /  |  |__   |  |",0
+	titlestr4 BYTE		"|   ___/  |  |   >   <   |   __|  |  |",0
+	titlestr5 BYTE		"|  |      |  |  /  .  \  |  |____ |  `----.",0
+	titlestr6 BYTE		"| _|      |__| /__/ \__\ |_______||_______|",0
+	titlestr7 BYTE		" __    __    ______     _______   ___  ____  ________ ___    ___",0
+	titlestr8 BYTE		"|  |  |  |  /  __  \   /       | |   |/   / |   _____|\  \  /  /",0
+	titlestr9 BYTE		"|  |__|  | |  |  |  | |   ,----' |   '   /  |  |___    \  \/  /",0
+	titlestr10 BYTE	"|   __   | |  |  |  | |   |      |      <   |   ___|    \    /",0
+	titlestr11 BYTE	"|  |  |  | |  `--'  | |   `----. |   .   \  |  |_____    |  |",0
+	titlestr12 BYTE	"|__|  |__|  \______/   \_______| |___|\___\ |________|   |__|",0
+	zero1 BYTE		"  __  ",0
+	zero2 BYTE		" /  \ ",0
+	zero3 BYTE		" \__/ ",0
+	one1 BYTE		"      ",0      
+	one2 BYTE		"  /|  ",0
+	one3 BYTE		"   |  ",0
+	two1 BYTE		"  __  ",0
+	two2 BYTE		"   _) ",0
+	two3 BYTE		"  /__ ",0
+	three1 BYTE	"  __  ",0
+	three2 BYTE	"   _) ",0
+	three3 BYTE	"  __) ",0   
+	four1 BYTE		"      ",0
+	four2 BYTE		" |__| ",0
+	four3 BYTE		"    | ",0
+	five1 BYTE		"  __  ",0
+	five2 BYTE		" |_   ",0
+	five3 BYTE		" __)  ",0
+	six1 BYTE		"  __  ",0
+	six2 BYTE		" /__  ",0
+	six3 BYTE		" \__) ",0
+	seven1 BYTE	" ___  ",0
+	seven2 BYTE	"   /  ",0
+	seven3 BYTE	"  /   ",0
+	eight1 BYTE	"  __  ",0
+	eight2 BYTE	" (__) ",0
+	eight3 BYTE	" (__) ",0
+	nine1 BYTE		"  __  ",0
+	nine2 BYTE		" (__\ ",0
+	nine3 BYTE		"  __/ ",0
+	zero DWORD OFFSET zero1,OFFSET zero2,OFFSET zero3
+	one DWORD OFFSET one1,OFFSET one2,OFFSET one3
+	two DWORD OFFSET two1,OFFSET two2,OFFSET two3
+	three DWORD OFFSET three1,OFFSET three2,OFFSET three3
+	four DWORD OFFSET four1,OFFSET four2,OFFSET four3
+	five DWORD OFFSET five1,OFFSET five2,OFFSET five3
+	six DWORD OFFSET six1,OFFSET six2,OFFSET six3
+	seven DWORD OFFSET seven1,OFFSET seven2,OFFSET seven3
+	eight DWORD OFFSET eight1,OFFSET eight2,OFFSET eight3
+	nine DWORD OFFSET nine1,OFFSET nine2,OFFSET nine3
 	titlestrs DWORD OFFSET titlestr1, OFFSET titlestr2, OFFSET titlestr3, OFFSET titlestr4, OFFSET titlestr5, OFFSET titlestr6, OFFSET titlestr7, OFFSET titlestr8, OFFSET titlestr9, OFFSET titlestr10, OFFSET titlestr11, OFFSET titlestr12
 	start BYTE       "> START         ",0
 	setting BYTE     "> SETTING       ",0
@@ -39,6 +82,7 @@ PlaySound PROTO,
 	speed1 BYTE      "Speed   ",0
 	ColorBox BYTE "■ ",0
 	OneBox BYTE "■",0
+	OneCircle BYTE "●",0
 	P1 BYTE          "                                         Player1: Q W E(Skill) F(Up) C(Down)",0
 	P2 BYTE          "                                         Player2: I O P(Skill) 5(Up) 1(Down)",0
 	back BYTE        "Press ESC to return...",0
@@ -55,17 +99,35 @@ PlaySound PROTO,
 	Speed_color DWORD 15d,0
 	SND_FILENAME DWORD 00020000h
 	file BYTE "喀拉音效.wav",0
+	player1 BYTE ".______    __           ___   ____    ____  _______ .______      ",0
+	player2 BYTE "|   _  \  |  |         /   \  \   \  /   / |   ____||   _  \    ",0
+	player3 BYTE "|  |_)  | |  |        /  ^  \  \   \/   /  |  |__   |  |_)  |   ",0
+	player4 BYTE "|   ___/  |  |       /  /_\  \  \_    _/   |   __|  |      /    ",0
+	player5 BYTE "|  |      |  `----. /  _____  \   |  |     |  |____ |  |\  \----.",0
+	player6 BYTE "| _|      |_______|/__/     \__\  |__|     |_______|| _| `._____|",0
+	Pone1 BYTE "  ______   .__   __.  _______ ",0
+	Pone2 BYTE " /  __  \  |  \ |  | |   ____|",0
+	Pone3 BYTE "|  |  |  | |   \|  | |  |__   ",0
+	Pone4 BYTE "|  |  |  | |  . `  | |   __|  ",0
+	Pone5 BYTE "|  `--'  | |  |\   | |  |____ ",0
+	Pone6 BYTE " \______/  |__| \__| |_______|",0
+	win1 BYTE "____    __    ____  __  .__   __.      _______.",0
+	win2 BYTE "\   \  /  \  /   / |  | |  \ |  |     /       |",0
+	win3 BYTE " \   \/    \/   /  |  | |   \|  |    |   (----`",0
+	win4 BYTE "  \            /   |  | |  . `  |     \   \    ",0
+	win5 BYTE "   \    /\    /    |  | |  |\   | .----)   |   ",0
+	win6 BYTE "    \__/  \__/     |__| |__| \__| |_______/    ",0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
 	mov eax,6
 	call SetTextColor 
 PrintTitlePerLine:
-	mov dl,43
+	mov dl,38
 	mov dh,cl
 	cmp ecx,5
 	jng NotGreaterThan5
-	mov dl,39
+	mov dl,27
 NotGreaterThan5:
 	add dh,3
 	call Gotoxy
@@ -103,6 +165,67 @@ jne Outer
 ret
 PrintAll ENDP
 
+PrintP1Wins PROC
+	
+	mov edx,OFFSET player1
+	call WriteString
+	call Crlf
+	mov edx,OFFSET player2
+	call WriteString
+	call Crlf
+	mov edx,OFFSET player3
+	call WriteString
+	call Crlf
+	mov edx,OFFSET player4
+	call WriteString
+	call Crlf
+	mov edx,OFFSET player5
+	call WriteString
+	call Crlf
+	mov edx,OFFSET player6
+	call WriteString
+	call Crlf
+	call Crlf
+	mov edx,OFFSET Pone1
+	call WriteString
+	call Crlf
+	mov edx,OFFSET Pone2
+	call WriteString
+	call Crlf
+	mov edx,OFFSET Pone3
+	call WriteString
+	call Crlf
+	mov edx,OFFSET Pone4
+	call WriteString
+	call Crlf
+	mov edx,OFFSET Pone5
+	call WriteString
+	call Crlf
+	mov edx,OFFSET Pone6
+	call WriteString
+	call Crlf
+	call Crlf
+	mov edx,OFFSET win1
+	call WriteString
+	call Crlf
+	mov edx,OFFSET win2
+	call WriteString
+	call Crlf
+	mov edx,OFFSET win3
+	call WriteString
+	call Crlf
+	mov edx,OFFSET win4
+	call WriteString
+	call Crlf
+	mov edx,OFFSET win5
+	call WriteString
+	call Crlf
+	mov edx,OFFSET win6
+	call WriteString
+	call Crlf
+	ret
+PrintP1Wins ENDP
+
 PrintLineOfBox PROC
 mov ebx,ecx
 mov ecx,0
@@ -122,11 +245,9 @@ PrintLineOfBox ENDP
 PrintBorder PROC
 mov ecx,0
 Outer:
-	.IF ecx == 0
+	.IF ecx == 0 || ecx == 5 || ecx == winhei-1
 	call PrintLineOfBox
-	.ELSEIF ecx == winhei-1
-	call PrintLineOfBox
-	.ELSE
+	.ELSEIF ecx < 15 || ecx > 19
 	mov dl,0
 	mov dh,cl
 	call Gotoxy
@@ -147,10 +268,180 @@ call Gotoxy
 ret
 PrintBorder ENDP
 
+PrintNumber PROC USES eax ebx ecx edx x:BYTE, y:BYTE, number:BYTE
+mov dl,x
+mov dh,y
+mov ecx,0
+Outer:
+call Gotoxy
+push edx
+.IF number == 10
+mov edx,zero[ecx]
+.ELSEIF  number == 11
+mov edx,one[ecx]
+.ELSEIF  number == 12
+mov edx,two[ecx]
+.ELSEIF  number == 13
+mov edx,three[ecx]
+.ELSEIF  number == 14
+mov edx,four[ecx]
+.ELSEIF  number == 15
+mov edx,five[ecx]
+.ELSEIF  number == 16
+mov edx,six[ecx]
+.ELSEIF  number == 17
+mov edx,seven[ecx]
+.ELSEIF  number == 18
+mov edx,eight[ecx]
+.ELSEIF  number == 19
+mov edx,nine[ecx]
+.ENDIF
+call WriteString
+pop edx
+inc dh
+add ecx,4
+cmp ecx,12
+jne Outer
+ret
+PrintNumber ENDP
+
+PrintScreen PROC
+mov ecx,0
+Outer:
+	push ecx
+	mov ebx,ecx
+	mov ecx,0
+	Inner:
+		push ebx
+		mov eax,winwid
+		mul ebx
+		add eax,ecx
+		mov dl,change[eax]
+		cmp dl,screen[eax]
+		je Equal
+		NotEqual:
+			mov dl,cl
+			mov dh,bl
+			call Gotoxy
+			push eax
+			.IF change[eax] == 0
+				.IF screen[eax] == 1 || screen[eax] == 2
+					mov eax,' '
+					call WriteChar
+					inc dl
+					call WriteChar
+				.ELSE
+					mov eax,' '
+					call WriteChar
+				.ENDIF
+			.ELSEIF change[eax] == 1
+				mov edx,OFFSET OneBox
+				call WriteString
+			.ELSEIF change[eax] == 2
+				mov edx,OFFSET OneCircle
+				call WriteString
+			.ELSEIF change[eax] >= 10
+				invoke PrintNumber,cl,bl,change[eax]
+			.ELSE
+
+			.ENDIF
+			pop eax
+			mov bl,change[eax]
+			mov screen[eax],bl
+		Equal:
+		mov change[eax],0
+		pop ebx
+		inc ecx
+		cmp ecx,winwid
+	jne Inner
+	pop ecx
+	inc ecx
+	cmp ecx,winhei
+jne Outer
+ret
+PrintScreen ENDP
+
+
+SetPlayer1 PROC
+mov ecx,0
+ThreeBox:
+	mov eax,winwid
+	mov bl,player1pos
+	add ebx,4
+	add ebx,ecx
+	mul ebx
+	add eax,5
+	mov change[eax],1
+	inc ecx
+	cmp ecx,3
+jne ThreeBox
+ret
+SetPlayer1 ENDP
+
+SetPlayer2 PROC
+mov ecx,0
+ThreeBox:
+	mov eax,winwid
+	mov bl,player2pos
+	add ebx,4
+	add ebx,ecx
+	mul ebx
+	add eax,113
+	mov change[eax],1
+	inc ecx
+	cmp ecx,3
+jne ThreeBox
+ret
+SetPlayer2 ENDP
+
+
+ClearScreen PROC
+mov ecx,0
+Outer:
+	push ecx
+	mov ebx,ecx
+	mov ecx,0
+	Inner:
+		mov eax,winwid
+		mul ebx
+		add eax,ecx
+		mov screen[eax],0
+		inc ecx
+		cmp ecx,winwid
+	jne Inner
+	pop ecx
+	inc ecx
+	cmp ecx,winhei
+jne Outer
+ret
+ClearScreen ENDP
+
+TestNumbers PROC
+mov ebx,6
+mov ecx,0
+sstart:
+mov ebx,10
+mov eax,6
+mul ecx
+add ebx,ecx
+add eax,123
+mov change[eax],bl
+inc ecx
+cmp ecx,10
+jne sstart
+ret
+TestNumbers ENDP
+
+
 GamePart PROC
 call PrintBorder
+call TestNumbers
+call SetPlayer1
+call SetPlayer2
+call PrintScreen
 mov eax,10000
 call Delay
+call ClearScreen
 ret
 GamePart ENDP
 
@@ -300,9 +591,18 @@ L4:
 	je OPERATION_PART                       ;偵測到enter
 jmp L4
 GAME_PART:
-call ClrScr
-call GamePart
-jmp begin
+	call ClrScr
+	;call GamePart
+	call ClrScr
+	call PrintP1Wins
+	jmp test1
+test1:
+	mov eax,50
+	call Delay
+	call ReadKey
+	cmp dx,+27
+	je begin
+	jmp test1;
 SET_PART:
 	call Sound
 	call ClrScr
