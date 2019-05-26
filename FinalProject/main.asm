@@ -23,9 +23,9 @@ PlaySound PROTO,
 	titlestr7 BYTE		" __    __    ______     _______   ___  ____  ________ ___    ___",0
 	titlestr8 BYTE		"|  |  |  |  /  __  \   /       | |   |/   / |   _____|\  \  /  /",0
 	titlestr9 BYTE		"|  |__|  | |  |  |  | |   ,----' |   '   /  |  |___    \  \/  /",0
-	titlestr10 BYTE	"|   __   | |  |  |  | |   |      |      <   |   ___|    \    /",0
-	titlestr11 BYTE	"|  |  |  | |  `--'  | |   `----. |   .   \  |  |_____    |  |",0
-	titlestr12 BYTE	"|__|  |__|  \______/   \_______| |___|\___\ |________|   |__|",0
+	titlestr10 BYTE		"|   __   | |  |  |  | |   |      |      <   |   ___|    \    /",0
+	titlestr11 BYTE		"|  |  |  | |  `--'  | |   `----. |   .   \  |  |_____    |  |",0
+	titlestr12 BYTE		"|__|  |__|  \______/   \_______| |___|\___\ |________|   |__|",0
 	zero1 BYTE		"  __  ",0
 	zero2 BYTE		" /  \ ",0
 	zero3 BYTE		" \__/ ",0
@@ -57,7 +57,7 @@ PlaySound PROTO,
 	nine2 BYTE		" (__\ ",0
 	nine3 BYTE		"  __/ ",0
 	zero DWORD OFFSET zero1,OFFSET zero2,OFFSET zero3
-	one DWORD OFFSET one1,OFFSET one2,OFFSET one3
+	one DWORD OFFSET one1,OFFSET one2,OFFSET one3		
 	two DWORD OFFSET two1,OFFSET two2,OFFSET two3
 	three DWORD OFFSET three1,OFFSET three2,OFFSET three3
 	four DWORD OFFSET four1,OFFSET four2,OFFSET four3
@@ -67,9 +67,9 @@ PlaySound PROTO,
 	eight DWORD OFFSET eight1,OFFSET eight2,OFFSET eight3
 	nine DWORD OFFSET nine1,OFFSET nine2,OFFSET nine3
 	titlestrs DWORD OFFSET titlestr1, OFFSET titlestr2, OFFSET titlestr3, OFFSET titlestr4, OFFSET titlestr5, OFFSET titlestr6, OFFSET titlestr7, OFFSET titlestr8, OFFSET titlestr9, OFFSET titlestr10, OFFSET titlestr11, OFFSET titlestr12
-	start BYTE       "> START         ",0
-	setting BYTE     "> SETTING       ",0
-	finish BYTE      "> EXIT          ",0
+	start BYTE       "> START         ",0			
+	setting BYTE     "> SETTING       ",0			
+	finish BYTE      "> EXIT          ",0			
 	operation BYTE   "> OPERATION     ",0
 	start1 BYTE      "START           ",0
 	setting1 BYTE    "SETTING         ",0
@@ -105,6 +105,10 @@ PlaySound PROTO,
 	SND_LOOP            equ    0008h   ; loop the sound until next sndPlaySound 
 	SND_NOSTOP          equ    0010h   ; don't stop any currently playing sound 
 	file BYTE "³Ø©Ô­µ®Ä.wav",0
+	file2 BYTE "oklet'sgo.wav",0
+	file3 BYTE "yeah.wav",0
+
+
 	player1 BYTE ".______    __           ___   ____    ____  _______ .______      ",0
 	player2 BYTE "|   _  \  |  |         /   \  \   \  /   / |   ____||   _  \    ",0
 	player3 BYTE "|  |_)  | |  |        /  ^  \  \   \/   /  |  |__   |  |_)  |   ",0
@@ -156,6 +160,15 @@ Sound PROC USES eax
 	INVOKE PlaySound, OFFSET file, NULL, eax
 	ret
 Sound ENDP
+Soundstart PROC
+	INVOKE PlaySound, OFFSET file2, NULL, SND_FILENAME
+	ret
+Soundstart ENDP
+soundyeah PROC
+	INVOKE PlaySound, OFFSET file3, NULL, SND_FILENAME
+	ret
+soundyeah ENDP
+
 
 PrintAll PROC
 mov ecx,0
@@ -600,10 +613,12 @@ L4:
 	je OPERATION_PART                       ;°»´ú¨ìenter
 jmp L4
 GAME_PART:
+	call soundstart
 	call ClrScr
 	;call GamePart
 	call ClrScr
 	call PrintP1Wins
+	call soundyeah
 	jmp test1
 test1:
 	mov eax,50
@@ -611,7 +626,7 @@ test1:
 	call ReadKey
 	cmp dx,+27
 	je begin
-	jmp test1;
+	jmp test1
 SET_PART:
 	call Sound
 	call ClrScr
@@ -630,11 +645,6 @@ SET_COLOR:
 	call WriteString
 	mov eax,15d
 	call SetTextColor
-	;mov dl,68
-	;mov dh,8
-	;call Gotoxy
-	;mov edx,OFFSET P1_SetColor_Click
-	;call WriteString
 	mov dl,48
 	mov dh,9
 	call Gotoxy
@@ -676,11 +686,6 @@ SET_COLOR:
 	call WriteString
 	mov eax,15d
 	call SetTextColor
-	;mov dl,68
-	;mov dh,10
-	;call Gotoxy
-	;mov edx,OFFSET P2_SetColor_Click
-	;call WriteString
 	mov dl,48
 	mov dh,13
 	call Gotoxy
@@ -731,11 +736,6 @@ P2_color_point_right:
 	call Gotoxy
 	mov edx,OFFSET empty
 	call WriteString
-	;mov dl,68
-	;mov dh,10
-	;call Gotoxy
-	;mov edx,OFFSET P2_SetColor_Click
-	;call WriteString
 	cmp P2_color_point_local,65d
 	jne P2_movR_color
 	mov P2_color_point_local,56d
@@ -779,11 +779,6 @@ P2_color_point_left:
 	call Gotoxy
 	mov edx,OFFSET empty
 	call WriteString
-	;mov dl,68
-	;mov dh,10
-	;call Gotoxy
-	;mov edx,OFFSET P2_SetColor_Click
-	;call WriteString
 	cmp P2_color_point_local,56d
 	jne P2_movL_color
 	mov P2_color_point_local,65d
@@ -827,11 +822,6 @@ P1_color_point_right:
 	call Gotoxy
 	mov edx,OFFSET empty
 	call WriteString
-	;mov dl,68
-	;mov dh,8
-	;call Gotoxy
-	;mov edx,OFFSET P1_SetColor_Click
-	;call WriteString
 	cmp P1_color_point_local,65d
 	jne P1_movR_color
 	mov P1_color_point_local,56d
@@ -875,11 +865,6 @@ P1_color_point_left:
 	call Gotoxy
 	mov edx,OFFSET empty
 	call WriteString
-	;mov dl,68
-	;mov dh,8
-	;call Gotoxy
-	;mov edx,OFFSET P1_SetColor_Click
-	;call WriteString
 	cmp P1_color_point_local,56d
 	jne P1_movL_color
 	mov P1_color_point_local,65d
