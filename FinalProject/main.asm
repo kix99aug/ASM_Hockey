@@ -131,12 +131,14 @@ INCLUDELIB Winmm.lib
 	Pone4 BYTE "|  |  |  | |  . `  | |   __|  ",0
 	Pone5 BYTE "|  `--'  | |  |\   | |  |____ ",0
 	Pone6 BYTE " \______/  |__| \__| |_______|",0
+	Pone DWORD OFFSET Pone1,OFFSET Pone2,OFFSET Pone3, OFFSET Pone4, OFFSET Pone5, OFFSET Pone6
 	win1 BYTE "____    __    ____  __  .__   __.      _______.",0
 	win2 BYTE "\   \  /  \  /   / |  | |  \ |  |     /       |",0
 	win3 BYTE " \   \/    \/   /  |  | |   \|  |    |   (----`",0
 	win4 BYTE "  \            /   |  | |  . `  |     \   \    ",0
 	win5 BYTE "   \    /\    /    |  | |  |\   | .----)   |   ",0
 	win6 BYTE "    \__/  \__/     |__| |__| \__| |_______/    ",0
+	winner DWORD OFFSET win1,OFFSET win2,OFFSET win3, OFFSET win4, OFFSET win5, OFFSET win6
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
