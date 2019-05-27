@@ -172,11 +172,7 @@ NotGreaterThan5:
 	ret
 PrintTitle ENDP
 
-PrintGameOver PROC USES ECX
-	
-	
 
-PrintGameOver ENDP
 
 
 MenuSound PROC 
@@ -292,64 +288,37 @@ jne Outer
 ret
 PrintAll ENDP
 
-PrintP1Wins PROC
-	
-	mov edx,OFFSET player1
+PrintP1Wins PROC 
+	mov dl,15
+	mov dh,2
+	call Gotoxy
+	mov eax ,0
+	Print_player:
+	mov edx, player[eax]
+	call WriteString
+	inc dh
+	call Gotoxy
+	add eax,4
+	cmp eax,+20
+	jng Print_player
+
+	mov eax ,0
+	Print_one:
+	mov edx, Pone[eax]
 	call WriteString
 	call Crlf
-	mov edx,OFFSET player2
+	add eax,4
+	cmp eax,+20
+	jng Print_one
+
+	mov eax ,0
+	Print_winner:
+	mov edx, winner[eax]
 	call WriteString
 	call Crlf
-	mov edx,OFFSET player3
-	call WriteString
-	call Crlf
-	mov edx,OFFSET player4
-	call WriteString
-	call Crlf
-	mov edx,OFFSET player5
-	call WriteString
-	call Crlf
-	mov edx,OFFSET player6
-	call WriteString
-	call Crlf
-	call Crlf
-	mov edx,OFFSET Pone1
-	call WriteString
-	call Crlf
-	mov edx,OFFSET Pone2
-	call WriteString
-	call Crlf
-	mov edx,OFFSET Pone3
-	call WriteString
-	call Crlf
-	mov edx,OFFSET Pone4
-	call WriteString
-	call Crlf
-	mov edx,OFFSET Pone5
-	call WriteString
-	call Crlf
-	mov edx,OFFSET Pone6
-	call WriteString
-	call Crlf
-	call Crlf
-	mov edx,OFFSET win1
-	call WriteString
-	call Crlf
-	mov edx,OFFSET win2
-	call WriteString
-	call Crlf
-	mov edx,OFFSET win3
-	call WriteString
-	call Crlf
-	mov edx,OFFSET win4
-	call WriteString
-	call Crlf
-	mov edx,OFFSET win5
-	call WriteString
-	call Crlf
-	mov edx,OFFSET win6
-	call WriteString
-	call Crlf
+	add eax,4
+	cmp eax,+20
+	jng Print_winner
 	ret
 PrintP1Wins ENDP
 
@@ -583,7 +552,7 @@ call SetPlayer2
 call PrintScreen
 mov eax,1700
 call delay
-mov eax,10000
+mov eax,1000
 call Delay
 call ClearScreen
 ret
