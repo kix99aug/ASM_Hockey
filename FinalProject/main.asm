@@ -103,6 +103,7 @@ INCLUDELIB Winmm.lib
 	SND_MEMORY          equ    0004h   ; lpszSoundName points to a memory file 
 	SND_LOOP            equ    0008h   ; loop the sound until next sndPlaySound 
 	SND_NOSTOP          equ    0010h   ; don't stop any currently playing sound 
+
 	loading BYTE "Loading...",0
 
 	_click BYTE "KK.wav",0
@@ -112,6 +113,8 @@ INCLUDELIB Winmm.lib
 	_hit_hei BYTE "hit_hei.wav",0
 	_hit_wall BYTE "hit_wall.wav",0
 	_start_open BYTE "start開場音效.wav",0
+	_get_point BYTE "get_point.wav",0
+	_gameoverBGM BYTE "gameoverBGM.wav",0
 
 	menusound1 BYTE "open menusound.wav type mpegvideo alias song1",0
 	menusound2 BYTE "play song1 repeat",0
@@ -256,6 +259,21 @@ start_open PROC USES eax
 	INVOKE PlaySound, OFFSET _start_open, NULL, eax
 	ret
 start_open ENDP
+
+get_point PROC USES eax
+	mov eax,SND_FILENAME
+	or eax,SND_ASYNC
+	INVOKE PlaySound, OFFSET _get_point, NULL, eax
+	ret
+get_point ENDP
+
+gameoverBGM PROC USES eax
+	mov eax,SND_FILENAME
+	or eax,SND_ASYNC
+	INVOKE PlaySound, OFFSET _gameoverBGM, NULL, eax
+	ret
+gameoverBGM ENDP
+
 
 PrintAll PROC
 mov ecx,0
@@ -563,7 +581,9 @@ call TestNumbers
 call SetPlayer1
 call SetPlayer2
 call PrintScreen
-mov eax,100000
+mov eax,1700
+call delay
+mov eax,10000
 call Delay
 call ClearScreen
 ret
@@ -739,7 +759,9 @@ GAME_PART:
 	call ClrScr
 	call PrintP1Wins
 	call StopStartBGM
-	call soundyeah
+	;call soundyeah
+	call gameoverBGM
+
 	jmp test1
 test1:
 	mov eax,50
