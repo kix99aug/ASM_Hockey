@@ -1,6 +1,7 @@
 INCLUDE Irvine32.inc
 INCLUDE Macros.inc
 include WINMM.inc
+
 INCLUDELIB Winmm.lib
 				
 				
@@ -125,10 +126,10 @@ INCLUDELIB Winmm.lib
 
 
 
-	player1 BYTE ".______    __           ___   ____    ____  _______ .______      ",0
-	player2 BYTE "|   _  \  |  |         /   \  \   \  /   / |   ____||   _  \    ",0
-	player3 BYTE "|  |_)  | |  |        /  ^  \  \   \/   /  |  |__   |  |_)  |   ",0
-	player4 BYTE "|   ___/  |  |       /  /_\  \  \_    _/   |   __|  |      /    ",0
+	player1 BYTE ".______    __           ___   ____    ____  _______ .______",0
+	player2 BYTE "|   _  \  |  |         /   \  \   \  /   / |   ____||   _  \",0
+	player3 BYTE "|  |_)  | |  |        /  ^  \  \   \/   /  |  |__   |  |_)  |",0
+	player4 BYTE "|   ___/  |  |       /  /_\  \  \_    _/   |   __|  |      /",0
 	player5 BYTE "|  |      |  `----. /  _____  \   |  |     |  |____ |  |\  \----.",0
 	player6 BYTE "| _|      |_______|/__/     \__\  |__|     |_______|| _| `._____|",0
 	player DWORD OFFSET player1,OFFSET player2,OFFSET player3, OFFSET player4, OFFSET player5, OFFSET player6
@@ -146,6 +147,7 @@ INCLUDELIB Winmm.lib
 	win5 BYTE "   \    /\    /    |  | |  |\   | .----)   |   ",0
 	win6 BYTE "    \__/  \__/     |__| |__| \__| |_______/    ",0
 	winner DWORD OFFSET win1,OFFSET win2,OFFSET win3, OFFSET win4, OFFSET win5, OFFSET win6
+	SetConsoleDisplayMode PROTO STDCALL :DWORD,:DWORD,:DWORD
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -203,18 +205,30 @@ Sound PROC USES eax
 	ret
 Sound ENDP
 
-HideCursor PROC
+SetConsole PROC
 .data?
-cci CONSOLE_CURSOR_INFO <>
-chand dd ?
+	cci CONSOLE_CURSOR_INFO <>
+	csbi CONSOLE_SCREEN_BUFFER_INFO <>
+	xy COORD <>
+	rect SMALL_RECT <>
+	chand dd ?
 .code
-invoke GetStdHandle,STD_OUTPUT_HANDLE
-mov chand,eax
-invoke GetConsoleCursorInfo,chand,addr cci
-mov cci.bVisible,FALSE
-invoke SetConsoleCursorInfo,chand,addr cci
-ret
-HideCursor ENDP
+	invoke GetStdHandle,STD_OUTPUT_HANDLE
+	mov chand,eax
+	invoke GetConsoleCursorInfo,chand,addr cci
+	invoke GetConsoleScreenBufferInfo,chand,addr csbi
+	mov rect.Right,winwid-1
+	mov rect.Bottom,winhei
+	mov xy.X,winwid
+	mov xy.Y,winhei+1
+	mov cci.bVisible,FALSE
+	invoke SetConsoleDisplayMode,chand,0,NULL
+	invoke SetConsoleCursorInfo,chand,addr cci
+	invoke SetConsoleScreenBufferSize,chand,xy
+	invoke SetConsoleWindowInfo,chand,TRUE,addr rect
+	ret
+SetConsole ENDP
+
 
 OKLETSGO PROC USES eax
 	mov eax,SND_FILENAME
@@ -294,8 +308,10 @@ PrintP1Wins PROC
 	call Gotoxy
 	mov eax ,0
 	Print_player:
+	push edx
 	mov edx, player[eax]
 	call WriteString
+	pop edx
 	inc dh
 	call Gotoxy
 	add eax,4
@@ -304,18 +320,24 @@ PrintP1Wins PROC
 
 	mov eax ,0
 	Print_one:
+	push edx
 	mov edx, Pone[eax]
 	call WriteString
-	call Crlf
+	pop edx
+	inc dh
+	call Gotoxy
 	add eax,4
 	cmp eax,+20
 	jng Print_one
 
 	mov eax ,0
 	Print_winner:
+	push edx
 	mov edx, winner[eax]
 	call WriteString
-	call Crlf
+	pop edx
+	inc dh
+	call Gotoxy
 	add eax,4
 	cmp eax,+20
 	jng Print_winner
@@ -379,34 +401,34 @@ mov dl,x
 mov dh,y
 mov ecx,0
 Outer:
-call Gotoxy
-push edx
-.IF number == 10
-mov edx,zero[ecx]
-.ELSEIF  number == 11
-mov edx,one[ecx]
-.ELSEIF  number == 12
-mov edx,two[ecx]
-.ELSEIF  number == 13
-mov edx,three[ecx]
-.ELSEIF  number == 14
-mov edx,four[ecx]
-.ELSEIF  number == 15
-mov edx,five[ecx]
-.ELSEIF  number == 16
-mov edx,six[ecx]
-.ELSEIF  number == 17
-mov edx,seven[ecx]
-.ELSEIF  number == 18
-mov edx,eight[ecx]
-.ELSEIF  number == 19
-mov edx,nine[ecx]
-.ENDIF
-call WriteString
-pop edx
-inc dh
-add ecx,4
-cmp ecx,12
+	call Gotoxy
+	push edx
+	.IF number == 10
+		mov edx,zero[ecx]
+	.ELSEIF  number == 11
+		mov edx,one[ecx]
+	.ELSEIF  number == 12
+		mov edx,two[ecx]
+	.ELSEIF  number == 13
+		mov edx,three[ecx]
+	.ELSEIF  number == 14
+		mov edx,four[ecx]
+	.ELSEIF  number == 15
+		mov edx,five[ecx]
+	.ELSEIF  number == 16
+		mov edx,six[ecx]
+	.ELSEIF  number == 17
+		mov edx,seven[ecx]
+	.ELSEIF  number == 18
+		mov edx,eight[ecx]
+	.ELSEIF  number == 19
+		mov edx,nine[ecx]
+	.ENDIF
+	call WriteString
+	pop edx
+	inc dh
+	add ecx,4
+	cmp ecx,12
 jne Outer
 ret
 PrintNumber ENDP
@@ -451,7 +473,6 @@ Outer:
 			.ELSE
 				movzx eax,change[eax]
 				call WriteChar
-
 			.ENDIF
 			pop eax
 			mov bl,change[eax]
@@ -559,8 +580,9 @@ ret
 GamePart ENDP
 
 menu PROC
-call HideCursor ; hide cursor
+call SetConsole ; hide cursor, resize the window, fullscreen , etc
 begin:                                      ;印出pixel hocky
+	call Clrscr
 	mov dl,55
 	mov dh,15
 	call Gotoxy
@@ -628,13 +650,10 @@ SET:                                   ;選取setting的介面
 	mov edx,OFFSET operation1
 	call WriteString
 	call Sound
-	mov dl,winwid
-	mov dh,winhei
-	call Gotoxy
 	jmp L1
 L1:                                 
 	mov eax,50
-    call Delay
+   call Delay
 	call ReadKey
 	cmp dx,+40
 	je FIN                            ;偵測到下
@@ -665,9 +684,6 @@ FIN:
 	mov edx,OFFSET operation1
 	call WriteString
 	call Sound
-	mov dl,winwid
-	mov dh,winhei
-	call Gotoxy
 	jmp L2
 L2:
 	mov eax,50
@@ -702,9 +718,6 @@ OPERA:
 	mov edx,OFFSET operation
 	call WriteString
 	call Sound
-	mov dl,winwid
-	mov dh,winhei
-	call Gotoxy
 	jmp L4                             ;輸入鍵盤上、下或enter
 L4:
 	mov eax,50
