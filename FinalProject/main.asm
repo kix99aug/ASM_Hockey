@@ -108,7 +108,14 @@ INCLUDELIB Winmm.lib
 	file BYTE "KK.wav",0
 	file2 BYTE "oklet'sgo.wav",0
 	file3 BYTE "yeah.wav",0
-	file4 BYTE "homesound.wav",0
+
+	menusound1 BYTE "open menusound.wav type mpegvideo alias song1",0
+	menusound2 BYTE "play song1 repeat",0
+	menusound3 BYTE "close song1",0
+	starbgm1 BYTE "open startBGM.mp3 type mpegvideo alias song2",0
+	starbgm2 BYTE "play song2 repeat",0
+	starbgm3 BYTE "close song2 ",0
+
 
 
 	player1 BYTE ".______    __           ___   ____    ____  _______ .______      ",0
@@ -130,8 +137,6 @@ INCLUDELIB Winmm.lib
 	win4 BYTE "  \            /   |  | |  . `  |     \   \    ",0
 	win5 BYTE "   \    /\    /    |  | |  |\   | .----)   |   ",0
 	win6 BYTE "    \__/  \__/     |__| |__| \__| |_______/    ",0
-	soundcmd BYTE "open bgm.mp3 type mpegvideo alias song1",0
-	soundcmd2 BYTE "play song1 repeat",0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -160,25 +165,42 @@ PrintTitle ENDP
 
 
 
-Soundhome PROC USES eax
-	mov eax,SND_FILENAME
-	or eax,SND_ASYNC
-	;or eax,SND_LOOP
-	INVOKE PlaySound, OFFSET file4, NULL, eax
+MenuSound PROC USES eax
+	INVOKE mciSendString, OFFSET menusound1, NULL, 0, NULL
+	INVOKE mciSendString, OFFSET menusound2, NULL, 0, NULL
 	ret
-Soundhome ENDP
+MenuSound ENDP
+StopMenuSound PROC USES eax
+	INVOKE mciSendString, OFFSET menusound3, NULL, 0, NULL
+	;INVOKE mciSendString, OFFSET menusound2, NULL, 0, NULL
+	ret
+StopMenuSound ENDP
+
+StartBGM PROC USES eax
+	INVOKE mciSendString, OFFSET starbgm1, NULL, 0, NULL
+	INVOKE mciSendString, OFFSET starbgm2, NULL, 0, NULL
+	ret
+StartBGM ENDP
+StopStartBGM PROC USES eax
+	INVOKE mciSendString, OFFSET starbgm3, NULL, 0, NULL
+	;INVOKE mciSendString, OFFSET starbgm2, NULL, 0, NULL
+	ret
+StopStartBGM ENDP
+
 Sound PROC USES eax
 	mov eax,SND_FILENAME
-	or eax,SND_NOSTOP
 	or eax,SND_ASYNC
 	INVOKE PlaySound, OFFSET file, NULL, eax
 	ret
 Sound ENDP
-Soundstart PROC USES eax
-	INVOKE mciSendString, OFFSET soundcmd, NULL, 0, NULL
-	INVOKE mciSendString, OFFSET soundcmd2, NULL, 0, NULL
+
+OKLETSGO PROC USES eax
+	mov eax,SND_FILENAME
+	or eax,SND_ASYNC
+	INVOKE PlaySound, OFFSET file2, NULL, eax
 	ret
-Soundstart ENDP
+OKLETSGO ENDP
+
 soundyeah PROC
 	INVOKE PlaySound, OFFSET file3, NULL, SND_FILENAME
 	ret
@@ -477,23 +499,21 @@ call TestNumbers
 call SetPlayer1
 call SetPlayer2
 call PrintScreen
-mov eax,10000
+mov eax,100000
 call Delay
 call ClearScreen
 ret
 GamePart ENDP
 
 menu PROC
-	call soundhome
+	
 begin:                                      ;印出pixel hocky
-	;call soundhome
 	call Clrscr
-	call SoundStart
 	call PrintTitle
 	jmp STA	
 	
 STA:                                   ;選取start時的介面
-
+	call MenuSound
 	mov dl,53
 	mov dh,20
 	call Gotoxy
@@ -632,12 +652,18 @@ L4:
 	cmp dx,+13                 
 	je OPERATION_PART                       ;偵測到enter
 jmp L4
+
 GAME_PART:
-	call soundstart
+	call StopMenuSound
+	call OKLETSGO
+	call StartBGM
+
 	call ClrScr
+	call StartBGM
 	call GamePart
 	call ClrScr
 	call PrintP1Wins
+	call StopStartBGM
 	call soundyeah
 	jmp test1
 test1:
