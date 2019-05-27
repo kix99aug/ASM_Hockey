@@ -1,10 +1,10 @@
 INCLUDE Irvine32.inc
 INCLUDE Macros.inc
+
+include WINMM.inc
 INCLUDELIB Winmm.lib
-PlaySound PROTO,
-        pszSound:PTR BYTE, 
-        hmod:DWORD, 
-        fdwSound:DWORD
+				
+				
 .data
 	winwid EQU 120
 	winhei EQU 30
@@ -18,7 +18,7 @@ PlaySound PROTO,
 	titlestr2 BYTE		"|   _  \  |  | \  \ /  / |   ____||  |",0
 	titlestr3 BYTE		"|  |_)  | |  |  \  V  /  |  |__   |  |",0
 	titlestr4 BYTE		"|   ___/  |  |   >   <   |   __|  |  |",0
-	titlestr5 BYTE		"|  |      |  |  /  .  \  |  |____ |  `----.",0
+	titlestr5 BYTE		"|  |      |  |  /  ^  \  |  |____ |  `----.",0
 	titlestr6 BYTE		"| _|      |__| /__/ \__\ |_______||_______|",0
 	titlestr7 BYTE		" __    __    ______     _______   ___  ____  ________ ___    ___",0
 	titlestr8 BYTE		"|  |  |  |  /  __  \   /       | |   |/   / |   _____|\  \  /  /",0
@@ -115,6 +115,7 @@ PlaySound PROTO,
 	player4 BYTE "|   ___/  |  |       /  /_\  \  \_    _/   |   __|  |      /    ",0
 	player5 BYTE "|  |      |  `----. /  _____  \   |  |     |  |____ |  |\  \----.",0
 	player6 BYTE "| _|      |_______|/__/     \__\  |__|     |_______|| _| `._____|",0
+	player DWORD OFFSET player1,OFFSET player2,OFFSET player3, OFFSET player4, OFFSET player5, OFFSET player6
 	Pone1 BYTE "  ______   .__   __.  _______ ",0
 	Pone2 BYTE " /  __  \  |  \ |  | |   ____|",0
 	Pone3 BYTE "|  |  |  | |   \|  | |  |__   ",0
@@ -127,6 +128,8 @@ PlaySound PROTO,
 	win4 BYTE "  \            /   |  | |  . `  |     \   \    ",0
 	win5 BYTE "   \    /\    /    |  | |  |\   | .----)   |   ",0
 	win6 BYTE "    \__/  \__/     |__| |__| \__| |_______/    ",0
+	soundcmd BYTE "open bgm.mp3 type mpegvideo alias song1",0
+	soundcmd2 BYTE "play song1 repeat",0
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -156,12 +159,12 @@ PrintTitle ENDP
 Sound PROC USES eax
 	mov eax,SND_FILENAME
 	or eax,SND_ASYNC
-	or eax,SND_LOOP
 	INVOKE PlaySound, OFFSET file, NULL, eax
 	ret
 Sound ENDP
-Soundstart PROC
-	INVOKE PlaySound, OFFSET file2, NULL, SND_FILENAME
+Soundstart PROC USES eax
+	INVOKE mciSendString, OFFSET soundcmd, NULL, 0, NULL
+	INVOKE mciSendString, OFFSET soundcmd2, NULL, 0, NULL
 	ret
 Soundstart ENDP
 soundyeah PROC
@@ -362,7 +365,7 @@ Outer:
 			.ELSEIF change[eax] == 2
 				mov edx,OFFSET OneCircle
 				call WriteString
-			.ELSEIF change[eax] >= 10
+			.ELSEIF change[eax] >= 10 || change[eax] <= 19
 				invoke PrintNumber,cl,bl,change[eax]
 			.ELSE
 
@@ -472,6 +475,7 @@ menu PROC
 begin:                                      ;¦L¥Xpixel hocky
 	
 	call Clrscr
+	call SoundStart
 	call PrintTitle
 	jmp STA	
 	
@@ -615,7 +619,7 @@ jmp L4
 GAME_PART:
 	call soundstart
 	call ClrScr
-	;call GamePart
+	call GamePart
 	call ClrScr
 	call PrintP1Wins
 	call soundyeah

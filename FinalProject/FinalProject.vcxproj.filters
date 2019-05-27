@@ -29,5 +29,8 @@
     <Media Include="喀拉音效.wav">
       <Filter>資源檔</Filter>
     </Media>
+    <Media Include="bgm.mp3">
+      <Filter>資源檔</Filter>
+    </Media>
   </ItemGroup>
 </Project>
