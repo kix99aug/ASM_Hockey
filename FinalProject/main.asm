@@ -318,6 +318,12 @@ Outer:
 	call Gotoxy
 	mov edx,OFFSET OneBox
 	call WriteString
+	.ELSE
+	mov dl,0
+	mov dh,cl
+	call Gotoxy
+	mov eax,'|'
+	call WriteChar
 	.ENDIF
 	inc ecx
 	cmp ecx,winhei
@@ -403,6 +409,8 @@ Outer:
 			.ELSEIF change[eax] >= 10 || change[eax] <= 19
 				invoke PrintNumber,cl,bl,change[eax]
 			.ELSE
+				movzx eax,change[eax]
+				call WriteChar
 
 			.ENDIF
 			pop eax
