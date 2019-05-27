@@ -1,6 +1,5 @@
 INCLUDE Irvine32.inc
 INCLUDE Macros.inc
-
 include WINMM.inc
 INCLUDELIB Winmm.lib
 				
@@ -104,6 +103,7 @@ INCLUDELIB Winmm.lib
 	SND_MEMORY          equ    0004h   ; lpszSoundName points to a memory file 
 	SND_LOOP            equ    0008h   ; loop the sound until next sndPlaySound 
 	SND_NOSTOP          equ    0010h   ; don't stop any currently playing sound 
+	loading BYTE "Loading...",0
 
 	file BYTE "KK.wav",0
 	file2 BYTE "oklet'sgo.wav",0
@@ -193,6 +193,19 @@ Sound PROC USES eax
 	INVOKE PlaySound, OFFSET file, NULL, eax
 	ret
 Sound ENDP
+
+HideCursor PROC
+.data?
+cci CONSOLE_CURSOR_INFO <>
+chand dd ?
+.code
+invoke GetStdHandle,STD_OUTPUT_HANDLE
+mov chand,eax
+invoke GetConsoleCursorInfo,chand,addr cci
+mov cci.bVisible,FALSE
+invoke SetConsoleCursorInfo,chand,addr cci
+ret
+HideCursor ENDP
 
 OKLETSGO PROC USES eax
 	mov eax,SND_FILENAME
@@ -319,10 +332,14 @@ Outer:
 	mov edx,OFFSET OneBox
 	call WriteString
 	.ELSE
-	mov dl,0
+	mov dl,1
 	mov dh,cl
 	call Gotoxy
 	mov eax,'|'
+	call WriteChar
+	mov dl,winwid-2
+	mov dh,cl
+	call Gotoxy
 	call WriteChar
 	.ENDIF
 	inc ecx
@@ -514,14 +531,19 @@ ret
 GamePart ENDP
 
 menu PROC
-	
+call HideCursor ; hide cursor
 begin:                                      ;印出pixel hocky
+	mov dl,55
+	mov dh,15
+	call Gotoxy
+	mov edx,OFFSET loading
+	call WriteString
+	call MenuSound
 	call Clrscr
 	call PrintTitle
 	jmp STA	
 	
 STA:                                   ;選取start時的介面
-	call MenuSound
 	mov dl,53
 	mov dh,20
 	call Gotoxy
@@ -542,8 +564,6 @@ STA:                                   ;選取start時的介面
 	call Gotoxy
 	mov edx,OFFSET operation1
 	call WriteString
-	mov eax,1
-    call Delay
 	call Sound
 	jmp L3                             ;輸入鍵盤上、下或enter
 	L3:
@@ -580,6 +600,9 @@ SET:                                   ;選取setting的介面
 	mov edx,OFFSET operation1
 	call WriteString
 	call Sound
+	mov dl,winwid
+	mov dh,winhei
+	call Gotoxy
 	jmp L1
 L1:                                 
 	mov eax,50
@@ -614,6 +637,9 @@ FIN:
 	mov edx,OFFSET operation1
 	call WriteString
 	call Sound
+	mov dl,winwid
+	mov dh,winhei
+	call Gotoxy
 	jmp L2
 L2:
 	mov eax,50
@@ -648,6 +674,9 @@ OPERA:
 	mov edx,OFFSET operation
 	call WriteString
 	call Sound
+	mov dl,winwid
+	mov dh,winhei
+	call Gotoxy
 	jmp L4                             ;輸入鍵盤上、下或enter
 L4:
 	mov eax,50
