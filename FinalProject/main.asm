@@ -103,6 +103,7 @@ INCLUDELIB Winmm.lib
 	SND_MEMORY          equ    0004h   ; lpszSoundName points to a memory file 
 	SND_LOOP            equ    0008h   ; loop the sound until next sndPlaySound 
 	SND_NOSTOP          equ    0010h   ; don't stop any currently playing sound 
+
 	loading BYTE "Loading...",0
 
 	_click BYTE "KK.wav",0
