@@ -736,11 +736,11 @@ L4:
 	mov eax,50
     call Delay
 	call ReadKey                       ;讀取鍵盤輸入
-	cmp dx,+40
+	cmp dx,40
 	je STA                             ;偵測到下
-	cmp dx,+38
+	cmp dx,38
 	je FIN                             ;偵測到上
-	cmp dx,+13                 
+	cmp dx,13                 
 	je OPERATION_PART                       ;偵測到enter
 jmp L4
 
