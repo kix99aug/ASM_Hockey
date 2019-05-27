@@ -105,9 +105,13 @@ INCLUDELIB Winmm.lib
 	SND_NOSTOP          equ    0010h   ; don't stop any currently playing sound 
 	loading BYTE "Loading...",0
 
-	file BYTE "KK.wav",0
-	file2 BYTE "oklet'sgo.wav",0
-	file3 BYTE "yeah.wav",0
+	_click BYTE "KK.wav",0
+	_okletsgo BYTE "oklet'sgo.wav",0
+	_yeah BYTE "yeah.wav",0
+	_hit_low BYTE "hit_low.wav",0
+	_hit_hei BYTE "hit_hei.wav",0
+	_hit_wall BYTE "hit_wall.wav",0
+	_start_open BYTE "start開場音效.wav",0
 
 	menusound1 BYTE "open menusound.wav type mpegvideo alias song1",0
 	menusound2 BYTE "play song1 repeat",0
@@ -165,14 +169,13 @@ PrintTitle ENDP
 
 
 
-MenuSound PROC USES eax
+MenuSound PROC 
 	INVOKE mciSendString, OFFSET menusound1, NULL, 0, NULL
 	INVOKE mciSendString, OFFSET menusound2, NULL, 0, NULL
 	ret
 MenuSound ENDP
-StopMenuSound PROC USES eax
+StopMenuSound PROC 
 	INVOKE mciSendString, OFFSET menusound3, NULL, 0, NULL
-	;INVOKE mciSendString, OFFSET menusound2, NULL, 0, NULL
 	ret
 StopMenuSound ENDP
 
@@ -190,7 +193,7 @@ StopStartBGM ENDP
 Sound PROC USES eax
 	mov eax,SND_FILENAME
 	or eax,SND_ASYNC
-	INVOKE PlaySound, OFFSET file, NULL, eax
+	INVOKE PlaySound, OFFSET _click, NULL, eax
 	ret
 Sound ENDP
 
@@ -210,16 +213,42 @@ HideCursor ENDP
 OKLETSGO PROC USES eax
 	mov eax,SND_FILENAME
 	or eax,SND_ASYNC
-	INVOKE PlaySound, OFFSET file2, NULL, eax
+	INVOKE PlaySound, OFFSET _okletsgo, NULL, eax
 	ret
 OKLETSGO ENDP
 
 soundyeah PROC
-	INVOKE PlaySound, OFFSET file3, NULL, SND_FILENAME
+	INVOKE PlaySound, OFFSET _yeah, NULL, SND_FILENAME
 	ret
 soundyeah ENDP
 
+hit_low PROC USES eax
+	mov eax,SND_FILENAME
+	or eax,SND_ASYNC
+	INVOKE PlaySound, OFFSET _hit_low, NULL, eax
+	ret
+hit_low ENDP
 
+hit_hei PROC USES eax
+	mov eax,SND_FILENAME
+	or eax,SND_ASYNC
+	INVOKE PlaySound, OFFSET _hit_hei, NULL, eax
+	ret
+hit_hei ENDP
+
+hit_wall PROC USES eax
+	mov eax,SND_FILENAME
+	or eax,SND_ASYNC
+	INVOKE PlaySound, OFFSET _hit_wall, NULL, eax
+	ret
+hit_wall ENDP
+
+start_open PROC USES eax
+	mov eax,SND_FILENAME
+	or eax,SND_ASYNC
+	INVOKE PlaySound, OFFSET _start_open, NULL, eax
+	ret
+start_open ENDP
 
 PrintAll PROC
 mov ecx,0
@@ -519,6 +548,9 @@ TestNumbers ENDP
 
 
 GamePart PROC
+call StartBGM
+call start_open
+
 call PrintBorder
 call TestNumbers
 call SetPlayer1
@@ -693,10 +725,9 @@ jmp L4
 GAME_PART:
 	call StopMenuSound
 	call OKLETSGO
-	call StartBGM
-
+	mov eax,550
+	call delay
 	call ClrScr
-	call StartBGM
 	call GamePart
 	call ClrScr
 	call PrintP1Wins
