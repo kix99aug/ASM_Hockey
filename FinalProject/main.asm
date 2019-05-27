@@ -169,6 +169,11 @@ NotGreaterThan5:
 	ret
 PrintTitle ENDP
 
+PrintGameOver PROC USES ECX
+	
+	
+
+PrintGameOver ENDP
 
 
 MenuSound PROC 
