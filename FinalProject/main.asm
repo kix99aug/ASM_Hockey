@@ -6,7 +6,7 @@ INCLUDELIB Winmm.lib
 				
 				
 .data
-	winwid EQU 120
+	winwid EQU 106
 	winhei EQU 30
 	screen BYTE winhei DUP( winwid DUP (0) ) ;0.空 1.方塊 2.圓圈 10~19.大數字0~9
 	change BYTE winhei DUP( winwid DUP (0) )
