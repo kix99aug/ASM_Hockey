@@ -152,16 +152,6 @@ INCLUDELIB Winmm.lib
 	Ptwo6 BYTE "    |__|         \__/  \__/     \______/  ",0
 	Ptwo DWORD OFFSET Ptwo1,OFFSET Ptwo2,OFFSET Ptwo3,OFFSET Ptwo4,OFFSET Ptwo5,OFFSET Ptwo6
 	SetConsoleDisplayMode PROTO STDCALL :DWORD,:DWORD,:DWORD
-	SetCurrentConsoleFontEx PROTO STDCALL :DWORD, :DWORD, :DWORD
-	GetCurrentConsoleFontEx PROTO STDCALL :DWORD, :DWORD, :DWORD
-	CONSOLE_FONT_INFOEX STRUCT
-    cbSize DWORD ?
-    nFont DWORD ?
-		dwFontSize COORD <>
-		FontFamily DWORD ?
-		FontWeight DWORD ?
-		FaceName DWORD ?
-	CONSOLE_FONT_INFOEX ENDS
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
@@ -223,7 +213,6 @@ SetConsole PROC
 .data?
 	cci CONSOLE_CURSOR_INFO <>
 	csbi CONSOLE_SCREEN_BUFFER_INFO <>
-	cfi CONSOLE_FONT_INFOEX <>
 	xy COORD <>
 	rect SMALL_RECT <>
 	chand dd ?
@@ -237,15 +226,10 @@ SetConsole PROC
 	mov xy.X,winwid
 	mov xy.Y,winhei+1
 	mov cci.bVisible,FALSE
-	invoke SetConsoleDisplayMode,chand,1,NULL
+	invoke SetConsoleDisplayMode,chand,0,NULL
 	invoke SetConsoleCursorInfo,chand,addr cci
 	invoke SetConsoleScreenBufferSize,chand,xy
 	invoke SetConsoleWindowInfo,chand,TRUE,addr rect
-	mov cfi.cbSize,84
-	invoke GetCurrentConsoleFontEx,chand,FALSE,addr cfi
-	mov cfi.dwFontSize.X,36
-	mov cfi.dwFontSize.Y,29
-	invoke SetCurrentConsoleFontEx,chand,FALSE,addr cfi
 	ret
 SetConsole ENDP
 
