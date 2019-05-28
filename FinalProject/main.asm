@@ -289,33 +289,53 @@ ret
 PrintAll ENDP
 
 PrintP1Wins PROC 
-	mov dl,15
+	mov dl,28
 	mov dh,2
+	mov cl , dh
+	mov ch,dl
 	call Gotoxy
 	mov eax ,0
 	Print_player:
 	mov edx, player[eax]
 	call WriteString
-	inc dh
+	inc cl
+	mov dl,ch
+	mov dh,cl
 	call Gotoxy
 	add eax,4
 	cmp eax,+20
 	jng Print_player
 
+	mov dl,42
+	mov dh,10
+	mov cl , dh
+	mov ch,dl
+	call Gotoxy
 	mov eax ,0
 	Print_one:
 	mov edx, Pone[eax]
 	call WriteString
-	call Crlf
+	inc cl
+	mov dl,ch
+	mov dh,cl
+	call Gotoxy
 	add eax,4
 	cmp eax,+20
 	jng Print_one
 
+	mov dl,35
+	mov dh,18
+	mov cl , dh
+	mov ch,dl
+	call Gotoxy
 	mov eax ,0
 	Print_winner:
 	mov edx, winner[eax]
 	call WriteString
-	call Crlf
+	inc cl
+	mov dl,ch
+	mov dh,cl
+	call Gotoxy
 	add eax,4
 	cmp eax,+20
 	jng Print_winner
