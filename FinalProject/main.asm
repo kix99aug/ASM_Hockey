@@ -318,8 +318,8 @@ jne Outer
 ret
 PrintAll ENDP
 
-PrintP1Wins PROC 
-	mov dl,15
+PrintP1Wins PROC
+	mov dl,22
 	mov dh,2
 	call Gotoxy
 	mov eax ,0
@@ -335,6 +335,9 @@ PrintP1Wins PROC
 	jng Print_player
 
 	mov eax ,0
+	mov dl,37
+	mov dh,10
+	call Gotoxy
 	Print_one:
 	push edx
 	mov edx, Pone[eax]
@@ -347,6 +350,9 @@ PrintP1Wins PROC
 	jng Print_one
 
 	mov eax ,0
+	mov dl,30
+	mov dh,18
+	call Gotoxy
 	Print_winner:
 	push edx
 	mov edx, winner[eax]
