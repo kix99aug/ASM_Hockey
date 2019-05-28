@@ -147,6 +147,13 @@ INCLUDELIB Winmm.lib
 	win5 BYTE "   \    /\    /    |  | |  |\   | .----)   |   ",0
 	win6 BYTE "    \__/  \__/     |__| |__| \__| |_______/    ",0
 	winner DWORD OFFSET win1,OFFSET win2,OFFSET win3, OFFSET win4, OFFSET win5, OFFSET win6
+	Ptwo1 BYTE ".___________.____    __    ____  ______   ",0
+	Ptwo2 BYTE "|           |\   \  /  \  /   / /  __  \  ",0
+	Ptwo3 BYTE "`---|  |----` \   \/    \/   / |  |  |  | ",0
+	Ptwo4 BYTE "    |  |       \            /  |  |  |  | ",0
+	Ptwo5 BYTE "    |  |        \    /\    /   |  `--'  | ",0
+	Ptwo6 BYTE "    |__|         \__/  \__/     \______/  ",0
+	Ptwo DWORD OFFSET Ptwo1,OFFSET Ptwo2,OFFSET Ptwo3,OFFSET Ptwo4,OFFSET Ptwo5,OFFSET Ptwo6
 	SetConsoleDisplayMode PROTO STDCALL :DWORD,:DWORD,:DWORD
 	SetCurrentConsoleFontEx PROTO STDCALL :DWORD, :DWORD, :DWORD
 	GetCurrentConsoleFontEx PROTO STDCALL :DWORD, :DWORD, :DWORD
@@ -318,7 +325,7 @@ jne Outer
 ret
 PrintAll ENDP
 
-PrintP1Wins PROC
+PrintWins PROC
 	mov dl,22
 	mov dh,2
 	call Gotoxy
@@ -334,20 +341,7 @@ PrintP1Wins PROC
 	cmp eax,+20
 	jng Print_player
 
-	mov eax ,0
-	mov dl,37
-	mov dh,10
-	call Gotoxy
-	Print_one:
-	push edx
-	mov edx, Pone[eax]
-	call WriteString
-	pop edx
-	inc dh
-	call Gotoxy
-	add eax,4
-	cmp eax,+20
-	jng Print_one
+	call P2two
 
 	mov eax ,0
 	mov dl,30
@@ -364,7 +358,43 @@ PrintP1Wins PROC
 	cmp eax,+20
 	jng Print_winner
 	ret
-PrintP1Wins ENDP
+PrintWins ENDP
+
+P1one PROC
+	mov eax ,0
+	mov dl,37
+	mov dh,10
+	call Gotoxy
+	Print_one:
+	push edx
+	mov edx, Pone[eax]
+	call WriteString
+	pop edx
+	inc dh
+	call Gotoxy
+	add eax,4
+	cmp eax,+20
+	jng Print_one
+	ret
+P1one ENDP
+	
+P2two PROC
+	mov eax ,0
+	mov dl,32
+	mov dh,10
+	call Gotoxy
+	Print_two:
+	push edx
+	mov edx, Ptwo[eax]
+	call WriteString
+	pop edx
+	inc dh
+	call Gotoxy
+	add eax,4
+	cmp eax,+20
+	jng Print_two
+	ret
+P2two ENDP
 
 PrintLineOfBox PROC
 mov ebx,ecx
@@ -761,7 +791,7 @@ GAME_PART:
 	call ClrScr
 	call GamePart
 	call ClrScr
-	call PrintP1Wins
+	call PrintWins
 	call StopStartBGM
 	;call soundyeah
 	call gameoverBGM
@@ -778,6 +808,8 @@ SET_PART:
 	call Sound
 	call ClrScr
 SET_COLOR:
+	mov eax,15d
+	call SetTextColor
 	mov dl,53
 	mov dh,5
 	call Gotoxy
