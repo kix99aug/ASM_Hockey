@@ -82,7 +82,7 @@ INCLUDELIB Winmm.lib
 	speed1 BYTE      "Speed   ",0
 	ColorBox BYTE "¡½ ",0
 	OneBox BYTE "¡½",0
-	OneCircle BYTE "¡´",0
+	OneCircle BYTE "¡P",0
 	P1 BYTE          "                                         Player1: Q W E(Skill) F(Up) C(Down)",0
 	P2 BYTE          "                                         Player2: I O P(Skill) 5(Up) 1(Down)",0
 	back BYTE        "Press ESC to return...",0
@@ -97,6 +97,8 @@ INCLUDELIB Winmm.lib
 	P1_color DWORD 1d,0
 	P2_color DWORD 1d,0
 	Speed_color DWORD 15d,0
+	P1_score BYTE 10
+	P2_score BYTE 10
 	SND_FILENAME				equ		20000h
 	SND_SYNC            equ    0000h   ; play synchronously (default) 
 	SND_ASYNC           equ    0001h   ; play asynchronously 
@@ -341,8 +343,11 @@ PrintWins PROC
 	cmp eax,+20
 	jng Print_player
 
-	call P2two
-
+	.IF P1_score == 15
+		call P1one
+	.ElSEIF P2_score == 15
+		call P2two
+	.ENDIF
 	mov eax ,0
 	mov dl,36
 	mov dh,18
@@ -395,6 +400,25 @@ P2two PROC
 	jng Print_two
 	ret
 P2two ENDP
+
+P1_score_plus PROC
+	inc P1_score
+	.IF P1_score == 15
+		call PrintWins
+	.ENDIF
+	mov P1_score,10
+	ret
+P1_score_plus ENDP
+
+P2_score_plus PROC
+	inc P2_score
+	.IF P2_score == 15
+		call PrintWins
+	.ENDIF
+	mov P2_score,10
+	ret
+P2_score_plus ENDP
+
 PrintLineOfBox PROC
 mov ebx,ecx
 mov ecx,0
@@ -441,6 +465,16 @@ Outer:
 	inc ecx
 	cmp ecx,winhei
 jne Outer
+mov dl,59
+mov dh,2
+call Gotoxy
+mov edx,OFFSET OneCircle
+call WriteString
+mov dl,59
+mov dh,3
+call Gotoxy
+mov edx,OFFSET OneCircle
+call WriteString
 mov dl,0
 mov dh,0
 call Gotoxy
@@ -508,6 +542,7 @@ Outer:
 					mov eax,' '
 					call WriteChar
 					inc dl
+					call Gotoxy
 					call WriteChar
 				.ELSE
 					mov eax,' '
@@ -596,21 +631,13 @@ jne Outer
 ret
 ClearScreen ENDP
 
-TestNumbers PROC
-mov ebx,6
-mov ecx,0
-sstart:
-mov ebx,10
-mov eax,6
-mul ecx
-add ebx,ecx
-add eax,123
-mov change[eax],bl
-inc ecx
-cmp ecx,10
-jne sstart
+SCORE PROC
+mov al,P1_score
+mov change[169],al
+mov al,P2_score
+mov change[185],al
 ret
-TestNumbers ENDP
+SCORE ENDP
 
 
 GamePart PROC
@@ -618,7 +645,7 @@ call StartBGM
 call start_open
 
 call PrintBorder
-call TestNumbers
+call SCORE
 call SetPlayer1
 call SetPlayer2
 call PrintScreen
