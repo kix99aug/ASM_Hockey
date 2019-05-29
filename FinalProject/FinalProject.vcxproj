@@ -90,7 +90,7 @@
     <MASM>
       <IncludePaths>C:\Irvine;C:\masm32\include;%(IncludePaths)</IncludePaths>
       <AssembledCodeListingFile>$(ProjectName).lst</AssembledCodeListingFile>
-      <NoLogo>true</NoLogo>
+      <NoLogo>false</NoLogo>
     </MASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -109,7 +109,7 @@
     </Link>
     <MASM>
       <IncludePaths>C:\Irvine;C:\masm32\include;%(IncludePaths)</IncludePaths>
-      <NoLogo>true</NoLogo>
+      <NoLogo>false</NoLogo>
     </MASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -132,7 +132,7 @@
     </Link>
     <MASM>
       <IncludePaths>C:\Irvine;C:\masm32\include;%(IncludePaths)</IncludePaths>
-      <NoLogo>true</NoLogo>
+      <NoLogo>false</NoLogo>
     </MASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -155,7 +155,7 @@
     </Link>
     <MASM>
       <IncludePaths>C:\Irvine;C:\masm32\include;%(IncludePaths)</IncludePaths>
-      <NoLogo>true</NoLogo>
+      <NoLogo>false</NoLogo>
     </MASM>
   </ItemDefinitionGroup>
   <ItemGroup>

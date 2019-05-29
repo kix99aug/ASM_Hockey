@@ -380,24 +380,21 @@ P1one PROC
 	add eax,4
 	cmp eax,+20
 	jng Print_one
-	ret
-P1one ENDP
-	
-P2two PROC
+
 	mov eax ,0
 	mov dl,38
 	mov dh,11
 	call Gotoxy
 	Print_two:
 	push edx
-	mov edx, Ptwo[eax]
+	mov edx, winner[eax]
 	call WriteString
 	pop edx
 	inc dh
 	call Gotoxy
 	add eax,4
 	cmp eax,+20
-	jng Print_two
+	jng Print_winner
 	ret
 P2two ENDP
 
@@ -642,13 +639,16 @@ SCORE ENDP
 
 GamePart PROC
 call StartBGM
-call start_open
+
 
 call PrintBorder
 call SCORE
 call SetPlayer1
 call SetPlayer2
 call PrintScreen
+	mov eax,300
+	call Delay
+call start_open
 mov eax,1700
 call delay
 mov eax,1000
@@ -817,7 +817,7 @@ GAME_PART:
 	call ClrScr
 	call GamePart
 	call ClrScr
-	call PrintWins
+	call PrintP1Wins
 	call StopStartBGM
 	;call soundyeah
 	call gameoverBGM
