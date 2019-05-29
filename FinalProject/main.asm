@@ -362,6 +362,7 @@ PrintWins PROC
 	add eax,4
 	cmp eax,+20
 	jng Print_winner
+	call gameoverBGM
 	ret
 PrintWins ENDP
 
@@ -656,8 +657,6 @@ SCORE ENDP
 
 GamePart PROC
 call StartBGM
-
-
 call PrintBorder
 call SCORE
 call SetPlayer1
@@ -676,13 +675,13 @@ GamePart ENDP
 
 menu PROC
 call SetConsole ; hide cursor, resize the window, fullscreen , etc
-begin:                                      ;¦L¥Xpixel hocky
 	call Clrscr
 	mov dl,55
 	mov dh,15
 	call Gotoxy
 	mov edx,OFFSET loading
 	call WriteString
+begin:                                      ;¦L¥Xpixel hocky
 	call MenuSound
 	call Clrscr
 	call PrintTitle
@@ -838,15 +837,12 @@ GAME_PART:
 	mov eax,1700
 	call delay
 	call ClrScr
-	
-
 	call GamePart
 	call ClrScr
-	call PrintWins
+	
 	call StopStartBGM
 	;call soundyeah
-	call gameoverBGM
-
+	call PrintWins
 	jmp test1
 test1:
 	mov eax,50
