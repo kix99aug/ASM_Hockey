@@ -140,6 +140,13 @@ INCLUDELIB Winmm.lib
 	Pone5 BYTE "|  `--'  | |  |\   | |  |____ ",0
 	Pone6 BYTE " \______/  |__| \__| |_______|",0
 	Pone DWORD OFFSET Pone1,OFFSET Pone2,OFFSET Pone3, OFFSET Pone4, OFFSET Pone5, OFFSET Pone6
+	Ptwo1 BYTE ".___________.____    __    ____  ______   ",0
+	Ptwo2 BYTE "|           |\   \  /  \  /   / /  __  \  ",0
+	Ptwo3 BYTE "`---|  |----` \   \/    \/   / |  |  |  | ",0
+	Ptwo4 BYTE "    |  |       \            /  |  |  |  | ",0
+	Ptwo5 BYTE "    |  |        \    /\    /   |  `--'  | ",0
+	Ptwo6 BYTE "    |__|         \__/  \__/     \______/  ",0
+	Ptwo DWORD OFFSET Ptwo1,OFFSET Ptwo2,OFFSET Ptwo3,OFFSET Ptwo4,OFFSET Ptwo5,OFFSET Ptwo6
 	win1 BYTE "____    __    ____  __  .__   __.      _______.",0
 	win2 BYTE "\   \  /  \  /   / |  | |  \ |  |     /       |",0
 	win3 BYTE " \   \/    \/   /  |  | |   \|  |    |   (----`",0
@@ -318,9 +325,9 @@ jne Outer
 ret
 PrintAll ENDP
 
-PrintP1Wins PROC 
-	mov dl,15
-	mov dh,2
+PrintWins PROC
+	mov dl,28
+	mov dh,4
 	call Gotoxy
 	mov eax ,0
 	Print_player:
@@ -334,19 +341,12 @@ PrintP1Wins PROC
 	cmp eax,+20
 	jng Print_player
 
-	mov eax ,0
-	Print_one:
-	push edx
-	mov edx, Pone[eax]
-	call WriteString
-	pop edx
-	inc dh
-	call Gotoxy
-	add eax,4
-	cmp eax,+20
-	jng Print_one
+	call P2two
 
 	mov eax ,0
+	mov dl,36
+	mov dh,18
+	call Gotoxy
 	Print_winner:
 	push edx
 	mov edx, winner[eax]
@@ -358,8 +358,43 @@ PrintP1Wins PROC
 	cmp eax,+20
 	jng Print_winner
 	ret
-PrintP1Wins ENDP
+PrintWins ENDP
 
+P1one PROC
+	mov eax ,0
+	mov dl,43
+	mov dh,11
+	call Gotoxy
+	Print_one:
+	push edx
+	mov edx, Pone[eax]
+	call WriteString
+	pop edx
+	inc dh
+	call Gotoxy
+	add eax,4
+	cmp eax,+20
+	jng Print_one
+	ret
+P1one ENDP
+	
+P2two PROC
+	mov eax ,0
+	mov dl,38
+	mov dh,11
+	call Gotoxy
+	Print_two:
+	push edx
+	mov edx, Ptwo[eax]
+	call WriteString
+	pop edx
+	inc dh
+	call Gotoxy
+	add eax,4
+	cmp eax,+20
+	jng Print_two
+	ret
+P2two ENDP
 PrintLineOfBox PROC
 mov ebx,ecx
 mov ecx,0
@@ -742,11 +777,11 @@ L4:
 	mov eax,50
     call Delay
 	call ReadKey                       ;讀取鍵盤輸入
-	cmp dx,40
+	cmp dx,+40
 	je STA                             ;偵測到下
-	cmp dx,38
+	cmp dx,+38
 	je FIN                             ;偵測到上
-	cmp dx,13                 
+	cmp dx,+13                 
 	je OPERATION_PART                       ;偵測到enter
 jmp L4
 
@@ -758,7 +793,7 @@ GAME_PART:
 	call ClrScr
 	call GamePart
 	call ClrScr
-	call PrintP1Wins
+	call PrintWins
 	call StopStartBGM
 	;call soundyeah
 	call gameoverBGM
