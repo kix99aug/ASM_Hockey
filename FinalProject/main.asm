@@ -549,11 +549,24 @@ Outer:
 					call WriteChar
 				.ENDIF
 			.ELSEIF change[eax] == 1
-				mov edx,OFFSET OneBox
-				call WriteString
+				.IF dl == 5
+					mov eax,P1_color
+					call SetTextColor
+					mov edx,OFFSET OneBox
+					call WriteString
+					mov eax,15
+					call SetTextColor
+				.ELSE
+					mov eax,P2_color
+					call SetTextColor
+					mov edx,OFFSET OneBox
+					call WriteString
+					mov eax,15
+					call SetTextColor
+				.ENDIF
 			.ELSEIF change[eax] == 2
 				mov edx,OFFSET OneCircle
-				call WriteString
+				call SetTextColor
 			.ELSEIF change[eax] >= 10 || change[eax] <= 19
 				invoke PrintNumber,cl,bl,change[eax]
 			.ELSE
@@ -606,6 +619,7 @@ ThreeBox:
 	inc ecx
 	cmp ecx,3
 jne ThreeBox
+
 ret
 SetPlayer2 ENDP
 
