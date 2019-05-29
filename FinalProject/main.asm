@@ -83,15 +83,15 @@ INCLUDELIB Winmm.lib
 	ColorBox BYTE "■ ",0
 	OneBox BYTE "■",0
 	OneCircle BYTE "●",0
-	P1 BYTE "Player1: Q W E(Skill) F(Up) C(Down)",0
-	P2 BYTE "Player2: I O P(Skill) 5(Up) 1(Down)",0
+	P1 BYTE          "                                         Player1: Q W E(Skill) F(Up) C(Down)",0
+	P2 BYTE          "                                         Player2: I O P(Skill) 5(Up) 1(Down)",0
 	back BYTE        "Press ESC to return...",0
 	P1_color_choose BYTE "▼",0
 	P2_color_choose BYTE "▲",0
 	speed_choose BYTE "▼",0
-	P1_color_point_local BYTE 50d ,0
-	P2_color_point_local BYTE 50d ,0
-	Speed_point_local BYTE 50d,0
+	P1_color_point_local BYTE 56d ,0
+	P2_color_point_local BYTE 56d ,0
+	Speed_point_local BYTE 56d,0
 	P1_SetColor_Click BYTE "Press Q to set.",0
 	P2_SetColor_Click BYTE "Press 0 to set.",0
 	P1_color DWORD 1d,0
@@ -123,6 +123,9 @@ INCLUDELIB Winmm.lib
 	starbgm1 BYTE "open startBGM.mp3 type mpegvideo alias song2",0
 	starbgm2 BYTE "play song2 repeat",0
 	starbgm3 BYTE "close song2 ",0
+
+
+
 	player1 BYTE ".______    __           ___   ____    ____  _______ .______",0
 	player2 BYTE "|   _  \  |  |         /   \  \   \  /   / |   ____||   _  \",0
 	player3 BYTE "|  |_)  | |  |        /  ^  \  \   \/   /  |  |__   |  |_)  |",0
@@ -144,25 +147,28 @@ INCLUDELIB Winmm.lib
 	win5 BYTE "   \    /\    /    |  | |  |\   | .----)   |   ",0
 	win6 BYTE "    \__/  \__/     |__| |__| \__| |_______/    ",0
 	winner DWORD OFFSET win1,OFFSET win2,OFFSET win3, OFFSET win4, OFFSET win5, OFFSET win6
-	Ptwo1 BYTE ".___________.____    __    ____  ______   ",0
-	Ptwo2 BYTE "|           |\   \  /  \  /   / /  __  \  ",0
-	Ptwo3 BYTE "`---|  |----` \   \/    \/   / |  |  |  | ",0
-	Ptwo4 BYTE "    |  |       \            /  |  |  |  | ",0
-	Ptwo5 BYTE "    |  |        \    /\    /   |  `--'  | ",0
-	Ptwo6 BYTE "    |__|         \__/  \__/     \______/  ",0
-	Ptwo DWORD OFFSET Ptwo1,OFFSET Ptwo2,OFFSET Ptwo3,OFFSET Ptwo4,OFFSET Ptwo5,OFFSET Ptwo6
 	SetConsoleDisplayMode PROTO STDCALL :DWORD,:DWORD,:DWORD
+	SetCurrentConsoleFontEx PROTO STDCALL :DWORD, :DWORD, :DWORD
+	GetCurrentConsoleFontEx PROTO STDCALL :DWORD, :DWORD, :DWORD
+	CONSOLE_FONT_INFOEX STRUCT
+    cbSize DWORD ?
+    nFont DWORD ?
+		dwFontSize COORD <>
+		FontFamily DWORD ?
+		FontWeight DWORD ?
+		FaceName DWORD ?
+	CONSOLE_FONT_INFOEX ENDS
 .code
 PrintTitle PROC USES EAX ECX EDX 
 	mov ecx,0
 	mov eax,6
 	call SetTextColor 
 PrintTitlePerLine:
-	mov dl,32
+	mov dl,38
 	mov dh,cl
 	cmp ecx,5
 	jng NotGreaterThan5
-	mov dl,21
+	mov dl,27
 NotGreaterThan5:
 	add dh,3
 	call Gotoxy
@@ -213,6 +219,7 @@ SetConsole PROC
 .data?
 	cci CONSOLE_CURSOR_INFO <>
 	csbi CONSOLE_SCREEN_BUFFER_INFO <>
+	cfi CONSOLE_FONT_INFOEX <>
 	xy COORD <>
 	rect SMALL_RECT <>
 	chand dd ?
@@ -226,10 +233,15 @@ SetConsole PROC
 	mov xy.X,winwid
 	mov xy.Y,winhei+1
 	mov cci.bVisible,FALSE
-	invoke SetConsoleDisplayMode,chand,0,NULL
+	invoke SetConsoleDisplayMode,chand,1,NULL
 	invoke SetConsoleCursorInfo,chand,addr cci
 	invoke SetConsoleScreenBufferSize,chand,xy
 	invoke SetConsoleWindowInfo,chand,TRUE,addr rect
+	mov cfi.cbSize,84
+	invoke GetCurrentConsoleFontEx,chand,FALSE,addr cfi
+	mov cfi.dwFontSize.X,36
+	mov cfi.dwFontSize.Y,29
+	invoke SetCurrentConsoleFontEx,chand,FALSE,addr cfi
 	ret
 SetConsole ENDP
 
@@ -306,8 +318,8 @@ jne Outer
 ret
 PrintAll ENDP
 
-PrintWins PROC
-	mov dl,22
+PrintP1Wins PROC 
+	mov dl,15
 	mov dh,2
 	call Gotoxy
 	mov eax ,0
@@ -322,12 +334,19 @@ PrintWins PROC
 	cmp eax,+20
 	jng Print_player
 
-	call P2two
+	mov eax ,0
+	Print_one:
+	push edx
+	mov edx, Pone[eax]
+	call WriteString
+	pop edx
+	inc dh
+	call Gotoxy
+	add eax,4
+	cmp eax,+20
+	jng Print_one
 
 	mov eax ,0
-	mov dl,30
-	mov dh,18
-	call Gotoxy
 	Print_winner:
 	push edx
 	mov edx, winner[eax]
@@ -339,43 +358,7 @@ PrintWins PROC
 	cmp eax,+20
 	jng Print_winner
 	ret
-PrintWins ENDP
-
-P1one PROC
-	mov eax ,0
-	mov dl,37
-	mov dh,10
-	call Gotoxy
-	Print_one:
-	push edx
-	mov edx, Pone[eax]
-	call WriteString
-	pop edx
-	inc dh
-	call Gotoxy
-	add eax,4
-	cmp eax,+20
-	jng Print_one
-	ret
-P1one ENDP
-	
-P2two PROC
-	mov eax ,0
-	mov dl,32
-	mov dh,10
-	call Gotoxy
-	Print_two:
-	push edx
-	mov edx, Ptwo[eax]
-	call WriteString
-	pop edx
-	inc dh
-	call Gotoxy
-	add eax,4
-	cmp eax,+20
-	jng Print_two
-	ret
-P2two ENDP
+PrintP1Wins ENDP
 
 PrintLineOfBox PROC
 mov ebx,ecx
@@ -627,22 +610,22 @@ begin:                                      ;印出pixel hocky
 	jmp STA	
 	
 STA:                                   ;選取start時的介面
-	mov dl,47
+	mov dl,53
 	mov dh,20
 	call Gotoxy
 	mov edx,OFFSET start               ;印出選取start的假象
 	call WriteString
-	mov dl,47
+	mov dl,53
 	mov dh,21
 	call Gotoxy
 	mov edx,OFFSET setting1
 	call WriteString
-	mov dl,47
+	mov dl,53
 	mov dh,22
 	call Gotoxy
 	mov edx,OFFSET finish1
 	call WriteString
-	mov dl,47
+	mov dl,53
 	mov dh,23
 	call Gotoxy
 	mov edx,OFFSET operation1
@@ -662,22 +645,22 @@ STA:                                   ;選取start時的介面
 	
 	jmp L3
 SET:                                   ;選取setting的介面
-	mov dl,47
+	mov dl,53
 	mov dh,20
 	call Gotoxy
 	mov edx,OFFSET start1
 	call WriteString
-	mov dl,47
+	mov dl,53
 	mov dh,21
 	call Gotoxy
 	mov edx,OFFSET setting
 	call WriteString
-	mov dl,47
+	mov dl,53
 	mov dh,22
 	call Gotoxy
 	mov edx,OFFSET finish1
 	call WriteString
-	mov dl,47
+	mov dl,53
 	mov dh,23
 	call Gotoxy
 	mov edx,OFFSET operation1
@@ -696,22 +679,22 @@ L1:
 	je SET_PART                       ;偵測到enter
 jmp L1
 FIN:
-	mov dl,47
+	mov dl,53
 	mov dh,20
 	call Gotoxy
 	mov edx,OFFSET start1
 	call WriteString
-	mov dl,47
+	mov dl,53
 	mov dh,21
 	call Gotoxy
 	mov edx,OFFSET setting1
 	call WriteString
-	mov dl,47
+	mov dl,53
 	mov dh,22
 	call Gotoxy
 	mov edx,OFFSET finish
 	call WriteString
-	mov dl,47
+	mov dl,53
 	mov dh,23
 	call Gotoxy
 	mov edx,OFFSET operation1
@@ -730,22 +713,22 @@ L2:
 	je FINISH_PART
 jmp L2
 OPERA:
-	mov dl,47
+	mov dl,53
 	mov dh,20
 	call Gotoxy
 	mov edx,OFFSET start1               ;印出選取start的假象
 	call WriteString
-	mov dl,47
+	mov dl,53
 	mov dh,21
 	call Gotoxy
 	mov edx,OFFSET setting1
 	call WriteString
-	mov dl,47
+	mov dl,53
 	mov dh,22
 	call Gotoxy
 	mov edx,OFFSET finish1
 	call WriteString
-	mov dl,47
+	mov dl,53
 	mov dh,23
 	call Gotoxy
 	mov edx,OFFSET operation
@@ -756,11 +739,11 @@ L4:
 	mov eax,50
     call Delay
 	call ReadKey                       ;讀取鍵盤輸入
-	cmp dx,40
+	cmp dx,+40
 	je STA                             ;偵測到下
-	cmp dx,38
+	cmp dx,+38
 	je FIN                             ;偵測到上
-	cmp dx,13                 
+	cmp dx,+13                 
 	je OPERATION_PART                       ;偵測到enter
 jmp L4
 
@@ -772,7 +755,7 @@ GAME_PART:
 	call ClrScr
 	call GamePart
 	call ClrScr
-	call PrintWins
+	call PrintP1Wins
 	call StopStartBGM
 	;call soundyeah
 	call gameoverBGM
@@ -789,9 +772,7 @@ SET_PART:
 	call Sound
 	call ClrScr
 SET_COLOR:
-	mov eax,15d
-	call SetTextColor
-	mov dl,47
+	mov dl,53
 	mov dh,5
 	call Gotoxy
 	mov edx,OFFSET setting1
@@ -805,12 +786,12 @@ SET_COLOR:
 	call WriteString
 	mov eax,15d
 	call SetTextColor
-	mov dl,42
+	mov dl,48
 	mov dh,9
 	call Gotoxy
 	mov edx,OFFSET color
 	call WriteString
-	mov dl,50
+	mov dl,56
 	mov dh,9
 	call Gotoxy
 	mov edx,OFFSET colorbox
@@ -846,7 +827,7 @@ SET_COLOR:
 	call WriteString
 	mov eax,15d
 	call SetTextColor
-	mov dl,42
+	mov dl,48
 	mov dh,13
 	call Gotoxy
 	mov edx,OFFSET speed1
@@ -864,7 +845,7 @@ SET_COLOR:
 	call WriteString
 	mov eax,15d
 	call SetTextColor
-	mov dl,42
+	mov dl,48
 	mov dh,25
 	call Gotoxy
 	mov edx,OFFSET back
@@ -896,9 +877,9 @@ P2_color_point_right:
 	call Gotoxy
 	mov edx,OFFSET empty
 	call WriteString
-	cmp P2_color_point_local,59d
+	cmp P2_color_point_local,65d
 	jne P2_movR_color
-	mov P2_color_point_local,50d
+	mov P2_color_point_local,56d
 	mov P2_color,1
 	mov dl,P2_color_point_local
 	mov dh,10
@@ -913,13 +894,13 @@ P2_color_point_right:
 	jmp L6
 P2_movR_color:
 	add P2_color_point_local,3d			
-	.IF P2_color_point_local == 50
+	.IF P2_color_point_local == 56
 	mov P2_color,1
-	.ELSEIF P2_color_point_local == 53
-	mov P2_color,2
-	.ELSEIF P2_color_point_local == 56
-	mov P2_color,3
 	.ELSEIF P2_color_point_local == 59
+	mov P2_color,2
+	.ELSEIF P2_color_point_local == 62
+	mov P2_color,3
+	.ELSEIF P2_color_point_local == 65
 	mov P2_color,4
 	.ENDIF
 	mov eax,P2_color
@@ -939,9 +920,9 @@ P2_color_point_left:
 	call Gotoxy
 	mov edx,OFFSET empty
 	call WriteString
-	cmp P2_color_point_local,50d
+	cmp P2_color_point_local,56d
 	jne P2_movL_color
-	mov P2_color_point_local,59d
+	mov P2_color_point_local,65d
 	mov P2_color,4
 	mov dl,P2_color_point_local
 	mov dh,10
@@ -956,13 +937,13 @@ P2_color_point_left:
 	jmp L6
 P2_movL_color:
 	sub P2_color_point_local,3d	
-	.IF P2_color_point_local == 50
+	.IF P2_color_point_local == 56
 	mov P2_color,1
-	.ELSEIF P2_color_point_local == 53
-	mov P2_color,2
-	.ELSEIF P2_color_point_local == 56
-	mov P2_color,3
 	.ELSEIF P2_color_point_local == 59
+	mov P2_color,2
+	.ELSEIF P2_color_point_local == 62
+	mov P2_color,3
+	.ELSEIF P2_color_point_local == 65
 	mov P2_color,4
 	.ENDIF
 	mov eax,P2_color
@@ -982,9 +963,9 @@ P1_color_point_right:
 	call Gotoxy
 	mov edx,OFFSET empty
 	call WriteString
-	cmp P1_color_point_local,59d
+	cmp P1_color_point_local,65d
 	jne P1_movR_color
-	mov P1_color_point_local,50d
+	mov P1_color_point_local,56d
 	mov P1_color,1
 	mov dl,P1_color_point_local
 	mov dh,8
@@ -999,13 +980,13 @@ P1_color_point_right:
 	jmp L6
 P1_movR_color:
 	add P1_color_point_local,3d		
-	.IF P1_color_point_local == 50
+	.IF P1_color_point_local == 56
 	mov P1_color,1
-	.ELSEIF P1_color_point_local == 53
-	mov P1_color,2
-	.ELSEIF P1_color_point_local == 56
-	mov P1_color,3
 	.ELSEIF P1_color_point_local == 59
+	mov P1_color,2
+	.ELSEIF P1_color_point_local == 62
+	mov P1_color,3
+	.ELSEIF P1_color_point_local == 65
 	mov P1_color,4
 	.ENDIF
 	mov dl,P1_color_point_local
@@ -1025,9 +1006,9 @@ P1_color_point_left:
 	call Gotoxy
 	mov edx,OFFSET empty
 	call WriteString
-	cmp P1_color_point_local,50d
+	cmp P1_color_point_local,56d
 	jne P1_movL_color
-	mov P1_color_point_local,59d
+	mov P1_color_point_local,65d
 	mov P1_color,4
 	mov dl,P1_color_point_local
 	mov dh,8
@@ -1042,13 +1023,13 @@ P1_color_point_left:
 	jmp L6
 P1_movL_color:
 	sub P1_color_point_local,3d	
-	.IF P1_color_point_local == 50
+	.IF P1_color_point_local == 56
 	mov P1_color,1
-	.ELSEIF P1_color_point_local == 53
-	mov P1_color,2
-	.ELSEIF P1_color_point_local == 56
-	mov P1_color,3
 	.ELSEIF P1_color_point_local == 59
+	mov P1_color,2
+	.ELSEIF P1_color_point_local == 62
+	mov P1_color,3
+	.ELSEIF P1_color_point_local == 65
 	mov P1_color,4
 	.ENDIF
 	mov eax,P1_color
@@ -1063,17 +1044,17 @@ P1_movL_color:
 	call Sound
 	jmp L6
 SET_SPEED:		
-	mov dl,47
+	mov dl,53
 	mov dh,5
 	call Gotoxy
 	mov edx,OFFSET setting1
 	call WriteString		
-	mov dl,42
+	mov dl,48
 	mov dh,9
 	call Gotoxy
 	mov edx,OFFSET color1
 	call WriteString
-	mov dl,50
+	mov dl,56
 	mov dh,9
 	call Gotoxy
 	mov edx,OFFSET colorbox
@@ -1091,12 +1072,12 @@ SET_SPEED:
 	call WriteString
 	mov eax,15d
     call SetTextColor
-	mov dl,42
+	mov dl,48
 	mov dh,13
 	call Gotoxy
 	mov edx,OFFSET speed
 	call WriteString
-	mov dl,50
+	mov dl,56
 	mov dh,13
 	call Gotoxy
 	mov edx,OFFSET colorbox
@@ -1112,7 +1093,7 @@ SET_SPEED:
 	call WriteString
 	mov eax,15d
     call SetTextColor
-	mov dl,42
+	mov dl,48
 	mov dh,25
 	call Gotoxy
 	mov edx,OFFSET back
@@ -1140,9 +1121,9 @@ Speed_point_right:
 	call Gotoxy
 	mov edx,OFFSET empty
 	call WriteString
-	cmp Speed_point_local,59d
+	cmp Speed_point_local,65d
 	jne Speed_movR
-	mov Speed_point_local,50d
+	mov Speed_point_local,56d
 	mov Speed_color,15d
 	mov eax,Speed_color
 	call SetTextColor
@@ -1155,13 +1136,13 @@ Speed_point_right:
 	jmp L7
 Speed_movR:
 	add Speed_point_local,3d
-	.IF Speed_point_local == 50
+	.IF Speed_point_local == 56
 	mov Speed_color,15
-	.ELSEIF Speed_point_local == 53
-	mov Speed_color,7
-	.ELSEIF Speed_point_local == 56
-	mov Speed_color,8
 	.ELSEIF Speed_point_local == 59
+	mov Speed_color,7
+	.ELSEIF Speed_point_local == 62
+	mov Speed_color,8
+	.ELSEIF Speed_point_local == 65
 	mov Speed_color,6
 	.ENDIF
 	mov eax,Speed_color
@@ -1181,9 +1162,9 @@ Speed_point_left:
 	call Gotoxy
 	mov edx,OFFSET empty
 	call WriteString
-	cmp Speed_point_local,50d
+	cmp Speed_point_local,56d
 	jne Speed_movL
-	mov Speed_point_local,59d
+	mov Speed_point_local,65d
 	mov Speed_color,6d
 	mov eax,Speed_color
 	call SetTextColor
@@ -1196,13 +1177,13 @@ Speed_point_left:
 	jmp L7
 Speed_movL:				
 	sub Speed_point_local,3d
-	.IF Speed_point_local == 50
+	.IF Speed_point_local == 56
 	mov Speed_color,15
-	.ELSEIF Speed_point_local == 53
-	mov Speed_color,7
-	.ELSEIF Speed_point_local == 56
-	mov Speed_color,8
 	.ELSEIF Speed_point_local == 59
+	mov Speed_color,7
+	.ELSEIF Speed_point_local == 62
+	mov Speed_color,8
+	.ELSEIF Speed_point_local == 65
 	mov Speed_color,6
 	.ENDIF
 	mov dl,Speed_point_local
@@ -1219,22 +1200,21 @@ Speed_movL:
 OPERATION_PART:
 	call Sound
 	call ClrScr
-	mov dl,47
+	mov dl,53
 	mov dh,5
 	call Gotoxy
 	mov edx,OFFSET operation1
 	call WriteString
-	mov dl,35
-	mov dh,10
+	mov dl,0
+	mov dh,8
 	call Gotoxy
 	mov edx,OFFSET P1
 	call WriteString
-	mov dl,35
-	mov dh,13
-	call Gotoxy
+	Call Crlf
+	Call Crlf
 	mov edx,OFFSET P2
 	call WriteString
-	mov dl,42
+	mov dl,48
 	mov dh,25
 	call Gotoxy
 	mov edx,OFFSET back
