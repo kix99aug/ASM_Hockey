@@ -140,6 +140,13 @@ INCLUDELIB Winmm.lib
 	Pone5 BYTE "|  `--'  | |  |\   | |  |____ ",0
 	Pone6 BYTE " \______/  |__| \__| |_______|",0
 	Pone DWORD OFFSET Pone1,OFFSET Pone2,OFFSET Pone3, OFFSET Pone4, OFFSET Pone5, OFFSET Pone6
+	Ptwo1 BYTE ".___________.____    __    ____  ______   ",0
+	Ptwo2 BYTE "|           |\   \  /  \  /   / /  __  \  ",0
+	Ptwo3 BYTE "`---|  |----` \   \/    \/   / |  |  |  | ",0
+	Ptwo4 BYTE "    |  |       \            /  |  |  |  | ",0
+	Ptwo5 BYTE "    |  |        \    /\    /   |  `--'  | ",0
+	Ptwo6 BYTE "    |__|         \__/  \__/     \______/  ",0
+	Ptwo DWORD OFFSET Ptwo1,OFFSET Ptwo2,OFFSET Ptwo3,OFFSET Ptwo4,OFFSET Ptwo5,OFFSET Ptwo6
 	win1 BYTE "____    __    ____  __  .__   __.      _______.",0
 	win2 BYTE "\   \  /  \  /   / |  | |  \ |  |     /       |",0
 	win3 BYTE " \   \/    \/   /  |  | |   \|  |    |   (----`",0
@@ -318,9 +325,9 @@ jne Outer
 ret
 PrintAll ENDP
 
-PrintP1Wins PROC 
-	mov dl,15
-	mov dh,2
+PrintWins PROC
+	mov dl,28
+	mov dh,4
 	call Gotoxy
 	mov eax ,0
 	Print_player:
@@ -335,6 +342,27 @@ PrintP1Wins PROC
 	jng Print_player
 
 	mov eax ,0
+	mov dl,36
+	mov dh,18
+	call Gotoxy
+	Print_winner:
+	push edx
+	mov edx, winner[eax]
+	call WriteString
+	pop edx
+	inc dh
+	call Gotoxy
+	add eax,4
+	cmp eax,+20
+	jng Print_winner
+	ret
+PrintWins ENDP
+
+P1one PROC
+	mov eax ,0
+	mov dl,43
+	mov dh,11
+	call Gotoxy
 	Print_one:
 	push edx
 	mov edx, Pone[eax]
@@ -347,7 +375,10 @@ PrintP1Wins PROC
 	jng Print_one
 
 	mov eax ,0
-	Print_winner:
+	mov dl,38
+	mov dh,11
+	call Gotoxy
+	Print_two:
 	push edx
 	mov edx, winner[eax]
 	call WriteString
@@ -358,8 +389,7 @@ PrintP1Wins PROC
 	cmp eax,+20
 	jng Print_winner
 	ret
-PrintP1Wins ENDP
-
+P2two ENDP
 PrintLineOfBox PROC
 mov ebx,ecx
 mov ecx,0
@@ -580,13 +610,16 @@ TestNumbers ENDP
 
 GamePart PROC
 call StartBGM
-call start_open
+
 
 call PrintBorder
 call TestNumbers
 call SetPlayer1
 call SetPlayer2
 call PrintScreen
+	mov eax,300
+	call Delay
+call start_open
 mov eax,1700
 call delay
 mov eax,1000
