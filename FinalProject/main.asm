@@ -580,13 +580,16 @@ TestNumbers ENDP
 
 GamePart PROC
 call StartBGM
-call start_open
+
 
 call PrintBorder
 call TestNumbers
 call SetPlayer1
 call SetPlayer2
 call PrintScreen
+	mov eax,300
+	call Delay
+call start_open
 mov eax,1700
 call delay
 mov eax,1000
