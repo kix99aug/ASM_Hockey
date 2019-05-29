@@ -84,7 +84,7 @@ INCLUDELIB Winmm.lib
 	OneBox BYTE "¡½",0
 	OneCircle BYTE "¡P",0
 	P1 BYTE          "                                         Player1: Q W E(Skill) F(Up) C(Down)",0
-	P2 BYTE          "                                         Player2: I O P(Skill) 5(Up) 1(Down)",0
+	P2 BYTE          "                                         Player2: I O P(Skill) ¡ô(Up) ¡õ(Down)",0
 	back BYTE        "Press ESC to return...",0
 	P1_color_choose BYTE "¡¿",0
 	P2_color_choose BYTE "¡¶",0
