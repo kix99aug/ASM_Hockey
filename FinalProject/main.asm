@@ -99,6 +99,9 @@ INCLUDELIB Winmm.lib
 	Speed_color DWORD 15d,0
 	P1_score BYTE 10
 	P2_score BYTE 10
+	P1_mov BYTE 0
+	P2_mov BYTE 0
+
 	SND_FILENAME				equ		20000h
 	SND_SYNC            equ    0000h   ; play synchronously (default) 
 	SND_ASYNC           equ    0001h   ; play asynchronously 
@@ -593,7 +596,7 @@ PrintScreen ENDP
 
 SetPlayer1 PROC
 mov ecx,0
-ThreeBox:
+ThreeBox1:
 	mov eax,winwid
 	mov bl,player1pos
 	add ebx,4
@@ -603,13 +606,13 @@ ThreeBox:
 	mov change[eax],1
 	inc ecx
 	cmp ecx,3
-jne ThreeBox
+jne ThreeBox1
 ret
 SetPlayer1 ENDP
 
 SetPlayer2 PROC
 mov ecx,0
-ThreeBox:
+ThreeBox2:
 	mov eax,winwid
 	mov bl,player2pos
 	add ebx,4
@@ -619,7 +622,7 @@ ThreeBox:
 	mov change[eax],1
 	inc ecx
 	cmp ecx,3
-jne ThreeBox
+jne ThreeBox2
 
 ret
 SetPlayer2 ENDP
@@ -654,22 +657,58 @@ mov change[185],al
 ret
 SCORE ENDP
 
+p1_mov_up PROC
+sub player1pos,2
+ret
+p1_mov_up ENDP
+
+p1_mov_down PROC
+add player1pos,2
+ret
+p1_mov_down ENDP
+
+p2_mov_up PROC
+sub player2pos,2
+ret
+p2_mov_up ENDP
+
+p2_mov_down PROC
+add player1pos,2
+ret
+p2_mov_down ENDP
 
 GamePart PROC
 call StartBGM
 call PrintBorder
-call SCORE
 call SetPlayer1
 call SetPlayer2
+call SCORE
 call PrintScreen
-	mov eax,300
-	call Delay
-call start_open
-mov eax,1700
-call delay
-mov eax,1000
+mov eax,300
 call Delay
+call start_open
 call ClearScreen
+jmp play_mov
+play_mov:
+
+mov eax,20
+call Delay
+call ReadKey
+.IF dx == 38
+call p2_mov_up
+.ELSEIF dx == 40
+call p2_mov_down
+.ELSEIF dx == 15
+call p1_mov_up
+.ELSEIF dx == 12
+call p1_mov_down
+.ENDIF
+call SetPlayer1
+call SetPlayer2
+call SCORE
+call PrintScreen
+call ClearScreen
+jmp play_mov
 ret
 GamePart ENDP
 
