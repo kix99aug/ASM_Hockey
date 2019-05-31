@@ -598,6 +598,7 @@ SetPlayer1 PROC
 mov ecx,0
 ThreeBox1:
 	mov eax,winwid
+	mov ebx,0
 	mov bl,player1pos
 	add ebx,4
 	add ebx,ecx
@@ -614,6 +615,7 @@ SetPlayer2 PROC
 mov ecx,0
 ThreeBox2:
 	mov eax,winwid
+	mov ebx,0
 	mov bl,player2pos
 	add ebx,4
 	add ebx,ecx
@@ -658,22 +660,30 @@ ret
 SCORE ENDP
 
 p1_mov_up PROC
-sub player1pos,2
+.IF player1pos != 2
+	sub player1pos,1
+.ENDIF
 ret
 p1_mov_up ENDP
 
 p1_mov_down PROC
-add player1pos,2
+.IF player1pos != 22
+	add player1pos,1
+.ENDIF
 ret
 p1_mov_down ENDP
 
 p2_mov_up PROC
-sub player2pos,2
+.IF player2pos != 2
+	sub player2pos,1
+.ENDIF
 ret
 p2_mov_up ENDP
 
 p2_mov_down PROC
-add player1pos,2
+.IF player2pos != 22
+	add player2pos,1
+.ENDIF
 ret
 p2_mov_down ENDP
 
@@ -698,16 +708,15 @@ call ReadKey
 call p2_mov_up
 .ELSEIF dx == 40
 call p2_mov_down
-.ELSEIF dx == 15
+.ELSEIF dx == 70
 call p1_mov_up
-.ELSEIF dx == 12
+.ELSEIF dx == 67
 call p1_mov_down
 .ENDIF
 call SetPlayer1
 call SetPlayer2
 call SCORE
 call PrintScreen
-call ClearScreen
 jmp play_mov
 ret
 GamePart ENDP
