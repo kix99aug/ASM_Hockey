@@ -80,11 +80,11 @@ INCLUDELIB Winmm.lib
 	color1 BYTE      "Color   ",0
 	speed BYTE       "> Speed   ",0
 	speed1 BYTE      "Speed   ",0
-	ColorBox BYTE "■ ",0
+	ColorBox BYTE "■",0
 	OneBox BYTE "■",0
 	OneCircle BYTE "·",0
-	P1 BYTE          "                                         Player1: Q W E(Skill) F(Up) C(Down)",0
-	P2 BYTE          "                                         Player2: I O P(Skill) ↑(Up) ↓(Down)",0
+	P1 BYTE          "Player1: A(AirWall) D(SpeedUp) W(Up) S(Down)",0
+	P2 BYTE          "Player2: ←(AirWall) →(SpeedUp) ↑(Up) ↓(Down)",0
 	back BYTE        "Press ESC to return...",0
 	P1_color_choose BYTE "▼",0
 	P2_color_choose BYTE "▲",0
@@ -440,6 +440,8 @@ ret
 PrintLineOfBox ENDP
 
 PrintBorder PROC
+mov al,0FFH
+call SetTextColor
 mov ecx,0
 Outer:
 	.IF ecx == 0 || ecx == 5 || ecx == winhei-1
@@ -469,6 +471,8 @@ Outer:
 	inc ecx
 	cmp ecx,winhei
 jne Outer
+mov eax,15
+call SetTextColor
 mov dl,59
 mov dh,2
 call Gotoxy
@@ -482,10 +486,14 @@ call WriteString
 mov dl,0
 mov dh,0
 call Gotoxy
+
 ret
+
 PrintBorder ENDP
 
 PrintNumber PROC USES eax ebx ecx edx x:BYTE, y:BYTE, number:BYTE
+mov eax,15
+call SetTextColor
 mov dl,x
 mov dh,y
 mov ecx,0
@@ -708,9 +716,9 @@ call ReadKey
 call p2_mov_up
 .ELSEIF dx == 40
 call p2_mov_down
-.ELSEIF dx == 70
+.ELSEIF dx == 87
 call p1_mov_up
-.ELSEIF dx == 67
+.ELSEIF dx == 83
 call p1_mov_down
 .ENDIF
 call SetPlayer1
@@ -720,7 +728,6 @@ call PrintScreen
 jmp play_mov
 ret
 GamePart ENDP
-
 menu PROC
 call SetConsole ; hide cursor, resize the window, fullscreen , etc
 	call Clrscr
@@ -734,7 +741,6 @@ begin:                                      ;印出pixel hocky
 	call Clrscr
 	call PrintTitle
 	jmp STA	
-	
 STA:                                   ;選取start時的介面
 	mov dl,53
 	mov dh,20
@@ -768,7 +774,6 @@ STA:                                   ;選取start時的介面
 	je OPERA                             ;偵測到上
 	cmp dx,+13                 
 	je GAME_PART                      ;偵測到enter
-	
 	jmp L3
 SET:                                   ;選取setting的介面
 	mov dl,53
@@ -1008,7 +1013,7 @@ P2_color_point_right:
 	call Gotoxy
 	mov edx,OFFSET empty
 	call WriteString
-	cmp P2_color_point_local,65d
+	cmp P2_color_point_local,62d
 	jne P2_movR_color
 	mov P2_color_point_local,56d
 	mov P2_color,1
@@ -1024,14 +1029,14 @@ P2_color_point_right:
 	call Sound
 	jmp L6
 P2_movR_color:
-	add P2_color_point_local,3d			
+	add P2_color_point_local,2d			
 	.IF P2_color_point_local == 56
 	mov P2_color,1
-	.ELSEIF P2_color_point_local == 59
+	.ELSEIF P2_color_point_local == 58
 	mov P2_color,2
-	.ELSEIF P2_color_point_local == 62
+	.ELSEIF P2_color_point_local == 60
 	mov P2_color,3
-	.ELSEIF P2_color_point_local == 65
+	.ELSEIF P2_color_point_local == 62
 	mov P2_color,4
 	.ENDIF
 	mov eax,P2_color
@@ -1053,7 +1058,7 @@ P2_color_point_left:
 	call WriteString
 	cmp P2_color_point_local,56d
 	jne P2_movL_color
-	mov P2_color_point_local,65d
+	mov P2_color_point_local,62d
 	mov P2_color,4
 	mov dl,P2_color_point_local
 	mov dh,10
@@ -1067,14 +1072,14 @@ P2_color_point_left:
 	call Sound
 	jmp L6
 P2_movL_color:
-	sub P2_color_point_local,3d	
+	sub P2_color_point_local,2d	
 	.IF P2_color_point_local == 56
 	mov P2_color,1
-	.ELSEIF P2_color_point_local == 59
+	.ELSEIF P2_color_point_local == 58
 	mov P2_color,2
-	.ELSEIF P2_color_point_local == 62
+	.ELSEIF P2_color_point_local == 60
 	mov P2_color,3
-	.ELSEIF P2_color_point_local == 65
+	.ELSEIF P2_color_point_local == 62
 	mov P2_color,4
 	.ENDIF
 	mov eax,P2_color
@@ -1094,7 +1099,7 @@ P1_color_point_right:
 	call Gotoxy
 	mov edx,OFFSET empty
 	call WriteString
-	cmp P1_color_point_local,65d
+	cmp P1_color_point_local,62d
 	jne P1_movR_color
 	mov P1_color_point_local,56d
 	mov P1_color,1
@@ -1110,14 +1115,14 @@ P1_color_point_right:
 	call Sound
 	jmp L6
 P1_movR_color:
-	add P1_color_point_local,3d		
+	add P1_color_point_local,2d		
 	.IF P1_color_point_local == 56
 	mov P1_color,1
-	.ELSEIF P1_color_point_local == 59
+	.ELSEIF P1_color_point_local == 58
 	mov P1_color,2
-	.ELSEIF P1_color_point_local == 62
+	.ELSEIF P1_color_point_local == 60
 	mov P1_color,3
-	.ELSEIF P1_color_point_local == 65
+	.ELSEIF P1_color_point_local == 62
 	mov P1_color,4
 	.ENDIF
 	mov dl,P1_color_point_local
@@ -1139,7 +1144,7 @@ P1_color_point_left:
 	call WriteString
 	cmp P1_color_point_local,56d
 	jne P1_movL_color
-	mov P1_color_point_local,65d
+	mov P1_color_point_local,62d
 	mov P1_color,4
 	mov dl,P1_color_point_local
 	mov dh,8
@@ -1153,14 +1158,14 @@ P1_color_point_left:
 	call Sound
 	jmp L6
 P1_movL_color:
-	sub P1_color_point_local,3d	
+	sub P1_color_point_local,2d	
 	.IF P1_color_point_local == 56
 	mov P1_color,1
-	.ELSEIF P1_color_point_local == 59
+	.ELSEIF P1_color_point_local == 58
 	mov P1_color,2
-	.ELSEIF P1_color_point_local == 62
+	.ELSEIF P1_color_point_local == 60
 	mov P1_color,3
-	.ELSEIF P1_color_point_local == 65
+	.ELSEIF P1_color_point_local == 62
 	mov P1_color,4
 	.ENDIF
 	mov eax,P1_color
@@ -1252,7 +1257,7 @@ Speed_point_right:
 	call Gotoxy
 	mov edx,OFFSET empty
 	call WriteString
-	cmp Speed_point_local,65d
+	cmp Speed_point_local,62d
 	jne Speed_movR
 	mov Speed_point_local,56d
 	mov Speed_color,15d
@@ -1266,14 +1271,14 @@ Speed_point_right:
 	call Sound
 	jmp L7
 Speed_movR:
-	add Speed_point_local,3d
+	add Speed_point_local,2d
 	.IF Speed_point_local == 56
 	mov Speed_color,15
-	.ELSEIF Speed_point_local == 59
+	.ELSEIF Speed_point_local == 58
 	mov Speed_color,7
-	.ELSEIF Speed_point_local == 62
+	.ELSEIF Speed_point_local == 60
 	mov Speed_color,8
-	.ELSEIF Speed_point_local == 65
+	.ELSEIF Speed_point_local == 62
 	mov Speed_color,6
 	.ENDIF
 	mov eax,Speed_color
@@ -1295,7 +1300,7 @@ Speed_point_left:
 	call WriteString
 	cmp Speed_point_local,56d
 	jne Speed_movL
-	mov Speed_point_local,65d
+	mov Speed_point_local,62d
 	mov Speed_color,6d
 	mov eax,Speed_color
 	call SetTextColor
@@ -1307,14 +1312,14 @@ Speed_point_left:
 	call Sound
 	jmp L7
 Speed_movL:				
-	sub Speed_point_local,3d
+	sub Speed_point_local,2d
 	.IF Speed_point_local == 56
 	mov Speed_color,15
-	.ELSEIF Speed_point_local == 59
+	.ELSEIF Speed_point_local == 58
 	mov Speed_color,7
-	.ELSEIF Speed_point_local == 62
+	.ELSEIF Speed_point_local == 60
 	mov Speed_color,8
-	.ELSEIF Speed_point_local == 65
+	.ELSEIF Speed_point_local == 62
 	mov Speed_color,6
 	.ENDIF
 	mov dl,Speed_point_local
@@ -1336,13 +1341,14 @@ OPERATION_PART:
 	call Gotoxy
 	mov edx,OFFSET operation1
 	call WriteString
-	mov dl,0
+	mov dl,40
 	mov dh,8
 	call Gotoxy
 	mov edx,OFFSET P1
 	call WriteString
-	Call Crlf
-	Call Crlf
+	mov dl,40
+	mov dh,11
+	call Gotoxy
 	mov edx,OFFSET P2
 	call WriteString
 	mov dl,48
