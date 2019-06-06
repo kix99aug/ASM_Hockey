@@ -102,6 +102,13 @@ INCLUDELIB Winmm.lib
 	P1_mov BYTE 0
 	P2_mov BYTE 0
 
+
+
+	P1_skill_long DWORD 0
+	P2_skill_long DWORD 0
+	counter       BYTE 0
+
+
 	SND_FILENAME				equ		20000h
 	SND_SYNC            equ    0000h   ; play synchronously (default) 
 	SND_ASYNC           equ    0001h   ; play asynchronously 
@@ -616,6 +623,13 @@ ThreeBox1:
 	inc ecx
 	cmp ecx,3
 jne ThreeBox1
+	.IF P1_skill_long==2
+	add eax,winwid
+	mov change[eax],1
+	add eax,winwid
+	mov change[eax],1
+
+	.ENDIF
 ret
 SetPlayer1 ENDP
 
@@ -633,7 +647,12 @@ ThreeBox2:
 	inc ecx
 	cmp ecx,3
 jne ThreeBox2
-
+	.IF P2_skill_long==2
+	add eax,winwid
+	mov change[eax],1
+	add eax,winwid
+	mov change[eax],1
+	.ENDIF
 ret
 SetPlayer2 ENDP
 
@@ -675,7 +694,9 @@ ret
 p1_mov_up ENDP
 
 p1_mov_down PROC
-.IF player1pos != 22
+mov edx,22
+sub edx,P1_skill_long
+.IF player1pos != dl
 	add player1pos,1
 .ENDIF
 ret
@@ -689,11 +710,18 @@ ret
 p2_mov_up ENDP
 
 p2_mov_down PROC
-.IF player2pos != 22
+mov edx,22
+sub edx,P1_skill_long
+.IF player2pos != dl
 	add player2pos,1
 .ENDIF
 ret
 p2_mov_down ENDP
+
+P1_skill_A PROC
+mov P1_skill_long,2
+ret
+P1_skill_A ENDP
 
 GamePart PROC
 call StartBGM
@@ -707,9 +735,10 @@ call Delay
 call start_open
 call ClearScreen
 jmp play_mov
+
 play_mov:
 
-mov eax,20
+mov eax,10
 call Delay
 call ReadKey
 .IF dx == 38
@@ -720,6 +749,18 @@ call p2_mov_down
 call p1_mov_up
 .ELSEIF dx == 83
 call p1_mov_down
+.ELSEIF dx == 65 || dx == 97
+mov P1_skill_long,2
+push ebx
+mov ebx,0
+.ENDIF
+
+.IF P1_skill_long==2
+add ebx,1
+
+.IF ebx > 300
+mov P1_skill_long,0
+.ENDIF
 .ENDIF
 call SetPlayer1
 call SetPlayer2
