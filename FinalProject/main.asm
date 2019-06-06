@@ -572,6 +572,9 @@ Outer:
 			.ELSEIF change[eax] == 1
 				.IF dl == 5
 					mov eax,P1_color
+					mov edx,16
+					mul edx
+					add eax,P1_color
 					call SetTextColor
 					mov edx,OFFSET OneBox
 					call WriteString
@@ -579,6 +582,9 @@ Outer:
 					call SetTextColor
 				.ELSE
 					mov eax,P2_color
+					mov edx,16
+					mul edx
+					add eax,P2_color
 					call SetTextColor
 					mov edx,OFFSET OneBox
 					call WriteString
@@ -625,7 +631,7 @@ ThreeBox1:
 	inc ecx
 	cmp ecx,3
 jne ThreeBox1
-	.IF P1_skill_long==2
+	.IF P1_skill_long==2 && player1pos != 22 && player1pos != 21
 	add eax,winwid
 	mov change[eax],1
 	add eax,winwid
@@ -649,7 +655,7 @@ ThreeBox2:
 	inc ecx
 	cmp ecx,3
 jne ThreeBox2
-	.IF P2_skill_long==2
+	.IF P2_skill_long==2 && player2pos != 22 && player2pos !=21
 	add eax,winwid
 	mov change[eax],1
 	add eax,winwid
