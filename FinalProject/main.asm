@@ -75,7 +75,7 @@ INCLUDELIB Winmm.lib
 	setting1 BYTE    "SETTING         ",0
 	finish1 BYTE     "EXIT            ",0
 	operation1 BYTE  "OPERATION       ",0
-	empty BYTE "                                                                                                                          ",0
+	empty BYTE "                                                                                                                                 ",0
 	color BYTE       "> Color   ",0
 	color1 BYTE      "Color   ",0
 	speed BYTE       "> Speed   ",0
