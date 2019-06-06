@@ -83,8 +83,8 @@ INCLUDELIB Winmm.lib
 	ColorBox BYTE "¡½",0
 	OneBox BYTE "¡½",0
 	OneCircle BYTE "¡P",0
-	P1 BYTE          "Player1: A(AirWall) D(SpeedUp) W(Up) S(Down)",0
-	P2 BYTE          "Player2: ¡ö(AirWall) ¡÷(SpeedUp) ¡ô(Up) ¡õ(Down)",0
+	P1 BYTE          "Player1: A(Enhanced plate) D(SpeedUp) W(Up) S(Down)",0
+	P2 BYTE          "Player2: ¡ö(Enhanced plate) ¡÷(SpeedUp) ¡ô(Up) ¡õ(Down)",0
 	back BYTE        "Press ESC to return...",0
 	P1_color_choose BYTE "¡¿",0
 	P2_color_choose BYTE "¡¶",0
@@ -101,7 +101,6 @@ INCLUDELIB Winmm.lib
 	P2_score BYTE 10
 	P1_mov BYTE 0
 	P2_mov BYTE 0
-
 
 
 	P1_skill_long DWORD 0
@@ -749,19 +748,33 @@ call p2_mov_down
 call p1_mov_up
 .ELSEIF dx == 83
 call p1_mov_down
+
 .ELSEIF dx == 65 || dx == 97
 mov P1_skill_long,2
-push ebx
-mov ebx,0
+push ebp
+mov ebp,0
+.ELSEIF dx == 37
+mov P2_skill_long,2
+push esi
+mov esi,0
+
 .ENDIF
 
 .IF P1_skill_long==2
-add ebx,1
+	add ebp,1
+		.IF ebp > 500
+			mov P1_skill_long,0
+			pop ebp
+		.ENDIF
+.ENDIF
+.IF P2_skill_long==2
+	add esi,1
+		.IF esi > 500
+			mov P2_skill_long,0
+			pop esi
+		.ENDIF
+.ENDIF
 
-.IF ebx > 300
-mov P1_skill_long,0
-.ENDIF
-.ENDIF
 call SetPlayer1
 call SetPlayer2
 call SCORE
