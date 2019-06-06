@@ -106,7 +106,8 @@ INCLUDELIB Winmm.lib
 	P1_skill_long DWORD 0
 	P2_skill_long DWORD 0
 	counter       BYTE 0
-
+	P1_skill1_times BYTE 0
+	P2_skill1_times BYTE 0
 
 	SND_FILENAME				equ		20000h
 	SND_SYNC            equ    0000h   ; play synchronously (default) 
@@ -337,6 +338,8 @@ ret
 PrintAll ENDP
 
 PrintWins PROC
+	mov P1_skill1_times,0
+	mov P1_skill1_times,0
 	mov dl,28
 	mov dh,4
 	call Gotoxy
@@ -749,11 +752,13 @@ call p1_mov_up
 .ELSEIF dx == 83
 call p1_mov_down
 
-.ELSEIF dx == 65 || dx == 97
+.ELSEIF dx == 65 && P1_skill1_times != 3
+add P1_skill1_times,1
 mov P1_skill_long,2
 push ebp
 mov ebp,0
-.ELSEIF dx == 37
+.ELSEIF dx == 37 && P2_skill1_times != 3
+add P2_skill1_times,1
 mov P2_skill_long,2
 push esi
 mov esi,0
