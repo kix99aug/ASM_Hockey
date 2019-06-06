@@ -713,7 +713,7 @@ p2_mov_up ENDP
 
 p2_mov_down PROC
 mov edx,22
-sub edx,P1_skill_long
+sub edx,P2_skill_long
 .IF player2pos != dl
 	add player2pos,1
 .ENDIF
