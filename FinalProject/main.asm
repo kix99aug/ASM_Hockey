@@ -16,7 +16,7 @@ INCLUDELIB Winmm.lib
 	ballD EQU 27 ;OK
 	ballL EQU 3
 	ballR EQU 115 ;OK
-	ballspeed DWORD 1
+	ballspeed DWORD 6
 	ballx DWORD 20
 	bally DWORD 20
 	ballx2 SDWORD 1
@@ -120,6 +120,12 @@ INCLUDELIB Winmm.lib
 	counter       BYTE 0
 	P1_skill1_times BYTE 0
 	P2_skill1_times BYTE 0
+	P1_skill2_times BYTE 0
+	P2_skill2_times BYTE 0
+	flag1 BYTE 0
+	flag2 BYTE 0
+	timer1 DWORD 500
+	timer2 DWORD 500
 
 	SND_FILENAME				equ		20000h
 	SND_SYNC            equ    0000h   ; play synchronously (default) 
@@ -351,7 +357,9 @@ PrintAll ENDP
 
 PrintWins PROC
 	mov P1_skill1_times,0
-	mov P1_skill1_times,0
+	mov P2_skill1_times,0
+	mov P1_skill2_times,0
+	mov P2_skill2_times,0
 	mov dl,28
 	mov dh,4
 	call Gotoxy
@@ -901,7 +909,28 @@ add P2_skill1_times,1
 mov P2_skill_long,2
 push esi
 mov esi,0
+.ElSEIF dx == 68 && P1_skill2_times != 3
+add P1_skill2_times,1
+sub ballspeed,2
+mov timer1,0
+.ElSEIF dx == 39 && P2_skill2_times != 3
+add P2_skill2_times,1
+add flag2,1
+sub ballspeed,2
+mov timer2,0
+.ENDIF
 
+.IF timer1!=500
+	add timer1,1
+	.IF timer1 == 500
+	add ballspeed,2
+	.ENDIF
+.ENDIF
+.IF timer2 != 500
+	add timer2,1
+	.IF timer2 == 500
+	add ballspeed,2
+	.ENDIF
 .ENDIF
 
 .IF P1_skill_long==2
