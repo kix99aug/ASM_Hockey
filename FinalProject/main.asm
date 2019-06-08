@@ -12,6 +12,17 @@ INCLUDELIB Winmm.lib
 	change BYTE winhei DUP( winwid DUP (0) )
 	player1pos BYTE 12
 	player2pos BYTE 12
+	ballU EQU 7 ;OK
+	ballD EQU 27 ;OK
+	ballL EQU 3
+	ballR EQU 115 ;OK
+	ballspeed DWORD 1
+	ballx DWORD 20
+	bally DWORD 20
+	ballx2 SDWORD 1
+	bally2 SDWORD 1
+	balltimer DWORD 0
+	balldirection DWORD 4
 	oldscreen BYTE winhei DUP( winwid DUP ("A"),0)
 	newscreen BYTE winhei DUP( winwid DUP ("¡½"))
 	titlestr1 BYTE		"_______    __  ___   ___  _______  __",0
@@ -82,7 +93,8 @@ INCLUDELIB Winmm.lib
 	speed1 BYTE      "Speed   ",0
 	ColorBox BYTE "¡½",0
 	OneBox BYTE "¡½",0
-	OneCircle BYTE "¡P",0
+	OneCircle BYTE "¡´",0
+	OneDot BYTE "¡P",0
 	P1 BYTE          "Player1: A(Enhanced plate) D(SpeedUp) W(Up) S(Down)",0
 	P2 BYTE          "Player2: ¡ö(Enhanced plate) ¡÷(SpeedUp) ¡ô(Up) ¡õ(Down)",0
 	back BYTE        "Press ESC to return...",0
@@ -485,12 +497,12 @@ call SetTextColor
 mov dl,59
 mov dh,2
 call Gotoxy
-mov edx,OFFSET OneCircle
+mov edx,OFFSET OneDot
 call WriteString
 mov dl,59
 mov dh,3
 call Gotoxy
-mov edx,OFFSET OneCircle
+mov edx,OFFSET OneDot
 call WriteString
 mov dl,0
 mov dh,0
@@ -593,7 +605,8 @@ Outer:
 				.ENDIF
 			.ELSEIF change[eax] == 2
 				mov edx,OFFSET OneCircle
-				call SetTextColor
+				call WriteString
+				;call SetTextColor
 			.ELSEIF change[eax] >= 10 || change[eax] <= 19
 				invoke PrintNumber,cl,bl,change[eax]
 			.ELSE
@@ -616,6 +629,125 @@ jne Outer
 ret
 PrintScreen ENDP
 
+SetBall PROC
+	mov ecx,0
+	mov eax,winwid
+	mov ebx,0
+	;mov bl,0
+	add ebx,bally
+	mul ebx
+	add eax,ballx
+	mov change[eax],2
+	add balltimer,1
+	mov ecx,balltimer
+	cmp ecx,ballspeed
+jle endofBall
+	mov balltimer,0
+	.IF balldirection==1
+		.IF ballx<=ballR && bally>=ballU
+			mov ecx,ballx2
+			add ballx,ecx
+			mov ecx,bally2
+			sub bally,ecx
+		.ELSEIF ballx>ballR && bally<ballU
+			mov ecx,ballx2
+			sub ballx,ecx
+			mov ecx,bally2
+			add bally,ecx
+			mov balldirection,3
+		.ELSEIF ballx>ballR
+			mov ecx,ballx2
+			sub ballx,ecx
+			mov ecx,bally2
+			sub bally,ecx
+			mov balldirection,2
+		.ELSEIF bally<ballU
+			mov ecx,ballx2
+			add ballx,ecx
+			mov ecx,bally2
+			add bally,ecx
+			mov balldirection,4
+		.ENDIF
+	.ELSEIF balldirection==2
+		.IF ballx>=ballL && bally>=ballU
+			mov ecx,ballx2
+			sub ballx,ecx
+			mov ecx,bally2
+			sub bally,ecx
+		.ELSEIF ballx<ballL && bally<ballU
+			mov ecx,ballx2
+			add ballx,ecx
+			mov ecx,bally2
+			add bally,ecx
+			mov balldirection,4
+		.ELSEIF ballx<ballL
+			mov ecx,ballx2
+			add ballx,ecx
+			mov ecx,bally2
+			sub bally,ecx
+			mov balldirection,1
+		.ELSEIF bally<ballU
+			mov ecx,ballx2
+			sub ballx,ecx
+			mov ecx,bally2
+			add bally,ecx
+			mov balldirection,3
+		.ENDIF
+	.ELSEIF balldirection==3
+		.IF ballx>=ballL && bally<=ballD
+			mov ecx,ballx2
+			sub ballx,ecx
+			mov ecx,bally2
+			add bally,ecx
+		.ELSEIF ballx<ballL && bally>ballD
+			mov ecx,ballx2
+			add ballx,ecx
+			mov ecx,bally2
+			sub bally,ecx
+			mov balldirection,1
+		.ELSEIF ballx<ballL
+			mov ecx,ballx2
+			add ballx,ecx
+			mov ecx,bally2
+			add bally,ecx
+			mov balldirection,4
+		.ELSEIF bally>ballD
+			mov ecx,ballx2
+			sub ballx,ecx
+			mov ecx,bally2
+			sub bally,ecx
+			mov balldirection,2
+		.ENDIF
+	.ELSEIF balldirection==4
+		.IF ballx<=ballR && bally<=ballD
+			mov ecx,ballx2
+			add ballx,ecx
+			mov ecx,bally2
+			add bally,ecx
+		.ELSEIF ballx>ballR && bally>ballD
+			mov ecx,ballx2
+			sub ballx,ecx
+			mov ecx,bally2
+			sub bally,ecx
+			mov balldirection,2
+		.ELSEIF ballx>ballR
+			mov ecx,ballx2
+			sub ballx,ecx
+			mov ecx,bally2
+			add bally,ecx
+			mov balldirection,3
+		.ELSEIF bally>ballD
+			mov ecx,ballx2
+			add ballx,ecx
+			mov ecx,bally2
+			sub bally,ecx
+			mov balldirection,1
+		.ENDIF
+	.ENDIF
+
+endofBall:
+ret
+SetBall ENDP
 
 SetPlayer1 PROC
 mov ecx,0
@@ -736,6 +868,7 @@ call StartBGM
 call PrintBorder
 call SetPlayer1
 call SetPlayer2
+call SetBall
 call SCORE
 call PrintScreen
 mov eax,300
@@ -788,6 +921,7 @@ mov esi,0
 
 call SetPlayer1
 call SetPlayer2
+call SetBall
 call SCORE
 call PrintScreen
 jmp play_mov
