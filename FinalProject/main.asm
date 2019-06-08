@@ -662,18 +662,21 @@ jle endofBall
 			sub ballx,ecx
 			mov ecx,bally2
 			add bally,ecx
+			call hit_wall
 			mov balldirection,3
 		.ELSEIF ballx>ballR
 			mov ecx,ballx2
 			sub ballx,ecx
 			mov ecx,bally2
 			sub bally,ecx
+			call hit_wall
 			mov balldirection,2
 		.ELSEIF bally<ballU
 			mov ecx,ballx2
 			add ballx,ecx
 			mov ecx,bally2
 			add bally,ecx
+			call hit_wall
 			mov balldirection,4
 		.ENDIF
 	.ELSEIF balldirection==2
@@ -687,18 +690,21 @@ jle endofBall
 			add ballx,ecx
 			mov ecx,bally2
 			add bally,ecx
+			call hit_wall
 			mov balldirection,4
 		.ELSEIF ballx<ballL
 			mov ecx,ballx2
 			add ballx,ecx
 			mov ecx,bally2
 			sub bally,ecx
+			call hit_wall
 			mov balldirection,1
 		.ELSEIF bally<ballU
 			mov ecx,ballx2
 			sub ballx,ecx
 			mov ecx,bally2
 			add bally,ecx
+			call hit_wall
 			mov balldirection,3
 		.ENDIF
 	.ELSEIF balldirection==3
@@ -712,18 +718,21 @@ jle endofBall
 			add ballx,ecx
 			mov ecx,bally2
 			sub bally,ecx
+			call hit_wall
 			mov balldirection,1
 		.ELSEIF ballx<ballL
 			mov ecx,ballx2
 			add ballx,ecx
 			mov ecx,bally2
 			add bally,ecx
+			call hit_wall
 			mov balldirection,4
 		.ELSEIF bally>ballD
 			mov ecx,ballx2
 			sub ballx,ecx
 			mov ecx,bally2
 			sub bally,ecx
+			call hit_wall
 			mov balldirection,2
 		.ENDIF
 	.ELSEIF balldirection==4
@@ -737,18 +746,21 @@ jle endofBall
 			sub ballx,ecx
 			mov ecx,bally2
 			sub bally,ecx
+			call hit_wall
 			mov balldirection,2
 		.ELSEIF ballx>ballR
 			mov ecx,ballx2
 			sub ballx,ecx
 			mov ecx,bally2
 			add bally,ecx
+			call hit_wall
 			mov balldirection,3
 		.ELSEIF bally>ballD
 			mov ecx,ballx2
 			add ballx,ecx
 			mov ecx,bally2
 			sub bally,ecx
+			call hit_wall
 			mov balldirection,1
 		.ENDIF
 	.ENDIF
