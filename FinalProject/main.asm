@@ -16,7 +16,9 @@ INCLUDELIB Winmm.lib
 	ballD EQU 27 ;OK
 	ballL EQU 3
 	ballR EQU 115 ;OK
-	ballspeed DWORD 6
+	ballspeed DWORD 4
+	ballspeed1 DWORD 0
+	ballspeed2 DWORD 0
 	ballx DWORD 59
 	bally DWORD 17
 	ballx2 SDWORD 1
@@ -126,10 +128,8 @@ INCLUDELIB Winmm.lib
 	P2_skill1_times BYTE 0
 	P1_skill2_times BYTE 0
 	P2_skill2_times BYTE 0
-	flag1 BYTE 0
-	flag2 BYTE 0
-	timer1 DWORD 500
-	timer2 DWORD 500
+	timer1 DWORD 0
+	timer2 DWORD 0
 
 	SND_FILENAME				equ		20000h
 	SND_SYNC            equ    0000h   ; play synchronously (default) 
@@ -194,6 +194,7 @@ INCLUDELIB Winmm.lib
 	win4 BYTE "  \            /   |  | |  . `  |     \   \    ",0
 	win5 BYTE "   \    /\    /    |  | |  |\   | .----)   |   ",0
 	win6 BYTE "    \__/  \__/     |__| |__| \__| |_______/    ",0
+	victory BYTE 0
 	winner DWORD OFFSET win1,OFFSET win2,OFFSET win3, OFFSET win4, OFFSET win5, OFFSET win6
 	SetConsoleDisplayMode PROTO STDCALL :DWORD,:DWORD,:DWORD
 	SetCurrentConsoleFontEx PROTO STDCALL :DWORD, :DWORD, :DWORD
@@ -367,9 +368,9 @@ PrintWins PROC
 	cmp eax,+20
 	jng Print_player
 
-	.IF P1_score == 15
+	.IF P1_score >=15
 		call P1one
-	.ElSEIF P2_score == 15
+	.ELSE
 		call P2two
 	.ENDIF
 	mov eax ,0
@@ -387,6 +388,8 @@ PrintWins PROC
 	cmp eax,+20
 	jng Print_winner
 	call gameoverBGM
+mov	P1_score , 10
+mov	P2_score , 10
 	ret
 PrintWins ENDP
 P1one PROC
@@ -423,22 +426,6 @@ P2two PROC
 	jng Print_two
 	ret
 P2two ENDP
-P1_score_plus PROC
-	inc P1_score
-	.IF P1_score == 15
-		call PrintWins
-	.ENDIF
-	mov P1_score,10
-	ret
-P1_score_plus ENDP
-P2_score_plus PROC
-	inc P2_score
-	.IF P2_score == 15
-		call PrintWins
-	.ENDIF
-	mov P2_score,10
-	ret
-P2_score_plus ENDP
 PrintLineOfBox PROC
 mov ebx,ecx
 mov ecx,0
@@ -461,27 +448,6 @@ mov ecx,0
 Outer:
 	.IF ecx == 0 || ecx == 5 || ecx == winhei-1
 	call PrintLineOfBox
-	.ELSEIF ecx < 15 || ecx > 19
-	mov dl,0
-	mov dh,cl
-	call Gotoxy
-	mov edx,OFFSET OneBox
-	call WriteString
-	mov dl,winwid-2
-	mov dh,cl
-	call Gotoxy
-	mov edx,OFFSET OneBox
-	call WriteString
-	.ELSE
-	mov dl,1
-	mov dh,cl
-	call Gotoxy
-	mov eax,'|'
-	call WriteChar
-	mov dl,winwid-2
-	mov dh,cl
-	call Gotoxy
-	call WriteChar
 	.ENDIF
 	inc ecx
 	cmp ecx,winhei
@@ -776,6 +742,34 @@ SetVectorY PROC USES edx
 	sub vectorY,eax
 	ret
 SetVectorY ENDP
+ResetGame PROC
+.IF P1_score >= 15 || P2_score >= 15
+mov victory,1
+.ELSE
+call   Randomize
+mov eax , 100 
+call RandomRange
+mov ballx,59
+mov bally,17
+mov ballRealX,5900
+mov ballRealY,1700
+mov Player1pos,12
+mov Player2pos,12
+mov balltimer,0
+mov vectorY,eax
+call SetVectorX
+call SCORE
+call PrintScreen
+call SetBall
+call SetSkillBar
+call SetPlayer1
+call SetPlayer2
+call PrintScreen
+mov eax,1000
+call Delay
+.ENDIF
+ret
+ResetGame ENDP
 SetBall PROC USES eax ebx ecx edx
 	mov ecx,0
 	mov eax,winwid
@@ -789,11 +783,23 @@ SetBall PROC USES eax ebx ecx edx
 	cmp ecx,ballspeed
 	jle nomove
 		mov balltimer,0
-		.IF ballx > ballR || ballx < ballL
-			neg vectorX
+		.IF ballx > ballR+1
+			inc P1_score
+			call ResetGame
+		.ELSEIF  ballx < ballL-1
+			inc P2_score
+			call ResetGame
 		.ENDIF
-		.IF bally > ballD || bally < ballU
+		.IF bally > ballD
+			mov bally,27
+			mov ballRealY,2700
 			neg vectorY
+			call hit_wall
+		.ELSEIF bally < ballU
+			mov bally,7
+			mov ballRealY,700
+			neg vectorY
+			call hit_wall
 		.ENDIF
 		mov ecx,vectorX
 		add ballRealX,ecx
@@ -818,12 +824,24 @@ SetBall PROC USES eax ebx ecx edx
 		.IF ballx >= 2 && ballx <= 7
 		movsx eax,player1pos
 		add eax,3
+
 		mov ebx,eax
 		add ebx,4
+		add ebx,P1_skill_long
 		.IF bally >= eax && bally <= ebx
+		call hit_hei
 			.IF bally == eax || bally == ebx
+				.IF bally == eax
+					dec bally
+					sub ballRealY,100
+				.ELSE
+					inc bally
+					add ballRealY,100
+				.ENDIF
 				neg vectorY
 			.ELSE
+			add ballX,2
+			add ballRealX,200
 			call SetVectorY
 			call SetVectorX
 			.ENDIF
@@ -834,10 +852,21 @@ SetBall PROC USES eax ebx ecx edx
 		add eax,3
 		mov ebx,eax
 		add ebx,4
+		add ebx,P2_skill_long
 		.IF bally >= eax && bally <= ebx
+		call hit_low
 			.IF bally == eax || bally == ebx
+				.IF bally == eax
+					dec bally
+					sub ballRealY,100
+				.ELSE
+					inc bally
+					add ballRealY,100
+				.ENDIF
 				neg vectorY
 			.ELSE
+			sub ballX,2
+			sub ballRealX,200
 			call SetVectorY
 			call SetVectorX
 			.ENDIF
@@ -1035,42 +1064,36 @@ call p2_mov_down
 call p1_mov_up
 .ELSEIF dx == 83
 call p1_mov_down
-.ELSEIF dx == 65 && P1_skill1_times != 3
+.ELSEIF dx == 65 && P1_skill1_times != 3 && P1_skill_long != 2
 add P1_skill1_times,1
 mov P1_skill_long,2
 mov change[240+17],0
 push ebp
 mov ebp,0
-.ELSEIF dx == 37 && P2_skill1_times != 3
+.ELSEIF dx == 37 && P2_skill1_times != 3 && P2_skill_long != 2
 add P2_skill1_times,1
 mov P2_skill_long,2
 mov change[240+17],0
 push esi
 mov esi,0
-.ElSEIF dx == 68 && P1_skill2_times != 3
-add P1_skill2_times,1
-sub ballspeed,2
-mov change[240+17],0
-mov timer1,0
-.ElSEIF dx == 39 && P2_skill2_times != 3
-add P2_skill2_times,1
-add flag2,1
-sub ballspeed,2
-mov change[240+17],0
-mov timer2,0
+.ElSEIF dx == 68 && P1_skill2_times != 3 && timer1 == 0 && timer2 == 0 
+inc P1_skill2_times
+mov ballspeed,1
+add timer1,500
+.ElSEIF dx == 39 && P2_skill2_times != 3 && timer2 == 0 && timer1 == 0
+inc P2_skill2_times
+mov ballspeed,1
+add timer2,500
 .ENDIF
 
-.IF timer1!=500
-	add timer1,1
-	.IF timer1 == 500
-	add ballspeed,2
-	.ENDIF
+.IF timer1!=0
+	sub timer1,1
 .ENDIF
-.IF timer2 != 500
-	add timer2,1
-	.IF timer2 == 500
-	add ballspeed,2
-	.ENDIF
+.IF timer2 != 0
+	sub timer2,1
+.ENDIF
+.IF timer1 == 0 && timer2 == 0
+	mov ballspeed,4
 .ENDIF
 
 .IF P1_skill_long==2
@@ -1093,7 +1116,23 @@ call SetPlayer2
 call SetBall
 call SCORE
 call PrintScreen
-jmp play_mov
+cmp victory,1
+jne play_mov
+call ClearScreen
+call Clrscr
+call ResetGame
+mov	P1_mov , 0
+mov	P2_mov , 0
+mov	P1_skill_long , 0
+mov	P2_skill_long , 0
+mov	counter       , 0
+mov	P1_skill1_times , 0
+mov	P2_skill1_times , 0
+mov	P1_skill2_times , 0
+mov	P2_skill2_times , 0
+mov	timer1 , 0
+mov	timer2 , 0
+mov victory,0
 ret
 GamePart ENDP
 menu PROC
