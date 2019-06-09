@@ -101,7 +101,7 @@ INCLUDELIB Winmm.lib
 	OneBox BYTE "¡½",0
 	OneCircle BYTE "¡´",0
 	OneDot BYTE "¡P",0
-	P1 BYTE          "Player1: A(Enhanced plate) D(SpeedUp) W(Up) S(Down)",0
+	P1 BYTE          "Player1: ¢Ï(Enhanced plate) ¢Ò(SpeedUp) ¢å(Up) ¢á(Down)",0
 	P2 BYTE          "Player2: ¡ö(Enhanced plate) ¡÷(SpeedUp) ¡ô(Up) ¡õ(Down)",0
 	back BYTE        "Press ESC to return...",0
 	P1_color_choose BYTE "¡¿",0
@@ -246,7 +246,11 @@ StopMenuSound PROC
 	ret
 StopMenuSound ENDP
 StartBGM PROC USES eax
+.data
+	setvolume BYTE "setaudio song2 volume to 900",0
+.code
 	INVOKE mciSendString, OFFSET starbgm1, NULL, 0, NULL
+	INVOKE mciSendString, OFFSET setvolume, NULL, 0, NULL
 	INVOKE mciSendString, OFFSET starbgm2, NULL, 0, NULL
 	ret
 StartBGM ENDP
@@ -279,7 +283,7 @@ SetConsole PROC
 	mov xy.X,winwid
 	mov xy.Y,winhei+1
 	mov cci.bVisible,FALSE
-	invoke SetConsoleDisplayMode,chand,0,NULL
+	invoke SetConsoleDisplayMode,chand,1,NULL
 	invoke SetConsoleCursorInfo,chand,addr cci
 	invoke SetConsoleScreenBufferSize,chand,xy
 	invoke SetConsoleWindowInfo,chand,TRUE,addr rect
