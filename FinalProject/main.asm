@@ -1,14 +1,12 @@
 INCLUDE Irvine32.inc
 INCLUDE Macros.inc
 include WINMM.inc
-
 INCLUDELIB Winmm.lib
-				
-				
+
 .data
 	winwid EQU 120
 	winhei EQU 30
-	screen BYTE winhei DUP( winwid DUP (0) ) ;0.空 1.方塊 2.圓圈 10~19.大數字0~9
+	screen BYTE winhei DUP( winwid DUP (0) ) ;0.空 1.方塊 2.圓圈 3.一半的方塊 10~19.大數字0~9
 	change BYTE winhei DUP( winwid DUP (0) )
 	player1pos BYTE 12
 	player2pos BYTE 12
@@ -17,8 +15,6 @@ INCLUDELIB Winmm.lib
 	ballL EQU 3
 	ballR EQU 115 ;OK
 	ballspeed DWORD 4
-	ballspeed1 DWORD 0
-	ballspeed2 DWORD 0
 	ballx DWORD 59
 	bally DWORD 17
 	ballx2 SDWORD 1
@@ -28,7 +24,6 @@ INCLUDELIB Winmm.lib
 	vectorX SDWORD -70
 	vectorY DWORD 70
 	balltimer DWORD 0
-	balldirection DWORD 4
 	oldscreen BYTE winhei DUP( winwid DUP ("A"),0)
 	newscreen BYTE winhei DUP( winwid DUP ("■"))
 	titlestr1 BYTE		"_______    __  ___   ___  _______  __",0
@@ -119,8 +114,6 @@ INCLUDELIB Winmm.lib
 	P2_score BYTE 10
 	P1_mov BYTE 0
 	P2_mov BYTE 0
-
-
 	P1_skill_long DWORD 0
 	P2_skill_long DWORD 0
 	counter       BYTE 0
@@ -398,8 +391,8 @@ PrintWins PROC
 	cmp eax,+20
 	jng Print_winner
 	call gameoverBGM
-mov	P1_score , 10
-mov	P2_score , 10
+	mov	P1_score , 10
+	mov	P2_score , 10
 	ret
 PrintWins ENDP
 P1one PROC
@@ -850,8 +843,8 @@ SetBall PROC USES eax ebx ecx edx
 				.ENDIF
 				neg vectorY
 			.ELSE
-			add ballX,2
-			add ballRealX,200
+			add ballX,4
+			add ballRealX,400
 			call SetVectorY
 			call SetVectorX
 			.ENDIF
@@ -875,8 +868,8 @@ SetBall PROC USES eax ebx ecx edx
 				.ENDIF
 				neg vectorY
 			.ELSE
-			sub ballX,2
-			sub ballRealX,200
+			sub ballX,4
+			sub ballRealX,400
 			call SetVectorY
 			call SetVectorX
 			.ENDIF
