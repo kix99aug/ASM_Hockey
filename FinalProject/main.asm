@@ -157,6 +157,10 @@ INCLUDELIB Winmm.lib
 	starbgm1 BYTE "open startBGM.mp3 type mpegvideo alias song2",0
 	starbgm2 BYTE "play song2 repeat",0
 	starbgm3 BYTE "close song2 ",0
+	hit_wall1 BYTE "open hit_wall.wav type WAVEAudio alias hit_wall",0
+	hit_wall2 BYTE "play hit_wall from 0",0
+	hit_wall3 BYTE "stop hit_wall",0
+	hit_wall4 BYTE "close song2 ",0
   skillbox1 BYTE " |-..-|",0
   skillbox2 BYTE "\|(00)|/",0
   skillbox3 BYTE " |    |",0
@@ -309,9 +313,11 @@ hit_hei PROC USES eax
 	ret
 hit_hei ENDP
 hit_wall PROC USES eax
-	mov eax,SND_FILENAME
-	or eax,SND_ASYNC
-	INVOKE PlaySound, OFFSET _hit_wall, NULL, eax
+	;mov eax,SND_FILENAME
+	;or eax,SND_ASYNC
+	;INVOKE PlaySound, OFFSET _hit_wall, NULL, eax
+	INVOKE mciSendString, OFFSET hit_wall1, NULL, 0, NULL
+	INVOKE mciSendString, OFFSET hit_wall2, NULL, 0, NULL
 	ret
 hit_wall ENDP
 start_open PROC USES eax
