@@ -17,10 +17,14 @@ INCLUDELIB Winmm.lib
 	ballL EQU 3
 	ballR EQU 115 ;OK
 	ballspeed DWORD 6
-	ballx DWORD 20
-	bally DWORD 20
+	ballx DWORD 59
+	bally DWORD 17
 	ballx2 SDWORD 1
 	bally2 SDWORD 1
+	ballRealX DWORD 5900
+	ballRealY DWORD 1700
+	vectorX SDWORD -70
+	vectorY DWORD 70
 	balltimer DWORD 0
 	balldirection DWORD 4
 	oldscreen BYTE winhei DUP( winwid DUP ("A"),0)
@@ -153,9 +157,16 @@ INCLUDELIB Winmm.lib
 	starbgm1 BYTE "open startBGM.mp3 type mpegvideo alias song2",0
 	starbgm2 BYTE "play song2 repeat",0
 	starbgm3 BYTE "close song2 ",0
-
-
-
+  skillbox1 BYTE " |-..-|",0
+  skillbox2 BYTE "\|(00)|/",0
+  skillbox3 BYTE " |    |",0
+  skillbox4 BYTE "()____() ",0
+	skillbox DWORD OFFSET skillbox1,OFFSET skillbox2,OFFSET skillbox3, OFFSET skillbox4
+	skillbar BYTE "¢e",0
+	BigA BYTE "¢Ï",0
+	BigD BYTE "¢Ò",0
+	BigL BYTE "¡ö",0
+	BigR BYTE "¡÷",0
 	player1 BYTE ".______    __           ___   ____    ____  _______ .______",0
 	player2 BYTE "|   _  \  |  |         /   \  \   \  /   / |   ____||   _  \",0
 	player3 BYTE "|  |_)  | |  |        /  ^  \  \   \/   /  |  |__   |  |_)  |",0
@@ -220,10 +231,6 @@ NotGreaterThan5:
 	call SetTextColor
 	ret
 PrintTitle ENDP
-
-
-
-
 MenuSound PROC 
 	INVOKE mciSendString, OFFSET menusound1, NULL, 0, NULL
 	INVOKE mciSendString, OFFSET menusound2, NULL, 0, NULL
@@ -233,7 +240,6 @@ StopMenuSound PROC
 	INVOKE mciSendString, OFFSET menusound3, NULL, 0, NULL
 	ret
 StopMenuSound ENDP
-
 StartBGM PROC USES eax
 	INVOKE mciSendString, OFFSET starbgm1, NULL, 0, NULL
 	INVOKE mciSendString, OFFSET starbgm2, NULL, 0, NULL
@@ -244,14 +250,12 @@ StopStartBGM PROC USES eax
 	;INVOKE mciSendString, OFFSET starbgm2, NULL, 0, NULL
 	ret
 StopStartBGM ENDP
-
 Sound PROC USES eax
 	mov eax,SND_FILENAME
 	or eax,SND_ASYNC
 	INVOKE PlaySound, OFFSET _click, NULL, eax
 	ret
 Sound ENDP
-
 SetConsole PROC
 .data?
 	cci CONSOLE_CURSOR_INFO <>
@@ -270,7 +274,7 @@ SetConsole PROC
 	mov xy.X,winwid
 	mov xy.Y,winhei+1
 	mov cci.bVisible,FALSE
-	invoke SetConsoleDisplayMode,chand,1,NULL
+	invoke SetConsoleDisplayMode,chand,0,NULL
 	invoke SetConsoleCursorInfo,chand,addr cci
 	invoke SetConsoleScreenBufferSize,chand,xy
 	invoke SetConsoleWindowInfo,chand,TRUE,addr rect
@@ -281,63 +285,52 @@ SetConsole PROC
 	invoke SetCurrentConsoleFontEx,chand,FALSE,addr cfi
 	ret
 SetConsole ENDP
-
-
 OKLETSGO PROC USES eax
 	mov eax,SND_FILENAME
 	or eax,SND_ASYNC
 	INVOKE PlaySound, OFFSET _okletsgo, NULL, eax
 	ret
 OKLETSGO ENDP
-
 soundyeah PROC
 	INVOKE PlaySound, OFFSET _yeah, NULL, SND_FILENAME
 	ret
 soundyeah ENDP
-
 hit_low PROC USES eax
 	mov eax,SND_FILENAME
 	or eax,SND_ASYNC
 	INVOKE PlaySound, OFFSET _hit_low, NULL, eax
 	ret
 hit_low ENDP
-
 hit_hei PROC USES eax
 	mov eax,SND_FILENAME
 	or eax,SND_ASYNC
 	INVOKE PlaySound, OFFSET _hit_hei, NULL, eax
 	ret
 hit_hei ENDP
-
 hit_wall PROC USES eax
 	mov eax,SND_FILENAME
 	or eax,SND_ASYNC
 	INVOKE PlaySound, OFFSET _hit_wall, NULL, eax
 	ret
 hit_wall ENDP
-
 start_open PROC USES eax
 	mov eax,SND_FILENAME
 	or eax,SND_ASYNC
 	INVOKE PlaySound, OFFSET _start_open, NULL, eax
 	ret
 start_open ENDP
-
 get_point PROC USES eax
 	mov eax,SND_FILENAME
 	or eax,SND_ASYNC
 	INVOKE PlaySound, OFFSET _get_point, NULL, eax
 	ret
 get_point ENDP
-
 gameoverBGM PROC USES eax
 	mov eax,SND_FILENAME
 	or eax,SND_ASYNC
 	INVOKE PlaySound, OFFSET _gameoverBGM, NULL, eax
 	ret
 gameoverBGM ENDP
-
-
 PrintAll PROC
 mov ecx,0
 Outer:
@@ -354,7 +347,6 @@ Outer:
 jne Outer
 ret
 PrintAll ENDP
-
 PrintWins PROC
 	mov P1_skill1_times,0
 	mov P2_skill1_times,0
@@ -397,7 +389,6 @@ PrintWins PROC
 	call gameoverBGM
 	ret
 PrintWins ENDP
-
 P1one PROC
 	mov eax ,0
 	mov dl,43
@@ -415,7 +406,6 @@ P1one PROC
 	jng Print_one
 	ret
 P1one ENDP
-	
 P2two PROC
 	mov eax ,0
 	mov dl,38
@@ -433,7 +423,6 @@ P2two PROC
 	jng Print_two
 	ret
 P2two ENDP
-
 P1_score_plus PROC
 	inc P1_score
 	.IF P1_score == 15
@@ -442,7 +431,6 @@ P1_score_plus PROC
 	mov P1_score,10
 	ret
 P1_score_plus ENDP
-
 P2_score_plus PROC
 	inc P2_score
 	.IF P2_score == 15
@@ -451,7 +439,6 @@ P2_score_plus PROC
 	mov P2_score,10
 	ret
 P2_score_plus ENDP
-
 PrintLineOfBox PROC
 mov ebx,ecx
 mov ecx,0
@@ -467,7 +454,6 @@ jne Outer
 mov ecx,ebx
 ret
 PrintLineOfBox ENDP
-
 PrintBorder PROC
 mov al,0FFH
 call SetTextColor
@@ -512,14 +498,117 @@ mov dh,3
 call Gotoxy
 mov edx,OFFSET OneDot
 call WriteString
+mov al,black*16+yellow
+call SetTextColor
 mov dl,0
 mov dh,0
 call Gotoxy
+mov dl,6
+mov dh,1
+call Gotoxy
+mov edx,OFFSET skillbox1
+call WriteString
+mov dl,6
+mov dh,2
+call Gotoxy
+mov edx,OFFSET skillbox2
+call WriteString
+mov dl,6
+mov dh,3
+call Gotoxy
+mov edx,OFFSET skillbox3
+call WriteString
+mov dl,6
+mov dh,4
+call Gotoxy
+mov edx,OFFSET skillbox4
+call WriteString
+mov dl,26
+mov dh,1
+call Gotoxy
+mov edx,OFFSET skillbox1
+call WriteString
+mov dl,26
+mov dh,2
+call Gotoxy
+mov edx,OFFSET skillbox2
+call WriteString
+mov dl,26
+mov dh,3
+call Gotoxy
+mov edx,OFFSET skillbox3
+call WriteString
+mov dl,26
+mov dh,4
+call Gotoxy
+mov edx,OFFSET skillbox4
+call WriteString
+mov dl,82
+mov dh,1
+call Gotoxy
+mov edx,OFFSET skillbox1
+call WriteString
+mov dl,82
+mov dh,2
+call Gotoxy
+mov edx,OFFSET skillbox2
+call WriteString
+mov dl,82
+mov dh,3
+call Gotoxy
+mov edx,OFFSET skillbox3
+call WriteString
+mov dl,82
+mov dh,4
+call Gotoxy
+mov edx,OFFSET skillbox4
+call WriteString
+mov dl,102
+mov dh,1
+call Gotoxy
+mov edx,OFFSET skillbox1
+call WriteString
+mov dl,102
+mov dh,2
+call Gotoxy
+mov edx,OFFSET skillbox2
+call WriteString
+mov dl,102
+mov dh,3
+call Gotoxy
+mov edx,OFFSET skillbox3
+call WriteString
+mov dl,102
+mov dh,4
+call Gotoxy
+mov edx,OFFSET skillbox4
+call WriteString
+mov al,16*yellow+black
+call SetTextColor
+mov dl,9
+mov dh,3
+call Gotoxy
+mov edx,OFFSET BigA
+call WriteString
+mov dl,29
+mov dh,3
+call Gotoxy
+mov edx,OFFSET BigD
+call WriteString
+mov dl,85
+mov dh,3
+call Gotoxy
+mov edx,OFFSET BigL
+call WriteString
+mov dl,105
+mov dh,3
+call Gotoxy
+mov edx,OFFSET BigR
+call WriteString
 
 ret
 
 PrintBorder ENDP
-
 PrintNumber PROC USES eax ebx ecx edx x:BYTE, y:BYTE, number:BYTE
 mov eax,15
 call SetTextColor
@@ -558,7 +647,6 @@ Outer:
 jne Outer
 ret
 PrintNumber ENDP
-
 PrintScreen PROC
 mov ecx,0
 Outer:
@@ -579,7 +667,7 @@ Outer:
 			call Gotoxy
 			push eax
 			.IF change[eax] == 0
-				.IF screen[eax] == 1 || screen[eax] == 2
+				.IF screen[eax] == 1 || screen[eax] == 2 || screen[eax] == 3
 					mov eax,' '
 					call WriteChar
 					inc dl
@@ -615,6 +703,10 @@ Outer:
 				mov edx,OFFSET OneCircle
 				call WriteString
 				;call SetTextColor
+				.ELSEIF change[eax] == 3
+				mov edx,OFFSET skillbar
+				call WriteString
+				;call SetTextColor
 			.ELSEIF change[eax] >= 10 || change[eax] <= 19
 				invoke PrintNumber,cl,bl,change[eax]
 			.ELSE
@@ -636,12 +728,58 @@ Outer:
 jne Outer
 ret
 PrintScreen ENDP
-
-SetBall PROC
+SetVectorX PROC
+.data
+	numtobesqrt DWORD ?
+.code
+	mov eax,vectorY
+	mov ecx,vectorX
+	imul eax
+	mov ebx,10000
+	sub ebx,eax
+	cmp ebx,0
+	mov numtobesqrt,ebx
+	fild numtobesqrt
+	fsqrt
+	fistp vectorX
+	mov ebx,vectorX
+	cmp ecx,0
+	jng positive
+		neg vectorX
+	positive:
+	ret
+SetVectorX ENDP
+SetVectorY PROC USES edx
+	mov eax,100
+	mov ebx,vectorY
+	cmp ebx,0
+	jg postive
+	neg ebx
+	postive:
+	sub eax,ebx
+	cdq
+	mov ebx,2
+	idiv ebx
+	.IF ballx < 59
+	movzx edx, player1pos
+	add edx,3
+	.ELSE
+	movzx edx,player2pos
+	add edx,3
+	.ENDIF
+	add edx,2
+	sub edx,bally
+	imul edx
+	mov ebx,2
+	cdq
+	idiv ebx
+	sub vectorY,eax
+	ret
+SetVectorY ENDP
+SetBall PROC USES eax ebx ecx edx
 	mov ecx,0
 	mov eax,winwid
 	mov ebx,0
-	;mov bl,0
 	add ebx,bally
 	mul ebx
 	add eax,ballx
@@ -649,126 +787,65 @@ SetBall PROC
 	add balltimer,1
 	mov ecx,balltimer
 	cmp ecx,ballspeed
-jle endofBall
-	mov balltimer,0
-	.IF balldirection==1
-		.IF ballx<=ballR && bally>=ballU
-			mov ecx,ballx2
-			add ballx,ecx
-			mov ecx,bally2
-			sub bally,ecx
-		.ELSEIF ballx>ballR && bally<ballU
-			mov ecx,ballx2
-			sub ballx,ecx
-			mov ecx,bally2
-			add bally,ecx
-			call hit_wall
-			mov balldirection,3
-		.ELSEIF ballx>ballR
-			mov ecx,ballx2
-			sub ballx,ecx
-			mov ecx,bally2
-			sub bally,ecx
-			call hit_wall
-			mov balldirection,2
-		.ELSEIF bally<ballU
-			mov ecx,ballx2
-			add ballx,ecx
-			mov ecx,bally2
-			add bally,ecx
-			call hit_wall
-			mov balldirection,4
+	jle nomove
+		mov balltimer,0
+		.IF ballx > ballR || ballx < ballL
+			neg vectorX
 		.ENDIF
-	.ELSEIF balldirection==2
-		.IF ballx>=ballL && bally>=ballU
-			mov ecx,ballx2
-			sub ballx,ecx
-			mov ecx,bally2
-			sub bally,ecx
-		.ELSEIF ballx<ballL && bally<ballU
-			mov ecx,ballx2
-			add ballx,ecx
-			mov ecx,bally2
-			add bally,ecx
-			call hit_wall
-			mov balldirection,4
-		.ELSEIF ballx<ballL
-			mov ecx,ballx2
-			add ballx,ecx
-			mov ecx,bally2
-			sub bally,ecx
-			call hit_wall
-			mov balldirection,1
-		.ELSEIF bally<ballU
-			mov ecx,ballx2
-			sub ballx,ecx
-			mov ecx,bally2
-			add bally,ecx
-			call hit_wall
-			mov balldirection,3
+		.IF bally > ballD || bally < ballU
+			neg vectorY
 		.ENDIF
-	.ELSEIF balldirection==3
-		.IF ballx>=ballL && bally<=ballD
-			mov ecx,ballx2
-			sub ballx,ecx
-			mov ecx,bally2
-			add bally,ecx
-		.ELSEIF ballx<ballL && bally>ballD
-			mov ecx,ballx2
-			add ballx,ecx
-			mov ecx,bally2
-			sub bally,ecx
-			call hit_wall
-			mov balldirection,1
-		.ELSEIF ballx<ballL
-			mov ecx,ballx2
-			add ballx,ecx
-			mov ecx,bally2
-			add bally,ecx
-			call hit_wall
-			mov balldirection,4
-		.ELSEIF bally>ballD
-			mov ecx,ballx2
-			sub ballx,ecx
-			mov ecx,bally2
-			sub bally,ecx
-			call hit_wall
-			mov balldirection,2
+		mov ecx,vectorX
+		add ballRealX,ecx
+		mov ecx,vectorY
+		add ballRealY,ecx
+		mov eax,ballRealX
+		mov ebx,100
+		cdq
+		div ebx
+		.IF edx > 50
+		inc eax
 		.ENDIF
-	.ELSEIF balldirection==4
-		.IF ballx<=ballR && bally<=ballD
-			mov ecx,ballx2
-			add ballx,ecx
-			mov ecx,bally2
-			add bally,ecx
-		.ELSEIF ballx>ballR && bally>ballD
-			mov ecx,ballx2
-			sub ballx,ecx
-			mov ecx,bally2
-			sub bally,ecx
-			call hit_wall
-			mov balldirection,2
-		.ELSEIF ballx>ballR
-			mov ecx,ballx2
-			sub ballx,ecx
-			mov ecx,bally2
-			add bally,ecx
-			call hit_wall
-			mov balldirection,3
-		.ELSEIF bally>ballD
-			mov ecx,ballx2
-			add ballx,ecx
-			mov ecx,bally2
-			sub bally,ecx
-			call hit_wall
-			mov balldirection,1
+		mov ballx,eax
+		mov eax,ballRealY
+		mov ebx,100
+		cdq
+		div ebx
+		.IF edx > 50
+		inc eax
 		.ENDIF
-	.ENDIF
-
-endofBall:
+		mov bally,eax
+		.IF ballx >= 2 && ballx <= 7
+		movsx eax,player1pos
+		add eax,3
+		mov ebx,eax
+		add ebx,4
+		.IF bally >= eax && bally <= ebx
+			.IF bally == eax || bally == ebx
+				neg vectorY
+			.ELSE
+			call SetVectorY
+			call SetVectorX
+			.ENDIF
+		.ENDIF
+		.ENDIF
+		.IF ballx >= 111 && ballx <= 116
+		movsx eax,player2pos
+		add eax,3
+		mov ebx,eax
+		add ebx,4
+		.IF bally >= eax && bally <= ebx
+			.IF bally == eax || bally == ebx
+				neg vectorY
+			.ELSE
+			call SetVectorY
+			call SetVectorX
+			.ENDIF
+		.ENDIF
+		.ENDIF
+	nomove:
 ret
 SetBall ENDP
-
 SetPlayer1 PROC
 mov ecx,0
 ThreeBox1:
@@ -783,7 +860,7 @@ ThreeBox1:
 	inc ecx
 	cmp ecx,3
 jne ThreeBox1
-	.IF P1_skill_long==2 && player1pos != 22 && player1pos != 21
+	.IF P1_skill_long == 2 && player1pos != 22 && player1pos != 21
 	add eax,winwid
 	mov change[eax],1
 	add eax,winwid
@@ -792,7 +869,6 @@ jne ThreeBox1
 	.ENDIF
 ret
 SetPlayer1 ENDP
-
 SetPlayer2 PROC
 mov ecx,0
 ThreeBox2:
@@ -815,8 +891,6 @@ jne ThreeBox2
 	.ENDIF
 ret
 SetPlayer2 ENDP
-
-
 ClearScreen PROC
 mov ecx,0
 Outer:
@@ -837,7 +911,6 @@ Outer:
 jne Outer
 ret
 ClearScreen ENDP
-
 SCORE PROC
 mov al,P1_score
 mov change[169],al
@@ -845,14 +918,12 @@ mov al,P2_score
 mov change[185],al
 ret
 SCORE ENDP
-
 p1_mov_up PROC
 .IF player1pos != 2
 	sub player1pos,1
 .ENDIF
 ret
 p1_mov_up ENDP
-
 p1_mov_down PROC
 mov edx,22
 sub edx,P1_skill_long
@@ -861,14 +932,12 @@ sub edx,P1_skill_long
 .ENDIF
 ret
 p1_mov_down ENDP
-
 p2_mov_up PROC
 .IF player2pos != 2
 	sub player2pos,1
 .ENDIF
 ret
 p2_mov_up ENDP
-
 p2_mov_down PROC
 mov edx,22
 sub edx,P2_skill_long
@@ -877,28 +946,44 @@ sub edx,P2_skill_long
 .ENDIF
 ret
 p2_mov_down ENDP
-
 P1_skill_A PROC
 mov P1_skill_long,2
 ret
 P1_skill_A ENDP
-
+SetSkillBar PROC
+mov change[240+17],3
+mov change[360+17],3
+mov change[480+17],3
+mov change[240+37],3
+mov change[360+37],3
+mov change[480+37],3
+mov change[240+93],3
+mov change[360+93],3
+mov change[480+93],3
+mov change[240+113],3
+mov change[360+113],3
+mov change[480+113],3
+ret
+SetSkillBar ENDP
 GamePart PROC
 call StartBGM
 call PrintBorder
 call SetPlayer1
 call SetPlayer2
+call   Randomize
+mov eax , 100 
+call RandomRange
+mov vectorY,eax
+call SetVectorX
 call SetBall
 call SCORE
 call PrintScreen
 mov eax,300
 call Delay
 call start_open
-call ClearScreen
-jmp play_mov
-
 play_mov:
 
+call SetSkillBar
 mov eax,10
 call Delay
 call ReadKey
@@ -914,21 +999,25 @@ call p1_mov_down
 .ELSEIF dx == 65 && P1_skill1_times != 3
 add P1_skill1_times,1
 mov P1_skill_long,2
+mov change[240+17],0
 push ebp
 mov ebp,0
 .ELSEIF dx == 37 && P2_skill1_times != 3
 add P2_skill1_times,1
 mov P2_skill_long,2
+mov change[240+17],0
 push esi
 mov esi,0
 .ElSEIF dx == 68 && P1_skill2_times != 3
 add P1_skill2_times,1
 sub ballspeed,2
+mov change[240+17],0
 mov timer1,0
 .ElSEIF dx == 39 && P2_skill2_times != 3
 add P2_skill2_times,1
 add flag2,1
 sub ballspeed,2
+mov change[240+17],0
 mov timer2,0
 .ENDIF
 
@@ -1608,7 +1697,6 @@ FINISH_PART:
 	call Sound
 	exit
 menu ENDP
-
 main PROC
 call menu
 main ENDP
