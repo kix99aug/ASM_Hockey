@@ -963,6 +963,46 @@ mov change[480+93],3
 mov change[240+113],3
 mov change[360+113],3
 mov change[480+113],3
+mov ecx,0
+P1_SKILL1:
+cmp cl,P1_SKILL1_times
+jg L2
+mov eax,120
+mul ecx
+mov change[eax+120+17],0
+inc ecx
+jmp P1_SKILL1
+L2:
+mov ecx,0
+P1_SKILL2:
+cmp cl,P1_SKILL2_times
+jg L3
+mov eax,120
+mul ecx
+mov change[eax+120+37],0
+inc ecx
+jmp P1_SKILL2
+L3:
+mov ecx,0
+P2_SKILL1:
+cmp cl,P2_SKILL1_times
+jg L4
+mov eax,120
+mul ecx
+mov change[eax+120+93],0
+inc ecx
+jmp P2_SKILL1
+L4:
+mov ecx,0
+P2_SKILL2:
+cmp cl,P2_SKILL2_times
+jg endr
+mov eax,120
+mul ecx
+mov change[eax+120+113],0
+inc ecx
+jmp P2_SKILL2
+endr:
 ret
 SetSkillBar ENDP
 GamePart PROC
@@ -995,7 +1035,6 @@ call p2_mov_down
 call p1_mov_up
 .ELSEIF dx == 83
 call p1_mov_down
-
 .ELSEIF dx == 65 && P1_skill1_times != 3
 add P1_skill1_times,1
 mov P1_skill_long,2
