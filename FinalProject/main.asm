@@ -1385,15 +1385,10 @@ SET_COLOR:
 	call WriteString
 	mov edx,OFFSET colorbox
 	call WriteString
-	mov eax,7d
-	call SetTextColor
-	call WriteString
-	mov eax,8d
-	call SetTextColor
-	call WriteString
 	mov eax,6d
 	call SetTextColor
 	call WriteString
+	
 	mov eax,15d
 	call SetTextColor
 	mov dl,48
@@ -1633,12 +1628,7 @@ SET_SPEED:
 	call Gotoxy
 	mov edx,OFFSET colorbox
 	call WriteString
-	mov eax,7d
-    call SetTextColor
-	call WriteString
-	mov eax,8d
-    call SetTextColor
-	call WriteString
+	
 	mov eax,6d
     call SetTextColor
 	call WriteString
@@ -1672,7 +1662,7 @@ Speed_point_right:
 	call Gotoxy
 	mov edx,OFFSET empty
 	call WriteString
-	cmp Speed_point_local,62d
+	cmp Speed_point_local,58d
 	jne Speed_movR
 	mov Speed_point_local,56d
 	mov playboard,1
@@ -1692,12 +1682,6 @@ Speed_movR:
 	mov Speed_color,15
 	mov playboard,1
 	.ELSEIF Speed_point_local == 58
-	mov Speed_color,7
-	mov playboard,1
-	.ELSEIF Speed_point_local == 60
-	mov Speed_color,8
-	mov playboard,2
-	.ELSEIF Speed_point_local == 62
 	mov Speed_color,6
 	mov playboard,2
 	.ENDIF
@@ -1720,7 +1704,7 @@ Speed_point_left:
 	call WriteString
 	cmp Speed_point_local,56d
 	jne Speed_movL
-	mov Speed_point_local,62d
+	mov Speed_point_local,58d
 	mov playboard,2
 	mov Speed_color,6d
 	mov eax,Speed_color
@@ -1738,14 +1722,9 @@ Speed_movL:
 	mov Speed_color,15
 	mov playboard,1
 	.ELSEIF Speed_point_local == 58
-	mov Speed_color,7
-	mov playboard,1
-	.ELSEIF Speed_point_local == 60
-	mov Speed_color,8
-	mov playboard,2
-	.ELSEIF Speed_point_local == 62
 	mov Speed_color,6
 	mov playboard,2
+
 	.ENDIF
 	mov dl,Speed_point_local
 	mov dh,12
