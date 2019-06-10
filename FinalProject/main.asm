@@ -353,10 +353,6 @@ jne Outer
 ret
 PrintAll ENDP
 PrintWins PROC
-	mov P1_skill1_times,0
-	mov P2_skill1_times,0
-	mov P1_skill2_times,0
-	mov P2_skill2_times,0
 	mov dl,28
 	mov dh,4
 	call Gotoxy
@@ -372,9 +368,9 @@ PrintWins PROC
 	cmp eax,+20
 	jng Print_player
 
-	.IF P1_score >=15
+	.IF P1_score == 15
 		call P1one
-	.ELSE
+	.ELSEIF P2_score == 15
 		call P2two
 	.ENDIF
 	mov eax ,0
@@ -1043,6 +1039,24 @@ endr:
 ret
 SetSkillBar ENDP
 GamePart PROC
+	mov P1_score,10
+	mov P2_score,10
+	mov	P1_mov , 0
+	mov	P2_mov , 0
+	mov	P1_skill_long , 0
+	mov	P2_skill_long , 0
+	mov	counter       , 0
+	mov	P1_skill1_times , 0
+	mov	P2_skill1_times , 0
+	mov	P1_skill2_times , 0
+	mov	P2_skill2_times , 0
+	mov	timer1 , 0
+	mov	timer2 , 0
+	mov ballx,59
+	mov bally,17
+	mov ballrealx,5900
+	mov ballrealy,1700
+	mov victory,0
 call StartBGM
 call PrintBorder
 call SetPlayer1
@@ -1129,18 +1143,6 @@ jne play_mov
 call ClearScreen
 call Clrscr
 call ResetGame
-mov	P1_mov , 0
-mov	P2_mov , 0
-mov	P1_skill_long , 0
-mov	P2_skill_long , 0
-mov	counter       , 0
-mov	P1_skill1_times , 0
-mov	P2_skill1_times , 0
-mov	P1_skill2_times , 0
-mov	P2_skill2_times , 0
-mov	timer1 , 0
-mov	timer2 , 0
-mov victory,0
 ret
 GamePart ENDP
 menu PROC
@@ -1309,7 +1311,12 @@ GAME_PART:
 	call ClrScr
 	
 	call StopStartBGM
-	;call soundyeah
+	mov edx,OFFSET loading
+	call WriteString
+	call soundyeah
+	mov eax,1700
+	call delay
+	
 	call PrintWins
 	jmp test1
 test1:
