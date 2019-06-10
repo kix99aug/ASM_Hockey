@@ -123,6 +123,7 @@ INCLUDELIB Winmm.lib
 	P2_skill2_times BYTE 0
 	timer1 DWORD 0
 	timer2 DWORD 0
+	playboard BYTE 1
 
 	SND_FILENAME				equ		20000h
 	SND_SYNC            equ    0000h   ; play synchronously (default) 
@@ -952,7 +953,8 @@ ret
 SCORE ENDP
 p1_mov_up PROC
 .IF player1pos != 2
-	sub player1pos,1
+	mov cl,playboard
+	sub player1pos,cl
 .ENDIF
 ret
 p1_mov_up ENDP
@@ -960,13 +962,15 @@ p1_mov_down PROC
 mov edx,22
 sub edx,P1_skill_long
 .IF player1pos != dl
-	add player1pos,1
+	mov cl,playboard
+	add player1pos,cl
 .ENDIF
 ret
 p1_mov_down ENDP
 p2_mov_up PROC
 .IF player2pos != 2
-	sub player2pos,1
+	mov cl,playboard
+	sub player2pos,cl
 .ENDIF
 ret
 p2_mov_up ENDP
@@ -974,7 +978,8 @@ p2_mov_down PROC
 mov edx,22
 sub edx,P2_skill_long
 .IF player2pos != dl
-	add player2pos,1
+	mov cl,playboard
+	add player2pos,cl
 .ENDIF
 ret
 p2_mov_down ENDP
@@ -1670,6 +1675,7 @@ Speed_point_right:
 	cmp Speed_point_local,62d
 	jne Speed_movR
 	mov Speed_point_local,56d
+	mov playboard,1
 	mov Speed_color,15d
 	mov eax,Speed_color
 	call SetTextColor
@@ -1684,12 +1690,16 @@ Speed_movR:
 	add Speed_point_local,2d
 	.IF Speed_point_local == 56
 	mov Speed_color,15
+	mov playboard,1
 	.ELSEIF Speed_point_local == 58
 	mov Speed_color,7
+	mov playboard,1
 	.ELSEIF Speed_point_local == 60
 	mov Speed_color,8
+	mov playboard,2
 	.ELSEIF Speed_point_local == 62
 	mov Speed_color,6
+	mov playboard,2
 	.ENDIF
 	mov eax,Speed_color
 	call SetTextColor		
@@ -1711,6 +1721,7 @@ Speed_point_left:
 	cmp Speed_point_local,56d
 	jne Speed_movL
 	mov Speed_point_local,62d
+	mov playboard,2
 	mov Speed_color,6d
 	mov eax,Speed_color
 	call SetTextColor
@@ -1725,12 +1736,16 @@ Speed_movL:
 	sub Speed_point_local,2d
 	.IF Speed_point_local == 56
 	mov Speed_color,15
+	mov playboard,1
 	.ELSEIF Speed_point_local == 58
 	mov Speed_color,7
+	mov playboard,1
 	.ELSEIF Speed_point_local == 60
 	mov Speed_color,8
+	mov playboard,2
 	.ELSEIF Speed_point_local == 62
 	mov Speed_color,6
+	mov playboard,2
 	.ENDIF
 	mov dl,Speed_point_local
 	mov dh,12
