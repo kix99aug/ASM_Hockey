@@ -110,8 +110,8 @@ INCLUDELIB Winmm.lib
 	P1_color DWORD 1d,0
 	P2_color DWORD 1d,0
 	Speed_color DWORD 15d,0
-	P1_score BYTE 10
-	P2_score BYTE 10
+	P1_score BYTE 14
+	P2_score BYTE 12
 	P1_mov BYTE 0
 	P2_mov BYTE 0
 	P1_skill_long DWORD 0
@@ -1039,7 +1039,7 @@ endr:
 ret
 SetSkillBar ENDP
 GamePart PROC
-	mov P1_score,10
+	mov P1_score,14
 	mov P2_score,10
 	mov	P1_mov , 0
 	mov	P2_mov , 0
@@ -1311,12 +1311,9 @@ GAME_PART:
 	call ClrScr
 	
 	call StopStartBGM
-	mov edx,OFFSET loading
-	call WriteString
-	call soundyeah
-	mov eax,1700
+	mov eax,100
 	call delay
-	
+	call soundyeah
 	call PrintWins
 	jmp test1
 test1:
